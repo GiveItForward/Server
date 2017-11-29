@@ -12,6 +12,7 @@
 .idea/
 target/
 log/
+out/
 *.war
 *.iml
 *.iws
