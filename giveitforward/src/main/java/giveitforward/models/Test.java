@@ -8,16 +8,24 @@ public class Test {
         AnnotationConfiguration blah = new AnnotationConfiguration().configure();
         Session session = blah.buildSessionFactory().openSession();
 
-        Transaction t = session.beginTransaction();
+        Transaction t = null;
+        try {
+            t = session.beginTransaction();
+            Tag t1 = new Tag("yeeeeesssss");
+            session.save(t1);
+            session.flush();
+            t.commit();
+        }
+        catch (Exception e){
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("bad");
+        }
+        finally {
+            session.close();
+        }
 
-        Tag t1 = new Tag();
-        t1.setTid(1006);
-        t1.setTag("real deal");
-
-        session.persist(t1);
-
-        t.commit();
-        session.close();
         System.out.println("successfully saved");
     }
 }

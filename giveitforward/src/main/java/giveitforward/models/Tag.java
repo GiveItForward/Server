@@ -1,19 +1,22 @@
 package giveitforward.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tags")
 public class Tag {
+
     @Id
-    @Column(name = "tid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tid", unique = true, nullable = false)
     private int tid;
 
     @Column(name = "tag")
     private String tag;
+
+    public Tag(String _tag) {
+        tag = _tag;
+    }
 
     public int getTid() {
         return tid;
