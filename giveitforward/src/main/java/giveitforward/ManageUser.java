@@ -29,7 +29,8 @@ public class ManageUser {
         mu.loginUser(email, password);
     }
 
-    public void loginUser(String email, String password) {
+    public static boolean loginUser(String email, String password) {
+        boolean result = false;
         Session session = factory.openSession();
         Transaction t = null;
 
@@ -51,6 +52,7 @@ public class ManageUser {
 
                 if (pword.equals(password)) {
                     System.out.println("Logged in!");
+                    result = true;
                 }
                 else {
                     System.out.println("Passwords don't match!");
@@ -67,6 +69,7 @@ public class ManageUser {
         }
         finally {
             session.close();
+            return result;
         }
     }
 }
