@@ -1,4 +1,4 @@
-package giveitforward;
+package giveitforward.tests;
 
 import giveitforward.models.User;
 import org.hibernate.Criteria;
@@ -9,20 +9,20 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
 public class ManageUser {
-    private static SessionFactory factory;
-    private static AnnotationConfiguration config;
+//    private static SessionFactory factory;
+//    private static AnnotationConfiguration config;
 
     public static void main(String[] args) {
         String email = "boo@email.com";
         String password = "pswd";
 
-        try {
-            config = new AnnotationConfiguration().configure();
-            factory = config.buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+//        try {
+//            config = new AnnotationConfiguration().configure();
+//            factory = config.buildSessionFactory();
+//        } catch (Throwable ex) {
+//            System.err.println("Failed to create sessionFactory object." + ex);
+//            throw new ExceptionInInitializerError(ex);
+//        }
 
         ManageUser mu = new ManageUser();
 
@@ -31,7 +31,7 @@ public class ManageUser {
 
     public static boolean loginUser(String email, String password) {
         boolean result = false;
-        Session session = factory.openSession();
+        Session session = SetupTests.getFactory().openSession();
         Transaction t = null;
 
         try {
