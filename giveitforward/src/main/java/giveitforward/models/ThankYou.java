@@ -2,8 +2,8 @@ package giveitforward.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "thank_yous")
-public class ThankYous {
+@Table(name = "thank_you")
+public class ThankYou {
 
     @Id
     @Column(name = "rid")

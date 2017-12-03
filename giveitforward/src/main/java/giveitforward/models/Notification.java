@@ -1,10 +1,13 @@
 package giveitforward.models;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "notifications") //TODO: does case matter?
-public class Notifications {
+@Table(name = "notification")
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,12 +16,11 @@ public class Notifications {
 
     //TODO: I don't think we need this...
     @Column(name = "date")
-    private String date;
+    private Timestamp date;
 
     @Column(name = "message")
     private String message;
 
-    @Id //TODO: Does this need to be an Id?
     @Column(name = "uid")
     private int uid;
 
@@ -30,11 +32,11 @@ public class Notifications {
         this.nid = nid;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

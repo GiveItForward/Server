@@ -2,8 +2,8 @@ package giveitforward.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "requests")
-public class Requests {
+@Table(name = "request")
+public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,8 +13,8 @@ public class Requests {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "ammount")
-    private Double ammount;
+    @Column(name = "amount")
+    private Double amount;
 
     @Column(name = "image")
     private String image;
@@ -35,12 +35,12 @@ public class Requests {
         this.description = description;
     }
 
-    public Double getAmmount() {
-        return ammount;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setAmmount(Double ammount) {
-        this.ammount = ammount;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public String getImage() {

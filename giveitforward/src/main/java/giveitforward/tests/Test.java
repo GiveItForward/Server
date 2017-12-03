@@ -1,7 +1,8 @@
-package giveitforward.models;
+package giveitforward.tests;
 
-import org.hibernate.*;
-import org.hibernate.cfg.*;
+        import giveitforward.models.*;
+        import org.hibernate.*;
+        import org.hibernate.cfg.*;
 
 public class Test {
     public static void main(String[] args) {

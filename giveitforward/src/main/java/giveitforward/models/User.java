@@ -3,13 +3,14 @@ package giveitforward.models;
 import javax.persistence.*;
 
 @Entity
+//@Table(name = "user", schema = "postgres")
 @Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uid", unique = true, nullable = false)
-    private int uid;
+    private Integer uid;
 
     @Column(name = "email")
     private String email;
@@ -29,11 +30,11 @@ public class User {
     @Column(name = "bio")
     private String bio;
 
-    public int getUid() {
+    public Integer getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(Integer uid) {
         this.uid = uid;
     }
 

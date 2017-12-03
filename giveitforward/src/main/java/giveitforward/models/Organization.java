@@ -3,7 +3,7 @@ package giveitforward.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "organization")
 public class Organization {
 
     @Id
@@ -21,7 +21,7 @@ public class Organization {
     private String website;
 
     @Column(name = "phone_number")
-    private boolean phone_number;
+    private String phone_number;
 
     public int getOid() {
         return oid;
@@ -55,11 +55,11 @@ public class Organization {
         this.website = website;
     }
 
-    public boolean isPhone_number() {
+    public String isPhone_number() {
         return phone_number;
     }
 
-    public void setPhone_number(boolean phone_number) {
+    public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
     }
 }
