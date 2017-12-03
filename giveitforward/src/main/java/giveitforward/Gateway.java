@@ -25,7 +25,7 @@ public class Gateway {
     @Produces(MediaType.TEXT_PLAIN)
     public Response newUser(@PathParam("param1") String username, @PathParam("param2") String password) {
 
-        ManageUser.loginUser(username, password);
-        return Response.status(200).entity(username + " : " + password).build();
+        boolean result = ManageUser.loginUser(username, password);
+        return Response.status(200).entity(username + " : " + password + " : " + result).build();
     }
 }
