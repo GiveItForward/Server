@@ -10,20 +10,10 @@ import org.hibernate.criterion.Restrictions;
 
 public class TestUserRequestPair {
 
-    private static SessionFactory factory;
-    private static AnnotationConfiguration config;
 
     public static void main(String[] args) {
 
-        try {
-            config = new AnnotationConfiguration().configure();
-            factory = config.buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
-
-        Session session = factory.openSession();
+        Session session = SetupTests.getFactory().openSession();
         Transaction t = null;
         try {
             t = session.beginTransaction();

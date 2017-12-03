@@ -1,5 +1,7 @@
 package giveitforward;
 
+import giveitforward.tests.ManageUser;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
