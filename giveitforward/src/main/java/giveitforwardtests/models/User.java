@@ -8,7 +8,8 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uid_generator")
+    @SequenceGenerator(name="uid_generator", sequenceName = "users_uid_seq")
     @Column(name = "uid", unique = true, nullable = false)
     private Integer uid;
 
@@ -35,9 +36,10 @@ public class User {
 
     public User(){};
 
-    public User(Integer uid, String email, String password, boolean isAdmin, Integer oid, String photo, String bio) {
-        this.uid = uid;
+    public User(/*Integer uid,*/ String email, String username, String password, boolean isAdmin, Integer oid, String photo, String bio) {
+        //this.uid = uid;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.isadmin = isAdmin;
         this.oid = oid;

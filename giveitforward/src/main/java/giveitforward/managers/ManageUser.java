@@ -12,12 +12,17 @@ public class ManageUser {
     private static SessionFactory factory;
 
     public static void main(String[] args) {
-        String email = "boo@email.com";
-        String password = "pswd";
+        String email = "kaz@email.com";
+        String username = "kaz";
+        String password = "kaan";
+        boolean isAdmin = false;
+        Integer oid = null;
+        String photo = null;
+        String bio = "you don't deserve this big toblerone";
 
         ManageUser mu = new ManageUser();
 
-        mu.loginUser(email, password);
+        mu.signupUser(email, username, password, isAdmin, oid, photo, bio);
     }
     public ManageUser(){
         try {
@@ -72,7 +77,28 @@ public class ManageUser {
         }
     }
 
-    public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer iod, String photo, String bio){
+    public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer oid, String photo, String bio){
+        Session session = factory.openSession();
+        Transaction t = null;
+
+        try {
+            t = session.beginTransaction();
+
+            User u = new User(email, username, password, isAdmin, oid, photo, bio);
+            session.save(u);
+            session.flush();
+            t.commit();
+        }
+        catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return false;
+        }
+
+        System.out.println("successfully added user");
         return true;
     }
 }
