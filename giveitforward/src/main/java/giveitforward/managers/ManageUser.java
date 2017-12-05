@@ -16,13 +16,13 @@ public class ManageUser {
         String username = "archangelo";
         String password = "east_side_gentlemen";
         boolean isAdmin = false;
-        Integer oid = null;
+        Integer orgId = null;
         String photo = null;
         String bio = "say we are homies";
 
         ManageUser mu = new ManageUser();
 
-        mu.signupUser(email, username, password, isAdmin, oid, photo, bio);
+        mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
     }
     public ManageUser(){
         try {
@@ -77,14 +77,14 @@ public class ManageUser {
         }
     }
 
-    public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer oid, String photo, String bio) {
+    public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
         Session session = factory.openSession();
         Transaction t = null;
 
         try {
             t = session.beginTransaction();
 
-            User u = new User(email, username, password, isAdmin, oid, photo, bio);
+            User u = new User(email, username, password, isAdmin, orgId, photo, bio);
             session.save(u);
             session.flush();
             t.commit();
