@@ -77,6 +77,7 @@ public class ManageUser {
         }
     }
 
+<<<<<<< HEAD
     public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer oid, String photo, String bio){
         Session session = factory.openSession();
         Transaction t = null;
@@ -99,6 +100,10 @@ public class ManageUser {
         }
 
         System.out.println("successfully added user");
+=======
+    // TODO - add a new user to the database
+    public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer iod, String photo, String bio){
+>>>>>>> 278c6fdaeec45b85ead79ce797989d15aa4e5952
         return true;
     }
 }

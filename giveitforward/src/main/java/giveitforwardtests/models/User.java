@@ -23,10 +23,10 @@ public class User {
     private String password;
 
     @Column(name = "isadmin")
-    private boolean isadmin;
+    private boolean isAdmin;
 
     @Column(name = "oid")
-    private Integer oid;
+    private Integer orgId;
 
     @Column(name = "photo")
     private String photo;
@@ -36,13 +36,18 @@ public class User {
 
     public User(){};
 
+<<<<<<< HEAD
     public User(/*Integer uid,*/ String email, String username, String password, boolean isAdmin, Integer oid, String photo, String bio) {
         //this.uid = uid;
+=======
+    public User(Integer uid, String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
+        this.uid = uid;
+>>>>>>> 278c6fdaeec45b85ead79ce797989d15aa4e5952
         this.email = email;
         this.username = username;
         this.password = password;
-        this.isadmin = isAdmin;
-        this.oid = oid;
+        this.isAdmin = isAdmin;
+        this.orgId = orgId;
         this.photo = photo;
         this.bio = bio;
     }
@@ -80,19 +85,19 @@ public class User {
     }
 
     public boolean getIsAdmin() {
-        return isadmin;
+        return isAdmin;
     }
 
-    public void setIsadmin(boolean isadmin) {
-        this.isadmin = isadmin;
+    public void setIsAdmin(boolean isadmin) {
+        this.isAdmin = isadmin;
     }
 
-    public Integer getOid() {
-        return oid;
+    public Integer getOrgId() {
+        return orgId;
     }
 
-    public void setOid(Integer oid) {
-        this.oid = oid;
+    public void setOrgId(Integer oid) {
+        this.orgId = oid;
     }
 
     public String getPhoto() {
