@@ -72,6 +72,7 @@ public class ManageUser {
         }
     }
 
+    // TODO - add a new user to the database
     public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer iod, String photo, String bio){
         return true;
     }
