@@ -36,13 +36,7 @@ public class User {
 
     public User(){};
 
-<<<<<<< HEAD
-    public User(/*Integer uid,*/ String email, String username, String password, boolean isAdmin, Integer oid, String photo, String bio) {
-        //this.uid = uid;
-=======
-    public User(Integer uid, String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
-        this.uid = uid;
->>>>>>> 278c6fdaeec45b85ead79ce797989d15aa4e5952
+    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
         this.email = email;
         this.username = username;
         this.password = password;
