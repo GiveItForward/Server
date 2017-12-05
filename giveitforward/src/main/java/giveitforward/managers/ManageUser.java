@@ -10,13 +10,10 @@ import org.hibernate.criterion.Restrictions;
 
 public class ManageUser {
     private static SessionFactory factory;
-    private static AnnotationConfiguration config;
 
     public static void main(String[] args) {
         String email = "boo@email.com";
         String password = "pswd";
-
-       getSessionFactory();
 
         ManageUser mu = new ManageUser();
 
@@ -24,21 +21,14 @@ public class ManageUser {
     }
     public ManageUser(){
         try {
-            config = new AnnotationConfiguration().configure();
-            factory = config.buildSessionFactory();
-            return true;
+            factory = new AnnotationConfiguration().configure().buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("Failed to create sessionFactory object." + ex);
             throw new ExceptionInInitializerError(ex);
         }
-    };
-
-    public static boolean getSessionFactory(){
-
     }
 
-    public static boolean loginUser(String email, String password) {
-        getSessionFactory();
+    public boolean loginUser(String email, String password) {
         boolean result = false;
         Session session = factory.openSession();
         Transaction t = null;

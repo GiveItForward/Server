@@ -15,4 +15,10 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>
+            giveitforward.servlet.MyServletContextListener
+        </listener-class>
+    </listener>
+
 </web-app>

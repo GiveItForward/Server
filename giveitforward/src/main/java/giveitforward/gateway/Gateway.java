@@ -24,7 +24,8 @@ public class Gateway {
 //        String username = headers.getRequestHeader("username").get(0);
 //        String password = headers.getRequestHeader("password").get(0);
 
-        boolean result = ManageUser.loginUser(un, pw);
+        ManageUser manager = new ManageUser();
+        boolean result = manager.loginUser(un, pw);
         return Response.status(200).entity(un + " : " + pw + " : " + result).build();
     }
 }
