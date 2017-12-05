@@ -1,4 +1,4 @@
-package giveitforwardobjects;
+package giveitforwardtests.models;
 import javax.persistence.*;
 
 @Entity

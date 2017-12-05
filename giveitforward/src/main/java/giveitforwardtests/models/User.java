@@ -1,4 +1,4 @@
-package giveitforwardobjects;
+package giveitforwardtests.models;
 
 import javax.persistence.*;
 
@@ -15,6 +15,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "password")
     private String password;
 
@@ -30,6 +33,18 @@ public class User {
     @Column(name = "bio")
     private String bio;
 
+    public User(){};
+
+    public User(Integer uid, String email, String password, boolean isAdmin, Integer oid, String photo, String bio) {
+        this.uid = uid;
+        this.email = email;
+        this.password = password;
+        this.isadmin = isAdmin;
+        this.oid = oid;
+        this.photo = photo;
+        this.bio = bio;
+    }
+
     public Integer getUid() {
         return uid;
     }
@@ -44,6 +59,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

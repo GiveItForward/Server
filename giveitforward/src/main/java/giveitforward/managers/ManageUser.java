@@ -1,6 +1,6 @@
-package giveitforwardtests;
+package giveitforward.managers;
 
-import giveitforwardobjects.*;
+import giveitforwardtests.models.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,20 +16,29 @@ public class ManageUser {
         String email = "boo@email.com";
         String password = "pswd";
 
-        try {
-            config = new AnnotationConfiguration().configure();
-            factory = config.buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+       getSessionFactory();
 
         ManageUser mu = new ManageUser();
 
         mu.loginUser(email, password);
     }
+    public ManageUser(){
+        try {
+            config = new AnnotationConfiguration().configure();
+            factory = config.buildSessionFactory();
+            return true;
+        } catch (Throwable ex) {
+            System.err.println("Failed to create sessionFactory object." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    };
+
+    public static boolean getSessionFactory(){
+
+    }
 
     public static boolean loginUser(String email, String password) {
+        getSessionFactory();
         boolean result = false;
         Session session = factory.openSession();
         Transaction t = null;
