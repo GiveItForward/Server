@@ -2,7 +2,7 @@ package giveitforward.gateway;
 
 import giveitforward.managers.ManageRequest;
 import giveitforward.managers.ManageUser;
-import giveitforwardtests.models.Request;
+import giveitforward.models.Request;
 import org.json.JSONArray;
 
 import javax.ws.rs.*;

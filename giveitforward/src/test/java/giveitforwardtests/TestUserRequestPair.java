@@ -1,5 +1,7 @@
-package giveitforwardtests.models;
+package giveitforwardtests;
 
+import giveitforward.models.User;
+import giveitforward.models.UserRequestPair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

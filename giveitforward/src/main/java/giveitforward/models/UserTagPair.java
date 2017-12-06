@@ -1,4 +1,4 @@
-package giveitforwardtests.models;
+package giveitforward.models;
 
 
 import javax.persistence.*;

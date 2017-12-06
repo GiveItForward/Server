@@ -1,6 +1,6 @@
 package giveitforward.managers;
 
-import giveitforwardtests.models.Request;
+import giveitforward.models.Request;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 

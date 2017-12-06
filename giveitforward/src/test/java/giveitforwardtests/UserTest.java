@@ -1,5 +1,6 @@
-package giveitforwardtests.models;
+package giveitforwardtests;
 
+import giveitforward.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

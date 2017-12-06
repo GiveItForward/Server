@@ -1,6 +1,6 @@
 package giveitforward.managers;
 
-import giveitforwardtests.models.User;
+import giveitforward.models.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

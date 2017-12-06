@@ -1,7 +1,7 @@
 package giveitforward.gateway;
 
-import giveitforwardtests.models.Request;
-import giveitforwardtests.models.User;
+import giveitforward.models.Request;
+import giveitforward.models.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

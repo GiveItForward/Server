@@ -1,4 +1,4 @@
-package giveitforwardtests.models;
+package giveitforwardtests;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;

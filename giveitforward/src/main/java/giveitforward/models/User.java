@@ -1,4 +1,4 @@
-package giveitforwardtests.models;
+package giveitforward.models;
 
 import javax.persistence.*;
 
@@ -33,6 +33,10 @@ public class User {
 
     @Column(name = "bio")
     private String bio;
+
+    public User(){
+            
+    }
 
     public User(Integer uid, String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
         this.uid = uid;

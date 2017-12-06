@@ -14,15 +14,15 @@
         <property name="show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
         <!--<mapping resource = "Tag.hbm.xml"/>-->
-        <mapping class="giveitforwardtests.models.User"/>
-        <mapping class="giveitforwardtests.models.Notification"/>
-        <mapping class="giveitforwardtests.models.Organization"/>
-        <mapping class="giveitforwardtests.models.Request"/>
-        <mapping class="giveitforwardtests.models.Tag"/>
-        <mapping class="giveitforwardtests.models.ThankYou"/>
-        <mapping class="giveitforwardtests.models.UserRequestPair"/>
-        <mapping class="giveitforwardtests.models.UserTagPair"/>
-        <mapping class="giveitforwardtests.models.ElevatedUser"/>
+        <mapping class="giveitforward.models.User"/>
+        <mapping class="giveitforward.models.Notification"/>
+        <mapping class="giveitforward.models.Organization"/>
+        <mapping class="giveitforward.models.Request"/>
+        <mapping class="giveitforward.models.Tag"/>
+        <mapping class="giveitforward.models.ThankYou"/>
+        <mapping class="giveitforward.models.UserRequestPair"/>
+        <mapping class="giveitforward.models.UserTagPair"/>
+        <mapping class="giveitforward.models.ElevatedUser"/>
     </session-factory>
 </hibernate-configuration>
 

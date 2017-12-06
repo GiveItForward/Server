@@ -1,5 +1,6 @@
-package giveitforwardtests.models;
+package giveitforwardtests;
 
+import giveitforward.models.Tag;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;

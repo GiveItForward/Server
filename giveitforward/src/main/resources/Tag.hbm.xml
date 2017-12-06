@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name = "giveitforwardtests.models.Tag" table = "tags">
+    <class name = "giveitforward.models.Tag" table = "tags">
 
         <id name = "uid" type = "int" column = "uid">
             <generator class="native"/>
