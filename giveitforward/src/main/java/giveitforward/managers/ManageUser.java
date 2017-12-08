@@ -8,10 +8,12 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
-public class ManageUser {
+public class ManageUser
+{
     private static SessionFactory factory;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         String email = "archangelo@email.com";
         String username = "archangelo";
         String password = "east_side_gentlemen";
@@ -24,80 +26,100 @@ public class ManageUser {
 
         mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
     }
-    public ManageUser(){
-        try {
+
+    public ManageUser()
+    {
+        try
+        {
             factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
+        } catch (Throwable ex)
+        {
             System.err.println("Failed to create sessionFactory object." + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
 
-    public boolean loginUser(String email, String password) {
+    public User loginUser(String email, String password)
+    {
         boolean result = false;
         Session session = factory.openSession();
         Transaction t = null;
+        User u = null;
 
-        try {
+        try
+        {
             t = session.beginTransaction();
 
             Criteria criteria = session.createCriteria(User.class);
             criteria.add(Restrictions.eq("email", email));
 
-            User u = (User) criteria.uniqueResult();
+            u = (User) criteria.uniqueResult();
 
-            if (u == null) {
+            if (u == null)
+            {
                 System.out.println("USER DOESN'T EXIST");
-            }
-            else {
+            } else
+            {
                 System.out.println("Email: " + u.getEmail());
                 String pword = u.getPassword();
                 System.out.println("Password: " + pword);
 
-                if (pword.equals(password)) {
+                if (pword.equals(password))
+                {
                     System.out.println("Logged in!");
-                    result = true;
-                }
-                else {
+                    return u;
+                } else
+                {
                     System.out.println("Passwords don't match!");
                 }
             }
             t.commit();
-        }
-        catch (Exception e){
-            if (t != null) {
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
                 t.rollback();
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-        }
-        finally {
+        } finally
+        {
             session.close();
-            return result;
+            factory.close();
+            return u;
         }
     }
 
-    public boolean signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
+    public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
+    {
         Session session = factory.openSession();
         Transaction t = null;
+        User u = null;
 
-        try {
+        try
+        {
             t = session.beginTransaction();
 
-            User u = new User(email, username, password, isAdmin, orgId, photo, bio);
+            u = new User(email, username, password, isAdmin, orgId, photo, bio);
             session.save(u);
-            session.flush();
+//            session.flush();
             t.commit();
-        } catch (Exception e) {
-            if (t != null) {
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
                 t.rollback();
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-            return false;
+            return u;
+        } finally
+        {
+            session.close();
+            factory.close();
         }
 
         System.out.println("successfully added user");
-        return true;
+        return u;
     }
 }

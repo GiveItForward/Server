@@ -1,9 +1,15 @@
 package giveitforward.managers;
 
 import giveitforward.models.Request;
+import giveitforward.models.User;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Restrictions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageRequest {
@@ -23,6 +29,32 @@ public class ManageRequest {
 
     //TODO - get all requests from the database
     public List<Request> getAllRequests() {
-        return null;
+
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<Request> r = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            String s = "from Request";
+            r = (List<Request>) session.createQuery(s).list();
+
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            return r;
+        }
     }
 }
