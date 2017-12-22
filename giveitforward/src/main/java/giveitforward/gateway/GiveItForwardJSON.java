@@ -16,7 +16,6 @@ public class GiveItForwardJSON
         object.put("uid", user.getUid());
         object.put("email", user.getEmail());
         object.put("username", user.getUsername());
-        object.put("password", user.getPassword());
         object.put("isAdmin", user.getIsAdmin());
         object.put("orgId", user.getOrgId());
         object.put("photo", user.getPhoto());

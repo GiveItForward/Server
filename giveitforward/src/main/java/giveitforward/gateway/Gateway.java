@@ -19,19 +19,18 @@ public class Gateway
     @Produces(MediaType.TEXT_PLAIN)
     public Response test()
     {
-
         return Response.status(200).entity("Hi! Welcome to Give It Forward.").build();
     }
 
 
     @GET
-    @Path("/login")
+    @Path("/login/{un}/{pw}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(@Context HttpHeaders headers) // @PathParam("un") String un, @PathParam("pw") String pw
+    public Response userLogin(@Context HttpHeaders headers, @PathParam("un") String username, @PathParam("pw") String password)
     {
 
-        String username = headers.getRequestHeader("username").get(0);
-        String password = headers.getRequestHeader("password").get(0);
+//        String username = headers.getRequestHeader("username").get(0);
+//        String password = headers.getRequestHeader("password").get(0);
 
         ManageUser manager = new ManageUser();
         User userResult = manager.loginUser(username, password);
@@ -39,10 +38,20 @@ public class Gateway
         if (userResult != null)
         {
             JSONObject jsonUser = GiveItForwardJSON.writeUserToJSON(userResult);
-            return Response.status(200).entity("Logged in user : true\n\n" + jsonUser).build();
+
+            return Response.ok() //200
+                    .entity(jsonUser.toString())
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+
         } else
         {
-            return Response.status(200).entity("Logged in user : false").build();
+            return Response.status(401)
+                    .entity("Logged in user : false")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
         }
     }
 
@@ -79,10 +88,18 @@ public class Gateway
         User userResult = manager.signupUser(email, username, password, isAdmin, iod, photo, bio);
 
         if(userResult == null){
-            return Response.status(200).entity("Created user : false").build();
+            return Response.ok()
+                    .entity("Created user : false")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
         } else {
             JSONObject userJson = GiveItForwardJSON.writeUserToJSON(userResult);
-            return Response.status(200).entity("Result of creating user true\n\n: " + userJson).build();
+            return Response.status(401)
+                    .entity("Result of creating user true\n\n: " + userJson)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
         }
 
     }
@@ -99,6 +116,10 @@ public class Gateway
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
 
-        return Response.status(200).entity(requestJSON.toString()).build();
+        return Response.ok()
+                .entity(requestJSON.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
     }
 }
