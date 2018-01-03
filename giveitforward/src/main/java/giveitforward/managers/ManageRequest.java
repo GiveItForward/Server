@@ -23,8 +23,6 @@ public class ManageRequest {
             System.err.println("Failed to create sessionFactory object." + ex);
             throw new ExceptionInInitializerError(ex);
         }
-
-
     }
 
     //TODO - get all requests from the database

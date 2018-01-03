@@ -1,5 +1,6 @@
 package giveitforward.models;
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "request")
@@ -18,6 +19,9 @@ public class Request {
 
     @Column(name = "image")
     private String image;
+
+    @Column(name = "requesttime")
+    private Timestamp requesttime;
 
     public int getRid() {
         return rid;
@@ -49,5 +53,13 @@ public class Request {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Timestamp getRequesttime() {
+        return requesttime;
+    }
+
+    public void setRequesttime(Timestamp requesttime) {
+        this.requesttime = requesttime;
     }
 }
