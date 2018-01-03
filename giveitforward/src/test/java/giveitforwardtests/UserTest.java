@@ -29,7 +29,7 @@ public class UserTest {
     @Test
     public void loginUser() throws Exception {
         session.beginTransaction();
-        session.save( new User("cupcake@gmail.com", "cupcake", "pwd", false, 0, null, null) );
+        session.save( new User("cupcake@gmail.com", "cupcake", "pwd", false, 0, null, null, null) );
         session.getTransaction().commit();
         session.close();
     }

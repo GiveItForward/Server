@@ -1,6 +1,8 @@
 package giveitforward.models;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 //@Table(name = "user", schema = "postgres")
@@ -34,6 +36,9 @@ public class User {
     @Column(name = "bio")
     private String bio;
 
+    @Column(name = "signupdate")
+    private Timestamp signupdate;
+
     public User(){
             
     }
@@ -49,7 +54,7 @@ public class User {
         this.bio = bio;
     }
 
-    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
+    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, Timestamp signupdate) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -57,6 +62,7 @@ public class User {
         this.orgId = orgId;
         this.photo = photo;
         this.bio = bio;
+        this.signupdate = signupdate;
     }
 
     public Integer getUid() {
@@ -121,5 +127,13 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public Timestamp getSignupdate() {
+        return signupdate;
+    }
+
+    public void setSignupdate(Timestamp signupdate) {
+        this.signupdate = signupdate;
     }
 }

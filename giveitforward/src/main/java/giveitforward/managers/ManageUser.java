@@ -8,19 +8,21 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
+import java.sql.Timestamp;
+
 public class ManageUser
 {
     private static SessionFactory factory;
 
     public static void main(String[] args)
     {
-        String email = "archangelo@email.com";
-        String username = "archangelo";
-        String password = "east_side_gentlemen";
+        String email = "single_mama@email.com";
+        String username = "single_mama";
+        String password = "kids_name";
         boolean isAdmin = false;
         Integer orgId = null;
         String photo = null;
-        String bio = "say we are homies";
+        String bio = "whats up";
 
         ManageUser mu = new ManageUser();
 
@@ -100,9 +102,9 @@ public class ManageUser
         {
             t = session.beginTransaction();
 
-            u = new User(email, username, password, isAdmin, orgId, photo, bio);
+            u = new User(email, username, password, isAdmin, orgId, photo, bio, new Timestamp(System.currentTimeMillis()));
             session.save(u);
-//            session.flush();
+            session.flush();
             t.commit();
         } catch (Exception e)
         {
