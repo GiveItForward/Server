@@ -23,6 +23,19 @@ public class Organization {
     @Column(name = "phone_number")
     private String phone_number;
 
+    public Organization(){}
+
+
+    public Organization(String name, String email, String website, String phone_number)
+    {
+        this.name = name;
+        this.email = email;
+        this.website = website;
+        this.phone_number = phone_number;
+    }
+
+
+
     public int getOid() {
         return oid;
     }
