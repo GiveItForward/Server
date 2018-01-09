@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "organization")
@@ -23,6 +24,12 @@ public class Organization {
     @Column(name = "phone_number")
     private String phone_number;
 
+    @Column(name = "approveddate")
+    private Timestamp approveddate;
+
+    @Column(name = "inactivedate")
+    private Timestamp inactivedate;
+
     public Organization(){}
 
 
@@ -33,8 +40,6 @@ public class Organization {
         this.website = website;
         this.phone_number = phone_number;
     }
-
-
 
     public int getOid() {
         return oid;
@@ -74,5 +79,21 @@ public class Organization {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
+    }
+
+    public Timestamp getApproveddate() {
+        return approveddate;
+    }
+
+    public void setApproveddate(Timestamp approveddate) {
+        this.approveddate = approveddate;
+    }
+
+    public Timestamp getInactivedate() {
+        return inactivedate;
+    }
+
+    public void setInactivedate(Timestamp inactivedate) {
+        this.inactivedate = inactivedate;
     }
 }

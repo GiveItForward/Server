@@ -1,7 +1,6 @@
 package giveitforward.models;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Entity
@@ -38,6 +37,9 @@ public class User {
 
     @Column(name = "signupdate")
     private Timestamp signupdate;
+
+    @Column(name = "inactivedate")
+    private Timestamp inactivedate;
 
     public User(){
             
@@ -135,5 +137,13 @@ public class User {
 
     public void setSignupdate(Timestamp signupdate) {
         this.signupdate = signupdate;
+    }
+
+    public Timestamp getInactivedatedate() {
+        return inactivedate;
+    }
+
+    public void setInactivedatedate(Timestamp signupdate) {
+        this.inactivedate = inactivedate;
     }
 }
