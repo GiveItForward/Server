@@ -11,6 +11,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class ManageOrganization
 {
@@ -43,6 +44,14 @@ public class ManageOrganization
         }
     }
 
+    /**
+     * Creates an organization with a null timestamp to represent that this organization is pending.
+     * @param name org name to be displayed.
+     * @param email org email to be displayed
+     * @param website org website to be displayed.
+     * @param phone_number
+     * @return organization which was added to the organization table.
+     */
     public Organization createOrganization(String name, String email, String website, String phone_number)
     {
         Session session = factory.openSession();
@@ -74,5 +83,42 @@ public class ManageOrganization
 
         System.out.println("successfully added organization");
         return org;
+    }
+
+    public Organization updateOrganization(int oid)
+    {
+        //TODO: implement
+        return null;
+    }
+
+    /**
+     * Adds a timestamp to the organization to mark that it has been approved.
+     * @param oid
+     * @return the org that has been approved.
+     */
+    public Organization approveOrganization(int oid)
+    {
+        //TODO: implement.
+        return null;
+    }
+
+    //TODO: is this the same as deleting an org?
+    /**
+     * Removes an organization from the organization table.
+     * @return true if the organization was successfully removed.
+     */
+    public boolean deleterganization(int oid)
+    {
+        //TODO: implement.
+        return false;
+    }
+
+    /**
+     * @return a list of all pending organizations.
+     */
+    public ArrayList<Organization> getAllPendingOrgs()
+    {
+        //TODO: implement.
+        return null;
     }
 }

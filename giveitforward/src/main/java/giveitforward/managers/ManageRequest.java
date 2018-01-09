@@ -25,6 +25,45 @@ public class ManageRequest {
         }
     }
 
+    /**
+     * Creates a new request.
+     * @return
+     */
+    public Request createRequest() {
+        //TODO: Implement
+        return null;
+    }
+
+    /**
+     * Marks a request as fulfilled.
+     * @return true if the transaction was successfully completed.
+     */
+    public boolean fulfillRequest() {
+        //TODO: Implement
+        return false;
+    }
+
+    /**
+     * Updates the request with the new information provided.
+     * @param rid
+     * @return
+     */
+    public Request updateRequest(int rid) {
+        //TODO: Implement
+        return null;
+    }
+
+    /**
+     * Deletes the request
+     * @return true if the request was successfully removed.
+     */
+    public boolean deleteRequest(int rid) {
+        //TODO: Implement
+        //TODO: did we decide not to do this? 
+        return false;
+    }
+
+
     //TODO - get all requests from the database
     public List<Request> getAllRequests() {
 
@@ -55,4 +94,6 @@ public class ManageRequest {
             return r;
         }
     }
+
+
 }
