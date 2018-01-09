@@ -72,7 +72,7 @@ public class ManageOrganization
             factory.close();
         }
 
-        System.out.println("successfully added user");
+        System.out.println("successfully added organization");
         return org;
     }
 }
