@@ -70,6 +70,12 @@ public class ManageUser {
         }
     }
 
+    /**
+     * Retrieves a user from the DB given an email and verifies the password if the user exists
+     * @param email user email attempting to log in
+     * @param password  user password attempting to be verified
+     * @return  The user object with all of their pertinent information OR null if the login was unsuccessful
+     */
     public User loginUser(String email, String password)
     {
         User u = getUserFromEmail(email);
@@ -99,6 +105,17 @@ public class ManageUser {
         }
     }
 
+    /**
+     * Attempts to add a new user to the DB with the provided information
+     * @param email     user's email (must be unique!)
+     * @param username  user's username
+     * @param password  user's password
+     * @param isAdmin   boolean whether the user is an admin or not
+     * @param orgId     orgID of associated organization is the user is signing up as an org
+     * @param photo     optional profile picture
+     * @param bio       short string of information about the user
+     * @return  The user object after being successfully signed up OR null if sign up was unsuccessful
+     */
     public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
     {
         Session session = factory.openSession();
@@ -132,7 +149,12 @@ public class ManageUser {
         return u;
     }
 
-    public boolean deactivateUser(String email)
+    /**
+     *  Sets the user's deactivation time to the current time - signifying that this user is deactivated
+     * @param email user's email to be deactivated
+     * @return  the updated user object
+     */
+    public User deactivateUser(String email)
     {
         User u = getUserFromEmail(email);
 
@@ -156,7 +178,7 @@ public class ManageUser {
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-            return false;
+            return null;
         } finally
         {
             session.close();
@@ -164,6 +186,6 @@ public class ManageUser {
         }
 
         System.out.println("successfully deactivated user");
-        return true;
+        return u;
     }
 }
