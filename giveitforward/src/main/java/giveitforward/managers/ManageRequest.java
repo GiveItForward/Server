@@ -59,7 +59,7 @@ public class ManageRequest {
      */
     public boolean deleteRequest(int rid) {
         //TODO: Implement
-        //TODO: did we decide not to do this? 
+        //TODO: did we decide not to do this?
         return false;
     }
 
