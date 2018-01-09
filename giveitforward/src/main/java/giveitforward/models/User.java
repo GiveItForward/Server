@@ -143,7 +143,7 @@ public class User {
         return inactivedate;
     }
 
-    public void setInactivedatedate(Timestamp signupdate) {
+    public void setInactivedatedate(Timestamp inactivedate) {
         this.inactivedate = inactivedate;
     }
 }

@@ -25,7 +25,8 @@ public class ManageUser {
         ManageUser mu = new ManageUser();
 
         //mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
-        mu.loginUser("boo@email.com", "pswd");
+        //mu.loginUser("boo@email.com", "pswd");
+        mu.deactivateUser("boo@email.com");
     }
 
     public ManageUser() {
@@ -76,6 +77,12 @@ public class ManageUser {
         if (u == null)
         {
             System.out.println("USER DOESN'T EXIST");
+            return null;
+        }
+        else if (u.getInactivedatedate() != null)
+        {
+            System.out.println("USER HAS BEEN DEACTIVATED");
+            return null;
         }
         else {
             System.out.println("Email: " + u.getEmail());
@@ -90,7 +97,6 @@ public class ManageUser {
                 return null;
             }
         }
-        return u;
     }
 
     public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
@@ -130,7 +136,34 @@ public class ManageUser {
     {
         User u = getUserFromEmail(email);
 
-        //u.setInactivedatedate();
-        return false;
+        u.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
+
+        Session session = factory.openSession();
+        Transaction t = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            session.update(u);
+            session.flush();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return false;
+        } finally
+        {
+            session.close();
+            factory.close();
+        }
+
+        System.out.println("successfully deactivated user");
+        return true;
     }
 }
