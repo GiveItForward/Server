@@ -1,13 +1,15 @@
 package giveitforward.managers;
 
 import giveitforward.models.Tag;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.transform.ResultTransformer;
+import org.hibernate.type.Type;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
 
 public class ManageTag {
 
@@ -17,7 +19,8 @@ public class ManageTag {
 
         ManageTag mt = new ManageTag();
 
-        mt.updateTag(3, "LGBT");
+        List<Tag> l = mt.getAllTagsByUID(2);
+//        List<Tag> l = mt.getAllTags();
     }
 
     public ManageTag(){
@@ -126,6 +129,76 @@ public class ManageTag {
         {
             session.close();
             factory.close();
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<Tag> getAllTags() {
+
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<Tag> r = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            String s = "from Tag";
+            r = (List<Tag>) session.createQuery(s).list();
+
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            return r;
+        }
+    }
+
+    /**
+     * Gets all tags from the DB - no particular order
+     * @return
+     */
+    public List<Tag> getAllTagsByUID(int uid) {
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<Tag> allTags = null;
+
+        try
+        {
+            String q = "select t.tid, t.tagname from Tag t join UserTagPair u on t.tid = u.tid where u.uid = :id";
+            Query query = session.createQuery(q);
+            query.setParameter("id", uid);
+
+            t = session.beginTransaction();
+
+            allTags = (List<Tag>) session.createQuery(query.toString()).list();
+
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            return allTags;
         }
     }
 }

@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "tag")
@@ -35,4 +36,5 @@ public class Tag {
     public void setTag(String tagname) {
         this.tagname = tagname;
     }
+
 }
