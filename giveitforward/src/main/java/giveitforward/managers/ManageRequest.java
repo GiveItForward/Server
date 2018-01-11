@@ -66,7 +66,27 @@ public class ManageRequest {
 
     //TODO - get all requests from the database
     public List<Request> getAllRequests() {
+        return makeQuery("SELECT * FROM request;");
+    }
 
+    //TODO - get all requests from the database
+    public List<Request> getRequestsFilterByDonateUid(String dUid) {
+        return makeQuery("SELECT r.* FROM request r, user_request_pair upr WHERE r.rid = upr.rid AND " +
+            "upr.uid_donate = " + dUid + ";");
+    }
+
+    /**
+     *
+     * @param rUid
+     * @return
+     */
+    public List<Request> getRequestsFilterByRequestUid(String rUid) {
+
+        return makeQuery("SELECT r.* FROM request r, user_request_pair upr WHERE r.rid = upr.rid AND " +
+                "upr.uid_request = " + rUid + ";");
+    }
+
+    private List<Request> makeQuery(String query) {
         Session session = factory.openSession();
         Transaction t = null;
         List<Request> r = null;
@@ -74,9 +94,7 @@ public class ManageRequest {
         try
         {
             t = session.beginTransaction();
-
-            String s = "from Request";
-            r = (List<Request>) session.createQuery(s).list();
+            r = (List<Request>) session.createSQLQuery(query).list();
 
             t.commit();
         } catch (Exception e)
@@ -94,6 +112,4 @@ public class ManageRequest {
             return r;
         }
     }
-
-
 }

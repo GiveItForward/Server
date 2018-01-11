@@ -106,13 +106,52 @@ public class Gateway
 
 
     @GET
-    @Path("/home")
+    @Path("/requests")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRequestFeed(@Context HttpHeaders headers)
     {
 
         ManageRequest manager = new ManageRequest();
         List<Request> requests = manager.getAllRequests();
+
+        JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
+
+        return Response.ok()
+                .entity(requestJSON.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+    @GET
+    @Path("/requests/donateuid")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRequestFeedFilterByDonateUid(@Context HttpHeaders headers)
+    {
+
+        ManageRequest manager = new ManageRequest();
+
+        String dUid = headers.getRequestHeader("Uid").get(0);
+        List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
+
+        JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
+
+        return Response.ok()
+                .entity(requestJSON.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+    @GET
+    @Path("/requests/requestuid")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRequestFeedFilterByRequestUid(@Context HttpHeaders headers)
+    {
+
+        ManageRequest manager = new ManageRequest();
+        String rUid = headers.getRequestHeader("Uid").get(0);
+        List<Request> requests = manager.getRequestsFilterByRequestUid(rUid);
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
 

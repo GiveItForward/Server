@@ -121,4 +121,13 @@ public class ManageOrganization
         //TODO: implement.
         return null;
     }
+
+    /**
+     * @return a list of all non-pending organizations.
+     */
+    public ArrayList<Organization> getAllOrgs()
+    {
+        //TODO: implement.
+        return null;
+    }
 }
