@@ -133,8 +133,8 @@ public class ManageTag {
     }
 
     /**
-     *
-     * @return
+     * Gets all possible tags from the DB
+     * @return a list of tags
      */
     public List<Tag> getAllTags() {
 
@@ -167,8 +167,9 @@ public class ManageTag {
     }
 
     /**
-     * Gets all tags from the DB - no particular order
-     * @return
+     * Gets all tags associated with a certain user
+     * @param uid the uid of the specific user
+     * @return a list of tags
      */
     public List<Tag> getAllTagsByUID(int uid) {
         Session session = factory.openSession();
