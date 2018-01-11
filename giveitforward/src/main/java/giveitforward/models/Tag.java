@@ -11,11 +11,13 @@ public class Tag {
     @Column(name = "tid", unique = true, nullable = false)
     private int tid;
 
-    @Column(name = "tag")
-    private String tag;
+    @Column(name = "tagname")
+    private String tagname;
 
-    public Tag(String _tag) {
-        tag = _tag;
+    public Tag() {}
+
+    public Tag(String _tagname) {
+        tagname = _tagname;
     }
 
     public int getTid() {
@@ -26,11 +28,11 @@ public class Tag {
         this.tid = tid;
     }
 
-    public String getTag() {
-        return tag;
+    public String getTagame() {
+        return tagname;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTag(String tagname) {
+        this.tagname = tagname;
     }
 }
