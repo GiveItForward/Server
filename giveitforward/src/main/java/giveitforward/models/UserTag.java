@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "tag")
@@ -18,33 +19,33 @@ public class UserTag {
     @Column(name = "tag")
     private String tag;
 
-    public UserTag(String tag) {
-        this.tag = tag;
+    public UserTag(String tagname) {
+        this.tagname = tagname;
     }
 
     public UserTag() { }
 
-    public int getTid() {
+    public int getUserTid() {
         return tid;
     }
 
-    public void setTid(int tid) {
+    public void setUserTid(int tid) {
         this.tid = tid;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getTagname() {
+    public String getUserTagame() {
         return tagname;
     }
 
-    public void setTagname(String tagname) {
+    public void setUserTag(String tagname) {
+        this.tagname = tagname;
+    }
+
+    public String getUserTagname() {
+        return tagname;
+    }
+
+    public void setUserTagname(String tagname) {
         this.tagname = tagname;
     }
 }

@@ -24,27 +24,27 @@ public class RequestTag {
 
     public RequestTag() { }
 
-    public int getTid() {
+    public int getRequestTid() {
         return tid;
     }
 
-    public void setTid(int tid) {
+    public void setRequestTid(int tid) {
         this.tid = tid;
     }
 
-    public String getTag() {
+    public String getRequestTag() {
         return tag;
     }
 
-    public void setTag(String tag) {
+    public void setRequestTag(String tag) {
         this.tag = tag;
     }
 
-    public String getTagname() {
+    public String getRequestTagname() {
         return tagname;
     }
 
-    public void setTagname(String tagname) {
+    public void setRequestTagname(String tagname) {
         this.tagname = tagname;
     }
 }

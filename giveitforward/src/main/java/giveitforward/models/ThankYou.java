@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "thank_you")
@@ -18,6 +19,15 @@ public class ThankYou {
 
     @Column(name = "image")
     private String image;
+
+    @Column(name = "date")
+    private Timestamp date;
+
+    public ThankYou(int rid, String note, String image) {
+        this.rid = rid;
+        this.note = note;
+        this.image = image;
+    }
 
     public Integer getRid() {
         return rid;
@@ -41,5 +51,13 @@ public class ThankYou {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 }
