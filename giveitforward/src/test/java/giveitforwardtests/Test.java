@@ -1,6 +1,6 @@
 package giveitforwardtests;
 
-import giveitforward.models.Tag;
+import giveitforward.models.UserTag;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -12,7 +12,7 @@ public class Test {
         Transaction t = null;
         try {
             t = session.beginTransaction();
-            Tag t1 = new Tag("yay");
+            UserTag t1 = new UserTag("yay");
             session.save(t1);
             session.flush();
             t.commit();

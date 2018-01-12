@@ -3,46 +3,48 @@ package giveitforward.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "request_tag")
+@Table(name = "tag")
 public class RequestTag {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rid", unique = true, nullable = false)
-    private int rid;
+    @Column(name = "tid", unique = true, nullable = false)
+    private int tid;
 
-    @Column(name = "tag1")
-    private String tag1;
+    @Column(name = "tagname")
+    private String tagname;
 
-    @Column(name = "tag2")
-    private String tag2;
+    @Column(name = "tag")
+    private String tag;
 
-    public RequestTag (String _tag1, String _tag2) {
-        tag1 = _tag1;
-        tag2 = _tag2;
+    public RequestTag(String tag) {
+        this.tag = tag;
     }
 
-    public int getRid() {
-        return rid;
+    public RequestTag() { }
+
+    public int getTid() {
+        return tid;
     }
 
-    public void setRid(int rid) {
-        this.rid = rid;
+    public void setTid(int tid) {
+        this.tid = tid;
     }
 
-    public String getTag1() {
-        return tag1;
+    public String getTag() {
+        return tag;
     }
 
-    public void setTag1(String tag1) {
-        this.tag1 = tag1;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
-    public String getTag2() {
-        return tag2;
+    public String getTagname() {
+        return tagname;
     }
 
-    public void setTag2(String tag2) {
-        this.tag2 = tag2;
+    public void setTagname(String tagname) {
+        this.tagname = tagname;
     }
 }

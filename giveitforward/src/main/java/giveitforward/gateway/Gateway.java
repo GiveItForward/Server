@@ -24,13 +24,13 @@ public class Gateway
 
 
     @GET
-    @Path("/login/{un}/{pw}")
+    @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(@Context HttpHeaders headers, @PathParam("un") String username, @PathParam("pw") String password)
+    public Response userLogin(@Context HttpHeaders headers)
     {
 
-//        String username = headers.getRequestHeader("username").get(0);
-//        String password = headers.getRequestHeader("password").get(0);
+        String username = headers.getRequestHeader("username").get(0);
+        String password = headers.getRequestHeader("password").get(0);
 
         ManageUser manager = new ManageUser();
         User userResult = manager.loginUser(username, password);

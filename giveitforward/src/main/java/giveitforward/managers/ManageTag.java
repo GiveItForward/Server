@@ -1,6 +1,6 @@
 package giveitforward.managers;
 
-import giveitforward.models.Tag;
+import giveitforward.models.UserTag;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 
@@ -21,7 +21,7 @@ public class ManageTag {
      * Creates a new tag.
      * @return
      */
-    public Tag createTag() {
+    public UserTag createTag() {
         //TODO: Implement
         return null;
     }
@@ -30,7 +30,7 @@ public class ManageTag {
      * Updates the tag with the new information provided.
      * @return
      */
-    public Tag updateTag(int tid) {
+    public UserTag updateTag(int tid) {
         //TODO: Implement
         return null;
     }
