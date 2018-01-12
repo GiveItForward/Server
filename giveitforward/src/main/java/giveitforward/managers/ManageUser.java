@@ -38,7 +38,7 @@ public class ManageUser {
         }
     }
 
-    public User getUserFromEmail(String email)
+    private User getUserFromEmail(String email)
     {
         Session session = factory.openSession();
         Transaction t = null;

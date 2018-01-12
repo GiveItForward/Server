@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,8 +17,8 @@ public class UserTag {
     @Column(name = "tagname")
     private String tagname;
 
-    @Column(name = "tag")
-    private String tag;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<UserTagPair> userpairs;
 
     public UserTag(String tagname) {
         this.tagname = tagname;
@@ -47,5 +48,13 @@ public class UserTag {
 
     public void setUserTagname(String tagname) {
         this.tagname = tagname;
+    }
+
+    public List<UserTagPair> getUserpairs() {
+        return userpairs;
+    }
+
+    public void setUserpairs(List<UserTagPair> userpairs) {
+        this.userpairs = userpairs;
     }
 }

@@ -16,8 +16,7 @@ public class ManageUserTag {
 
         ManageUserTag mt = new ManageUserTag();
 
-        List<UserTag> l = mt.getAllTagsByUID(2);
-//        List<Tag> l = mt.getAllTags();
+        List<String> l = mt.getAllTagsByUID(2);
     }
 
     public ManageUserTag(){
@@ -168,20 +167,17 @@ public class ManageUserTag {
      * @param uid the uid of the specific user
      * @return a list of tags
      */
-    public List<UserTag> getAllTagsByUID(int uid) {
+    public List<String> getAllTagsByUID(int uid) {
         Session session = factory.openSession();
         Transaction t = null;
-        List<UserTag> allTags = null;
+        List<String> allTags = null;
 
         try
         {
-            String q = "select t.tid, t.tagname from Tag t join UserTagPair u on t.tid = u.tid where u.uid = :id";
-            Query query = session.createQuery(q);
-            query.setParameter("id", uid);
-
             t = session.beginTransaction();
 
-            allTags = (List<UserTag>) session.createQuery(query.toString()).list();
+            String q = "select t.tagname from UserTagPair as p join p.id.tagid as t where p.id.userid = :id";
+            allTags = session.createQuery(q).setInteger("id", uid).list();
 
             t.commit();
         } catch (Exception e)

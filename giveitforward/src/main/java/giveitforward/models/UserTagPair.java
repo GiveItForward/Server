@@ -1,6 +1,5 @@
 package giveitforward.models;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
@@ -16,17 +15,16 @@ public class UserTagPair {
     private Time time;
 
     @Column(name = "verified_by")
-    private int verifiedBy;
-
+    private Integer verifiedBy;
 
     public UidTid getId() {
         return id;
     }
 
-    public void setId(Integer uid, Integer tid) {
+    public void setId(User uid, UserTag tag) {
         id = new UidTid();
-        id.setTid(tid);
-        id.setUid(uid);
+        id.setTagid(tag);
+        id.setUserid(uid);
     }
 
 
@@ -47,29 +45,35 @@ public class UserTagPair {
     }
 
     @Embeddable
-    class UidTid implements Serializable {
-        @Column(name = "uid")
-        private Integer uid;
+    static class UidTid implements Serializable {
 
-        @Column(name = "tid")
-        private Integer tid;
+        @ManyToOne
+        @JoinColumn(name="userid")
+        private User userid;
 
-        public Integer getUid() {
-            return uid;
+        @ManyToOne
+        @JoinColumn(name="tagid")
+        private UserTag tagid;
+
+        public UidTid() {
+            tagid = new UserTag();
+            userid = new User();
         }
 
-        public void setUid(Integer uidRequest) {
-            this.uid = uidRequest;
+        public User getUserid() {
+            return userid;
         }
 
-        public Integer getTid() {
-            return tid;
+        public void setUserid(User uidRequest) {
+            this.userid = uidRequest;
         }
 
-        public void setTid(Integer rid) {
-            this.tid = rid;
+        public UserTag getTagid() {
+            return tagid;
+        }
+
+        public void setTagid(UserTag tagid) {
+            this.tagid = tagid;
         }
     }
 }
-
-
