@@ -17,8 +17,22 @@ public class ManageRequest {
 
         ManageRequest mr = new ManageRequest();
 
-        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
+        //System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
         //System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
+
+        List<Request> req = mr.getAllRequests();
+
+//        for(Object r : req){
+//
+//            System.out.println(r.getClass());
+//        }
+
+        for(Request r : mr.getRequestsFilterByRequestUid("1")){
+            System.out.println(r.asString());
+        }
+
+        //System.out.println("request filter by duid: " + mr.getRequestsFilterByDonateUid("4"));
+
     }
 
     public ManageRequest(){
@@ -71,27 +85,6 @@ public class ManageRequest {
 
     //TODO - get all requests from the database
     public List<Request> getAllRequests() {
-        return makeQuery("SELECT * FROM request;");
-    }
-
-    //TODO - get all requests from the database
-    public List<Request> getRequestsFilterByDonateUid(String dUid) {
-        return makeQuery("SELECT r.* FROM request r, user_request_pair upr WHERE r.rid = upr.rid AND " +
-            "upr.uid_donate = " + dUid + ";");
-    }
-
-    /**
-     *
-     * @param rUid
-     * @return
-     */
-    public List<Request> getRequestsFilterByRequestUid(String rUid) {
-
-        return makeQuery("SELECT r.* FROM request r, user_request_pair upr WHERE r.rid = upr.rid AND " +
-                "upr.uid_request = " + rUid + ";");
-    }
-
-    private List<Request> makeQuery(String query) {
         Session session = factory.openSession();
         Transaction t = null;
         List<Request> r = null;
@@ -99,7 +92,9 @@ public class ManageRequest {
         try
         {
             t = session.beginTransaction();
-            r = (List<Request>) session.createSQLQuery(query).list();
+
+            String s = "from Request";
+            r = (List<Request>) session.createQuery(s).list();
 
             t.commit();
         } catch (Exception e)
@@ -114,6 +109,51 @@ public class ManageRequest {
         {
             session.close();
             factory.close();
+            return r;
+        }
+    }
+
+    //TODO - get all requests from the database
+    public List<Request> getRequestsFilterByDonateUid(String dUid) {
+        return makeQuery("SELECT r.* FROM request r, user_request_pair upr WHERE r.rid = upr.rid AND " +
+            "upr.uid_donate = " + dUid);
+    }
+
+    /**
+     *
+     * @param rUid
+     * @return
+     */
+    public List<Request> getRequestsFilterByRequestUid(String rUid) {
+
+        return makeQuery("SELECT r.* FROM Request r, User_Request_Pair upr WHERE r.rid = upr.rid AND " +
+                "upr.uid_request = " + rUid);
+    }
+
+    private List<Request> makeQuery(String query) {
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<Request> r = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            r = (List<Request>) session.createQuery(query).list();
+            System.out.println("type? " + r.get(0).getClass());
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            System.out.println("type? " + r.getClass());
             return r;
         }
     }

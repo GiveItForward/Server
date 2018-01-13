@@ -62,4 +62,8 @@ public class Request {
     public void setRequesttime(Timestamp requesttime) {
         this.requesttime = requesttime;
     }
+
+    public String asString() {
+        return "rid: " + this.rid + ", ammount: " + this.amount + ".";
+    }
 }
