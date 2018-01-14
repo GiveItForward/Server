@@ -2,13 +2,20 @@ package giveitforward.gateway;
 
 import giveitforward.managers.ManageRequest;
 import giveitforward.managers.ManageUser;
+import giveitforward.managers.ManageUserTag;
 import giveitforward.models.Request;
 import giveitforward.models.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/")
@@ -24,20 +31,34 @@ public class Gateway
 
 
     @GET
-    @Path("/login")
+    @Path("/login/{un}/{pw}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(@Context HttpHeaders headers)
+    public Response userLogin(@PathParam("un") String username, @PathParam("pw") String password)
     {
 
-        String username = headers.getRequestHeader("username").get(0);
-        String password = headers.getRequestHeader("password").get(0);
+//        String username = headers.getRequestHeader("username").get(0);
+//        String password = headers.getRequestHeader("password").get(0);
 
         ManageUser manager = new ManageUser();
         User userResult = manager.loginUser(username, password);
 
+        ManageUserTag tagManager = new ManageUserTag();
+        List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
+
+        int numOfDonations = manager.getNumberOfDontations(userResult.getUid());
+        int numOfFulfilledRequests = manager.getNumberOfReceivedDonations(userResult.getUid());
+
+
         if (userResult != null)
         {
             JSONObject jsonUser = GiveItForwardJSON.writeUserToJSON(userResult);
+
+            if(tags != null && !tags.isEmpty()){
+                jsonUser.put("tags", new JSONArray(tags));
+            }
+
+            jsonUser.put("numDonations", numOfDonations);
+            jsonUser.put("numFulfilledRequests", numOfFulfilledRequests);
 
             return Response.ok() //200
                     .entity(jsonUser.toString())

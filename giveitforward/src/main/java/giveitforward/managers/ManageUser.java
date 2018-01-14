@@ -188,4 +188,13 @@ public class ManageUser {
         System.out.println("successfully deactivated user");
         return u;
     }
+
+    public int getNumberOfDontations(int uid){
+//        User
+        return 0;
+    }
+
+    public int getNumberOfReceivedDonations(int uid){
+        return 0;
+    }
 }
