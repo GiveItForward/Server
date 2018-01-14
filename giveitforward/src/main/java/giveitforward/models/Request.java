@@ -64,6 +64,6 @@ public class Request {
     }
 
     public String asString() {
-        return "rid: " + this.rid + ", ammount: " + this.amount + ".";
+        return "rid: " + this.rid + ", amount: " + this.amount + ".";
     }
 }

@@ -13,26 +13,36 @@ public class ManageRequest {
 
     private static SessionFactory factory;
 
+    /**
+     * Used for quick testing.
+     */
     public static void main(String[] args) {
 
         ManageRequest mr = new ManageRequest();
 
-        //System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
-        //System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
+        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
+        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
 
         List<Request> req = mr.getAllRequests();
+        for(Request r : req){
 
-//        for(Object r : req){
-//
-//            System.out.println(r.getClass());
-//        }
-
-        for(Request r : mr.getRequestsFilterByRequestUid("1")){
             System.out.println(r.asString());
         }
 
-        //System.out.println("request filter by duid: " + mr.getRequestsFilterByDonateUid("4"));
+        for(Request r : mr.getRequestsFilterByRequestUid("1")){
+            System.out.println(r.asString());
+            /* returns
+                rid: 1, amount: 20.0.
+                rid: 3, amount: 20.0.
+             */
+         }
 
+        for(Request r : mr.getRequestsFilterByDonateUid("4")){
+            System.out.println(r.asString());
+            /* returns
+                rid: 2, amount: 35.0.
+             */
+        }
     }
 
     public ManageRequest(){
@@ -83,53 +93,64 @@ public class ManageRequest {
     }
 
 
-    //TODO - get all requests from the database
+    /**
+     * @return returns all pending requests in the DB.
+     */
     public List<Request> getAllRequests() {
-        Session session = factory.openSession();
-        Transaction t = null;
-        List<Request> r = null;
-
-        try
-        {
-            t = session.beginTransaction();
-
-            String s = "from Request";
-            r = (List<Request>) session.createQuery(s).list();
-
-            t.commit();
-        } catch (Exception e)
-        {
-            if (t != null)
-            {
-                t.rollback();
-            }
-            System.out.println("ROLLBACK");
-            e.printStackTrace();
-        } finally
-        {
-            session.close();
-            factory.close();
-            return r;
-        }
-    }
-
-    //TODO - get all requests from the database
-    public List<Request> getRequestsFilterByDonateUid(String dUid) {
-        return makeQuery("SELECT r.* FROM request r, user_request_pair upr WHERE r.rid = upr.rid AND " +
-            "upr.uid_donate = " + dUid);
+        //TODO: Fix this!
+        return makeQuery("from Request");
     }
 
     /**
-     *
+     * Queries the DB for requests fulfilled by the user with the given uid.
+     * @param dUid uid
+     * @return a list of requests fulfilled by the user with the given uid.
+     */
+    public List<Request> getRequestsFilterByDonateUid(String dUid) {
+        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
+            "upr.uidDonate = " + dUid);
+    }
+
+    /**
+     * Queries the DB for requests created by a user with the given uid.
      * @param rUid
-     * @return
+     * @return a list of requests created by a user with the given uid.
      */
     public List<Request> getRequestsFilterByRequestUid(String rUid) {
 
-        return makeQuery("SELECT r.* FROM Request r, User_Request_Pair upr WHERE r.rid = upr.rid AND " +
-                "upr.uid_request = " + rUid);
+        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
+                "upr.id.uidRequest = " + rUid);
     }
 
+    /**
+     * Gets the count of all donations of a given user
+     * @param uid - uid of user
+     * @return count of donations made, -1 if error is thrown.
+     */
+    public int getCountDonationsByUID(int uid) {
+        String queryString = "select count(*) from UserRequestPair where uid_donate = :id";
+        String paramType = "id";
+        int paramVal = uid;
+        return makeCountQuery(queryString, paramType, paramVal);
+    }
+
+    /**
+     * Gets the count of all requests made by a given user
+     * @param uid - uid of user
+     * @return count of requests made, -1 if error is thrown.
+     */
+    public int getCountRequestsByUID(int uid) {
+        String queryString = "select count(*) from UserRequestPair where uid_request = :id";
+        String paramType = "id";
+        int paramVal = uid;
+        return makeCountQuery(queryString, paramType, paramVal);
+    }
+
+
+    /**
+     * @param query HQL query to be performed.
+     * @return a list of Requests which results from the given query.
+     */
     private List<Request> makeQuery(String query) {
         Session session = factory.openSession();
         Transaction t = null;
@@ -139,7 +160,6 @@ public class ManageRequest {
         {
             t = session.beginTransaction();
             r = (List<Request>) session.createQuery(query).list();
-            System.out.println("type? " + r.get(0).getClass());
             t.commit();
         } catch (Exception e)
         {
@@ -153,50 +173,21 @@ public class ManageRequest {
         {
             session.close();
             factory.close();
-            System.out.println("type? " + r.getClass());
             return r;
         }
     }
 
     /**
-     * Gets the count of all donations of a given user
-     * @param uid - uid of user
-     * @return count of donations made, -1 if error is thrown.
+     *
+     * @param queryString hql query to be performed.
+     * @param parameterType
+     * @param parameterValue
+     * @return
      */
-    public int getCountDonationsByUID(int uid) {
+    private int makeCountQuery(String queryString, String parameterType, Object parameterValue) {
         Session session = factory.openSession();
-        Query query = session.createQuery("select count(*) from UserRequestPair where uid_donate = :id");
-        query.setParameter("id", uid);
-
-        int count = -1;
-
-        Transaction t;
-
-        try {
-            t = session.beginTransaction();
-            Object result = query.uniqueResult();
-            t.commit();
-            count = ((Long)result).intValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally
-        {
-            session.close();
-            factory.close();
-            return count;
-        }
-    }
-
-    /**
-     * Gets the count of all requests made by a given user
-     * @param uid - uid of user
-     * @return count of requests made, -1 if error is thrown.
-     */
-    public int getCountRequestsByUID(int uid) {
-        Session session = factory.openSession();
-        Query query = session.createQuery("select count(*) from UserRequestPair where uid_request = :id");
-        query.setParameter("id", uid);
+        Query query = session.createQuery(queryString);
+        query.setParameter(parameterType, parameterValue);
 
         int count = -1;
 
