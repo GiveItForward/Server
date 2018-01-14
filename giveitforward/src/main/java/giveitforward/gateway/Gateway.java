@@ -45,6 +45,9 @@ public class Gateway
         ManageUserTag tagManager = new ManageUserTag();
         List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
 
+        int numOfDonations = manager.getNumberOfDontations(userResult.getUid());
+        int numOfFulfilledRequests = manager.getNumberOfReceivedDonations(userResult.getUid());
+
 
         if (userResult != null)
         {
@@ -53,6 +56,9 @@ public class Gateway
             if(tags != null && !tags.isEmpty()){
                 jsonUser.put("tags", new JSONArray(tags));
             }
+
+            jsonUser.put("numDonations", numOfDonations);
+            jsonUser.put("numFulfilledRequests", numOfFulfilledRequests);
 
             return Response.ok() //200
                     .entity(jsonUser.toString())
