@@ -97,6 +97,32 @@ public class ManageRequest {
         return false;
     }
 
+    /**
+     * Gets the count of all donations of a given user
+     * @param uid - uid of user
+     * @return count of donations made, -1 if error is thrown.
+     */
+    public int getCountDonationsByUID(int uid) {
+        String queryString = "select count(*) from UserRequestPair where uid_donate = :id";
+        String paramType = "id";
+        int paramVal = uid;
+        return makeCountQuery(queryString, paramType, paramVal);
+    }
+
+    /**
+     * Gets the count of all requests made by a given user
+     * @param uid - uid of user
+     * @return count of requests made, -1 if error is thrown.
+     */
+    public int getCountRequestsByUID(int uid) {
+        String queryString = "select count(*) from UserRequestPair where uid_request = :id";
+        String paramType = "id";
+        int paramVal = uid;
+        return makeCountQuery(queryString, paramType, paramVal);
+    }
+
+
+    /******************************* Searches/Filters ***************************/
 
     /**
      * @return returns all pending requests in the DB.
@@ -138,30 +164,8 @@ public class ManageRequest {
                 "upr.id.uidRequest = " + rUid + " and upr.uidDonate is null");
     }
 
-    /**
-     * Gets the count of all donations of a given user
-     * @param uid - uid of user
-     * @return count of donations made, -1 if error is thrown.
-     */
-    public int getCountDonationsByUID(int uid) {
-        String queryString = "select count(*) from UserRequestPair where uid_donate = :id";
-        String paramType = "id";
-        int paramVal = uid;
-        return makeCountQuery(queryString, paramType, paramVal);
-    }
 
-    /**
-     * Gets the count of all requests made by a given user
-     * @param uid - uid of user
-     * @return count of requests made, -1 if error is thrown.
-     */
-    public int getCountRequestsByUID(int uid) {
-        String queryString = "select count(*) from UserRequestPair where uid_request = :id";
-        String paramType = "id";
-        int paramVal = uid;
-        return makeCountQuery(queryString, paramType, paramVal);
-    }
-
+    /********************************** Queries *******************************/
 
     /**
      * @param query HQL query to be performed.

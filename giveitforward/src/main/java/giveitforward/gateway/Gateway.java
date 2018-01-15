@@ -178,7 +178,7 @@ public class Gateway
 
         ManageRequest manager = new ManageRequest();
 
-        String dUid = headers.getRequestHeader("Uid").get(0);
+        String dUid = headers.getRequestHeader("uid").get(0);
         List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
@@ -197,7 +197,7 @@ public class Gateway
     {
 
         ManageRequest manager = new ManageRequest();
-        String rUid = headers.getRequestHeader("Uid").get(0);
+        String rUid = headers.getRequestHeader("uid").get(0);
         List<Request> requests = manager.getRequestsFilterByRequestUid(rUid);
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
@@ -216,7 +216,7 @@ public class Gateway
     {
 
         ManageRequest manager = new ManageRequest();
-        String rUid = headers.getRequestHeader("Uid").get(0);
+        String rUid = headers.getRequestHeader("uid").get(0);
         List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
