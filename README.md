@@ -17,25 +17,15 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 ###### Users
 
-| Path          | Headers   | Properties |
-| ------------- |-----------||-----------|
-| /signup     | username : {username} <br> password : {password} <br> email : {email} <br> \*isAdmin : {true/false}  <br> \*oid : {associated oid} <br> photo : {profile_pic} <br> bio : {text biography} | - isAdmin: true if the user will have admin privileges, false for normal users. <br> - oid: organization managed by the user, may be empty. <br> <br> - Returns all open requests as a JSONArray of requests. |
-| /login |  username : {username} <br> password : {password} | 
+| Path          | Headers   | Properties |  
+| ------------- |-----------||-----------|  
+| /signup     | username : {username} <br> password : {password} <br> email : {email} <br> \*isAdmin : {true/false}  <br> \*oid : {associated oid} <br> photo : {profile_pic} <br> bio : {text biography} | - isAdmin: true if the user will have admin privileges, false for normal users. <br> - oid: organization managed by the user, may be empty. <br> <br> - Returns all open requests as a JSONArray of requests. |  
+| /login |  username : {username} <br> password : {password} | - verifies a users credentials and logs a user into a session.
 \* indicates an optional header.
 
+###### Organizations
+| Path          | Headers   | Properties |
+| ------------- |-----------||-----------|
+| /organizations | None | - Returns a JSONArray of all approved organizations. |
 
-String username = headers.getRequestHeader("username").get(0);
-        String password = headers.getRequestHeader("password").get(0);
-        String email = headers.getRequestHeader("email").get(0);
-//        String isAdminString = headers.getRequestHeader("isAdmin").get(0);
-//        String oidString = headers.getRequestHeader("oid").get(0);
-//        String photo = headers.getRequestHeader("photo").get(0);
-        String bio = headers.getRequestHeader("bio").get(0);
-
-
-
-Text form:
-/requests  
-(No headers)  
-Returns all requests from every user as a JSONArray of requests.  
-Returns:
+### Security:
