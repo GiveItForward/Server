@@ -2,6 +2,7 @@ package giveitforward.managers;
 
 
 import giveitforward.models.Organization;
+import giveitforward.models.Request;
 import giveitforward.models.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,24 +13,34 @@ import org.hibernate.criterion.Restrictions;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ManageOrganization
 {
     private static SessionFactory factory;
 
+    /**
+     * Used for quick testing.
+     */
     public static void main(String[] args)
     {
-        String email = "single_mama@email.com";
-        String username = "single_mama";
-        String password = "kids_name";
-        boolean isAdmin = false;
-        Integer orgId = null;
-        String photo = null;
-        String bio = "whats up";
+        ManageOrganization manager = new ManageOrganization();
 
-        ManageOrganization mu = new ManageOrganization();
 
-        //mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
+        //Approved orgs
+        List<Organization> orgs = manager.getAllOrgs();
+        for(Organization o : orgs){
+
+            System.out.println(o.asString());
+        }
+
+        //Pending orgs
+        List<Organization> orgs2 = manager.getAllPendingOrgs();
+        for(Organization o : orgs2){
+
+            System.out.println(o.asString());
+        }
+
     }
 
     public ManageOrganization()
@@ -102,7 +113,6 @@ public class ManageOrganization
         return null;
     }
 
-    //TODO: is this the same as deleting an org?
     /**
      * Removes an organization from the organization table.
      * @return true if the organization was successfully removed.
@@ -116,18 +126,49 @@ public class ManageOrganization
     /**
      * @return a list of all pending organizations.
      */
-    public ArrayList<Organization> getAllPendingOrgs()
+    public List<Organization> getAllPendingOrgs()
     {
-        //TODO: implement.
-        return null;
+        return makeQuery("from Organization where approveddate is null");
     }
 
     /**
      * @return a list of all non-pending organizations.
      */
-    public ArrayList<Organization> getAllOrgs()
+    public List<Organization> getAllOrgs()
     {
-        //TODO: implement.
-        return null;
+        return makeQuery("from Organization where approveddate is not null");
+    }
+
+
+    /********************************** Queries *********************************/
+
+    /**
+     * @param query HQL query to be performed.
+     * @return a list of Requests which results from the given query.
+     */
+    private List<Organization> makeQuery(String query) {
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<Organization> orgs = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            orgs = (List<Organization>) session.createQuery(query).list();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            return orgs;
+        }
     }
 }

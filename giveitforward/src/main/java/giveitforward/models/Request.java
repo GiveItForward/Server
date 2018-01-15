@@ -63,7 +63,5 @@ public class Request {
         this.requesttime = requesttime;
     }
 
-    public String asString() {
-        return "rid: " + this.rid + ", amount: " + this.amount + ".";
-    }
+    public String asString() { return "rid: " + this.rid + ", amount: " + this.amount + "."; }
 }

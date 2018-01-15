@@ -1,8 +1,10 @@
 package giveitforward.gateway;
 
+import giveitforward.managers.ManageOrganization;
 import giveitforward.managers.ManageRequest;
 import giveitforward.managers.ManageUser;
 import giveitforward.managers.ManageUserTag;
+import giveitforward.models.Organization;
 import giveitforward.models.Request;
 import giveitforward.models.User;
 import org.json.JSONArray;
@@ -126,6 +128,30 @@ public class Gateway
     }
 
 
+    /********************************* ORG PATHS *******************************************/
+    /**
+     * Returns a list of all approved organizations.
+     */
+    @GET
+    @Path("/organizations")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrganizations(@Context HttpHeaders headers)
+    {
+
+        ManageOrganization manager = new ManageOrganization();
+        List<Organization> orgs = manager.getAllOrgs();
+
+        JSONArray orgJSON = GiveItForwardJSON.getOrgJSONCollection(orgs);
+
+        return Response.ok()
+                .entity(orgJSON.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+
+    /******************************* REQUEST PATHS *****************************************/
     @GET
     @Path("/requests")
     @Produces(MediaType.APPLICATION_JSON)

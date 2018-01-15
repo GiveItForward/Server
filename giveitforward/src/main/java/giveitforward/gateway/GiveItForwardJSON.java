@@ -1,6 +1,7 @@
 package giveitforward.gateway;
 
 import giveitforward.models.Request;
+import giveitforward.models.Organization;
 import giveitforward.models.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,6 +49,29 @@ public class GiveItForwardJSON
         }
         return jsonArray;
     }
+
+    public static JSONArray getOrgJSONCollection(List<Organization> organizations)
+    {
+
+        JSONArray jsonArray = new JSONArray();
+        for (Organization org : organizations)
+        {
+            jsonArray.put(writeOrganizationToJSON(org));
+        }
+        return jsonArray;
+    }
+
+
+    public static JSONObject writeOrganizationToJSON(Organization org)
+    {
+        JSONObject object = new JSONObject();
+        object.put("oid", org.getOid());
+        object.put("email", org.getEmail());
+        object.put("website", org.getWebsite());
+        object.put("name", org.getName());
+        return object;
+    }
+
 
     public static JSONObject writeRequestToJSON(Request request)
     {

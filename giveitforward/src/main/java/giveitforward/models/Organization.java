@@ -96,4 +96,6 @@ public class Organization {
     public void setInactivedate(Timestamp inactivedate) {
         this.inactivedate = inactivedate;
     }
+
+    public String asString() { return "oid: " + oid + ", name: " + name + "email: " + email; }
 }
