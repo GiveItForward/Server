@@ -42,3 +42,6 @@ Each API call is defined by a path which may or may not consist of multiple head
 \* indicates an optional header.
 
 ### Security:
+
+
+### Database:
