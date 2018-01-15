@@ -20,29 +20,34 @@ public class ManageRequest {
 
         ManageRequest mr = new ManageRequest();
 
-        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
-        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
+//        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
+//        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
+//
+//        List<Request> req = mr.getAllRequests();
+//        for(Request r : req){
+//
+//            System.out.println(r.asString());
+//        }
+//
+//        for(Request r : mr.getRequestsFilterByRequestUid("1")){
+//            System.out.println(r.asString());
+//            /* returns
+//                rid: 1, amount: 20.0.
+//                rid: 3, amount: 20.0.
+//             */
+//         }
+//
+//        for(Request r : mr.getRequestsFilterByDonateUid("4")){
+//            System.out.println(r.asString());
+//            /* returns
+//                rid: 2, amount: 35.0.
+//             */
+//        }
 
-        List<Request> req = mr.getAllRequests();
-        for(Request r : req){
-
+        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
             System.out.println(r.asString());
         }
 
-        for(Request r : mr.getRequestsFilterByRequestUid("1")){
-            System.out.println(r.asString());
-            /* returns
-                rid: 1, amount: 20.0.
-                rid: 3, amount: 20.0.
-             */
-         }
-
-        for(Request r : mr.getRequestsFilterByDonateUid("4")){
-            System.out.println(r.asString());
-            /* returns
-                rid: 2, amount: 35.0.
-             */
-        }
     }
 
     public ManageRequest(){
@@ -112,14 +117,25 @@ public class ManageRequest {
     }
 
     /**
-     * Queries the DB for requests created by a user with the given uid.
+     * Queries the DB for open and fulfilled requests created by a user with the given uid.
      * @param rUid
-     * @return a list of requests created by a user with the given uid.
+     * @return a list of open and closed requests created by a user with the given uid.
      */
     public List<Request> getRequestsFilterByRequestUid(String rUid) {
 
         return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
                 "upr.id.uidRequest = " + rUid);
+    }
+
+    /**
+     * Queries the DB for open requests created by a user with the given uid.
+     * @param rUid
+     * @return a list of open requests created by a user with the given uid.
+     */
+    public List<Request> getRequestsFilterByRequestUidOpen(String rUid) {
+        //SQL: select r.* from request r, user_request_pair upr where r.rid = upr.rid and upr.uid_request = 5 and upr.uid_donate is null;
+        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
+                "upr.id.uidRequest = " + rUid + " and upr.uidDonate is null");
     }
 
     /**
