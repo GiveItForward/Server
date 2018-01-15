@@ -11,10 +11,7 @@ import giveitforward.models.UserTag;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -81,7 +78,7 @@ public class Gateway
         }
     }
 
-    @GET
+    @POST
     @Path("/signup")
     @Produces(MediaType.APPLICATION_JSON)
     public Response newUser(@Context HttpHeaders headers)
