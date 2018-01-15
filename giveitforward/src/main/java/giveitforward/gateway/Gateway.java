@@ -207,7 +207,7 @@ public class Gateway
 
         ManageRequest manager = new ManageRequest();
 
-        String dUid = headers.getRequestHeader("Uid").get(0);
+        String dUid = headers.getRequestHeader("uid").get(0);
         List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
@@ -226,8 +226,27 @@ public class Gateway
     {
 
         ManageRequest manager = new ManageRequest();
-        String rUid = headers.getRequestHeader("Uid").get(0);
+        String rUid = headers.getRequestHeader("iid").get(0);
         List<Request> requests = manager.getRequestsFilterByRequestUid(rUid);
+
+        JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
+
+        return Response.ok()
+                .entity(requestJSON.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+    @GET
+    @Path("/requests/requestuid/open")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRequestFeedFilterByRequestUidOpen(@Context HttpHeaders headers)
+    {
+
+        ManageRequest manager = new ManageRequest();
+        String rUid = headers.getRequestHeader("uid").get(0);
+        List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
 
         JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
 
@@ -268,24 +287,5 @@ public class Gateway
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         }
-    }
-
-    @GET
-    @Path("/requests/requestuid/open")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestFeedFilterByRequestUidOpen(@Context HttpHeaders headers)
-    {
-
-        ManageRequest manager = new ManageRequest();
-        String rUid = headers.getRequestHeader("uid").get(0);
-        List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
-
-        JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
-
-        return Response.ok()
-                .entity(requestJSON.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
     }
 }
