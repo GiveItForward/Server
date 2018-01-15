@@ -8,7 +8,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 ###### Requests
 
 | Path          | Headers   | Properties |
-| ------------- |-----------||-----------|
+| ------------- |-----------|-----------|
 | /requests     |  None     | - Returns all open requests as a JSONArray of requests. |
 | /requests/requestuid/open | id : {requester_uid} | - Returns all open requests made by the user (aka requester) with the given uid. |
 | /requests/requestuid/all | id : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
