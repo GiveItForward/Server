@@ -1,6 +1,7 @@
 package giveitforward.managers;
 
 
+import giveitforward.models.User;
 import giveitforward.models.UserTag;
 import org.hibernate.SessionFactory;
 import org.hibernate.*;
@@ -71,7 +72,7 @@ public class ManageUserTag {
      */
     public UserTag updateTag(int tid, String tagname) {
         Session session = factory.openSession();
-        Query query = session.createQuery("update Tag set tagname = :val where tid = :id");
+        Query query = session.createQuery("update UserTag set tagname = :val where tid = :id");
         query.setParameter("val", tagname);
         query.setParameter("id", tid);
 
@@ -93,7 +94,7 @@ public class ManageUserTag {
      */
     public boolean deleteTag(int tid) {
         Session session = factory.openSession();
-        Query query = session.createQuery("delete Tag where tid = :id");
+        Query query = session.createQuery("delete UserTag where tid = :id");
         query.setParameter("id", tid);
 
         return makeQuery(session, query);
@@ -134,32 +135,7 @@ public class ManageUserTag {
      */
     public List<UserTag> getAllTags() {
 
-        Session session = factory.openSession();
-        Transaction t = null;
-        List<UserTag> r = null;
-
-        try
-        {
-            t = session.beginTransaction();
-
-            String s = "from Tag";
-            r = (List<UserTag>) session.createQuery(s).list();
-
-            t.commit();
-        } catch (Exception e)
-        {
-            if (t != null)
-            {
-                t.rollback();
-            }
-            System.out.println("ROLLBACK");
-            e.printStackTrace();
-        } finally
-        {
-            session.close();
-            factory.close();
-            return r;
-        }
+        return makeQuery("from UserTag");
     }
 
     /**
@@ -193,6 +169,36 @@ public class ManageUserTag {
             session.close();
             factory.close();
             return allTags;
+        }
+    }
+
+    /**
+     * @param query HQL query to be performed.
+     * @return a list of Users which results from the given query.
+     */
+    private List<UserTag> makeQuery(String query) {
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<UserTag> ut = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            ut = (List<UserTag>) session.createQuery(query).list();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            return ut;
         }
     }
 }

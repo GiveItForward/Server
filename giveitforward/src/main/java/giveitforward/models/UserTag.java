@@ -34,10 +34,6 @@ public class UserTag {
         this.tid = tid;
     }
 
-    public String getUserTagame() {
-        return tagname;
-    }
-
     public void setUserTag(String tagname) {
         this.tagname = tagname;
     }

@@ -7,6 +7,7 @@ import giveitforward.managers.ManageUserTag;
 import giveitforward.models.Organization;
 import giveitforward.models.Request;
 import giveitforward.models.User;
+import giveitforward.models.UserTag;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,6 +33,7 @@ public class Gateway
     }
 
 
+    /********************************* User PATHS *******************************************/
     @GET
     @Path("/login/{un}/{pw}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,8 +49,9 @@ public class Gateway
         ManageUserTag tagManager = new ManageUserTag();
         List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
 
-        int numOfDonations = manager.getNumberOfDontations(userResult.getUid());
-        int numOfFulfilledRequests = manager.getNumberOfReceivedDonations(userResult.getUid());
+        ManageRequest reqManager = new ManageRequest();
+        int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
+        int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
 
 
         if (userResult != null)
@@ -118,6 +121,32 @@ public class Gateway
                     .build();
         } else {
             JSONObject userJson = GiveItForwardJSON.writeUserToJSON(userResult);
+            return Response.status(401)
+                    .entity("Result of creating user true\n\n: " + userJson)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+        }
+
+    }
+
+    @GET
+    @Path("/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUsers(@Context HttpHeaders headers)
+    {
+
+        ManageUser manager = new ManageUser();
+        List<User> userResult = manager.getAllUsers();
+
+        if(userResult == null){
+            return Response.ok()
+                    .entity("Unable to get all users")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+        } else {
+            JSONArray userJson = GiveItForwardJSON.writeAllUsersToJSon(userResult);
             return Response.status(401)
                     .entity("Result of creating user true\n\n: " + userJson)
                     .header("Access-Control-Allow-Origin", "*")
@@ -207,5 +236,37 @@ public class Gateway
                 .header("Access-Control-Allow-Origin", "*")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                 .build();
+    }
+
+
+    /*********************************** Tag PATHS *****************************************/
+
+    @GET
+    @Path("/tags")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllTags()
+    {
+
+        ManageUserTag manager = new ManageUserTag();
+        List<UserTag> tagResult = manager.getAllTags();
+
+        if (tagResult != null)
+        {
+            JSONArray jsonTags = GiveItForwardJSON.writeTagsToJSon(tagResult);
+
+            return Response.ok() //200
+                    .entity(jsonTags.toString())
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+
+        } else
+        {
+            return Response.status(401)
+                    .entity("Call Failed")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+        }
     }
 }
