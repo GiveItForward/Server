@@ -9,6 +9,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class ManageUser {
     private static SessionFactory factory;
@@ -189,12 +190,41 @@ public class ManageUser {
         return u;
     }
 
-    public int getNumberOfDontations(int uid){
-//        User
-        return 0;
+
+    public List<User> getAllUsers(){
+//        return makeQuery("SELECT uid, username, email, bio, isAdmin, " +
+//                "orgId, photo FROM User");
+        return makeQuery("from User order by uid");
     }
 
-    public int getNumberOfReceivedDonations(int uid){
-        return 0;
+
+    /**
+     * @param query HQL query to be performed.
+     * @return a list of Users which results from the given query.
+     */
+    private List<User> makeQuery(String query) {
+        Session session = factory.openSession();
+        Transaction t = null;
+        List<User> r = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            r = (List<User>) session.createQuery(query).list();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            factory.close();
+            return r;
+        }
     }
 }

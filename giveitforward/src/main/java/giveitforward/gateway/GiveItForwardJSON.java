@@ -3,6 +3,7 @@ package giveitforward.gateway;
 import giveitforward.models.Request;
 import giveitforward.models.Organization;
 import giveitforward.models.User;
+import giveitforward.models.UserTag;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class GiveItForwardJSON
 {
 
+    /***************** User *****************/
     public static JSONObject writeUserToJSON(User user)
     {
         JSONObject object = new JSONObject();
@@ -39,6 +41,16 @@ public class GiveItForwardJSON
         return user;
     }
 
+    public static JSONArray writeAllUsersToJSon(List<User> userResult)
+    {
+        JSONArray jsonArray = new JSONArray();
+        for(User u : userResult){
+            jsonArray.put(writeUserToJSON(u));
+        }
+        return jsonArray;
+    }
+
+    /***************** Requests *****************/
     public static JSONArray getRequestJSONCollection(List<Request> requests)
     {
 
@@ -50,6 +62,17 @@ public class GiveItForwardJSON
         return jsonArray;
     }
 
+    public static JSONObject writeRequestToJSON(Request request)
+    {
+        JSONObject object = new JSONObject();
+        object.put("rid", request.getRid());
+        object.put("description", request.getDescription());
+        object.put("amount", request.getAmount());
+        object.put("image", request.getImage());
+        return object;
+    }
+
+    /***************** Organizations *****************/
     public static JSONArray getOrgJSONCollection(List<Organization> organizations)
     {
 
@@ -73,13 +96,20 @@ public class GiveItForwardJSON
     }
 
 
-    public static JSONObject writeRequestToJSON(Request request)
+    /***************** User Tags *****************/
+    public static JSONArray writeTagsToJSon(List<UserTag> tagResult)
     {
+        JSONArray jsonArray = new JSONArray();
+        for(UserTag t : tagResult){
+            jsonArray.put(writeTagToJSon(t));
+        }
+        return jsonArray;
+    }
+
+    public static JSONObject writeTagToJSon(UserTag tag){
         JSONObject object = new JSONObject();
-        object.put("rid", request.getRid());
-        object.put("description", request.getDescription());
-        object.put("amount", request.getAmount());
-        object.put("image", request.getImage());
+        object.put("tid", tag.getUserTid());
+        object.put("tagname", tag.getUserTagname());
         return object;
     }
 }
