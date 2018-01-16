@@ -28,16 +28,16 @@ public class GiveItForwardJSON
 
     public static User getUserFromJSON(JSONObject object)
     {
-        int uid = object.getInt("uid");
+//        int uid = object.getInt("uid");
         String email = object.getString("email");
         String username = object.getString("username");
         String password = object.getString("password");
-        boolean isAdmin = object.getBoolean("isAdmin");
-        int orgId = object.getInt("orgId");
-        String photo = object.getString("photo");
+//        boolean isAdmin = object.getBoolean("isAdmin");
+//        int orgId = object.getInt("orgId");
+//        String photo = object.getString("photo");
         String bio = object.getString("bio");
 
-        User user = new User(uid, email, username, password, isAdmin, orgId, photo, bio);
+        User user = new User(email, username, password, false, null, null, bio);
         return user;
     }
 

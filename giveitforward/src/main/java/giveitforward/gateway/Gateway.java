@@ -12,11 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.util.List;
+import java.util.Map;
 
 @Path("/")
 public class Gateway
@@ -53,20 +51,7 @@ public class Gateway
 
         if (userResult != null)
         {
-            JSONObject jsonUser = GiveItForwardJSON.writeUserToJSON(userResult);
-
-            if(tags != null && !tags.isEmpty()){
-                jsonUser.put("tags", new JSONArray(tags));
-            }
-
-            jsonUser.put("numDonations", numOfDonations);
-            jsonUser.put("numFulfilledRequests", numOfFulfilledRequests);
-
-            return Response.ok() //200
-                    .entity(jsonUser.toString())
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
+            return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
 
         } else
         {
@@ -78,37 +63,24 @@ public class Gateway
         }
     }
 
+    // this method is for /signup a new user
     @POST
     @Path("/signup")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response newUser(@Context HttpHeaders headers)
+    public Response newUser(String userJSon)//(String userJson)
     {
-
-        String username = headers.getRequestHeader("username").get(0);
-        String password = headers.getRequestHeader("password").get(0);
-        String email = headers.getRequestHeader("email").get(0);
-//        String isAdminString = headers.getRequestHeader("isAdmin").get(0);
-//        String oidString = headers.getRequestHeader("oid").get(0);
-//        String photo = headers.getRequestHeader("photo").get(0);
-        String bio = headers.getRequestHeader("bio").get(0);
-
-        boolean isAdmin = false;
-//        if(!isAdminString.equals(null) && isAdminString.equals("true")){
-//            isAdmin = true;
-//        }
-
-        Integer iod = null;
-//        if(!oidString.equals(null)){
-//            iod = Integer.parseInt(oidString);
-//        }
-
-        String photo = null;
-//        if(photo.equals(null)){
-//            photo = null;
-//        }
+        User newUser = GiveItForwardJSON.getUserFromJSON(new JSONObject(userJSon));
 
         ManageUser manager = new ManageUser();
-        User userResult = manager.signupUser(email, username, password, isAdmin, iod, photo, bio);
+        User userResult = manager.signupUser(newUser);
+
+        ManageUserTag tagManager = new ManageUserTag();
+        List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
+
+        ManageRequest reqManager = new ManageRequest();
+        int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
+        int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
 
         if(userResult == null){
             return Response.ok()
@@ -117,14 +89,76 @@ public class Gateway
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         } else {
-            JSONObject userJson = GiveItForwardJSON.writeUserToJSON(userResult);
-            return Response.status(401)
-                    .entity("Result of creating user true\n\n: " + userJson)
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
+            return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
         }
 
+    }
+
+    private Response getUserObjectResponse(User userResult, List<String> tags, int numOfDonations, int numOfFulfilledRequests)
+    {
+        JSONObject jsonUser = GiveItForwardJSON.writeUserToJSON(userResult);
+
+        if(tags != null && !tags.isEmpty()){
+            jsonUser.put("tags", new JSONArray(tags));
+        }
+
+        jsonUser.put("donateCount", numOfDonations);
+        jsonUser.put("receiveCount", numOfFulfilledRequests);
+
+        return Response.ok()
+                .entity(jsonUser.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+    // TODO - this is to update a user
+    @PUT
+    @Path("/signup")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putNewUser()//(@Context HttpHeaders headers)
+    {
+        return Response.ok()
+                .entity("HI".toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+
+    }
+
+    // TODO - this is to deactiate a users account (put an inactive date and remove them from system visibility)
+    @DELETE
+    @Path("/signup")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUser()//(@Context HttpHeaders headers)
+    {
+        return Response.ok()
+                .entity("HI".toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+
+    }
+
+    /**
+     * This method is needed because the browser sends /signup first an OPTION method request in
+     * order to figure out what kind of methods the server allows.
+     * @return An ok response with
+     */
+    @OPTIONS
+    @Path("/signup")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response optionsNewUser()//(@Context HttpHeaders headers)
+    {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Allow", "GET, POST, DELETE, PUT")
+                .build();
     }
 
     @GET
