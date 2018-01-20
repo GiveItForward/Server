@@ -1,4 +1,6 @@
 package giveitforward.models;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -22,6 +24,12 @@ public class Request {
 
     @Column(name = "requesttime")
     private Timestamp requesttime;
+
+    @Column(name="ruid")
+    private int ruid;
+
+    @Column(name="duid")
+    private int duid;
 
     public int getRid() {
         return rid;
@@ -64,4 +72,24 @@ public class Request {
     }
 
     public String asString() { return "rid: " + this.rid + ", amount: " + this.amount + "."; }
+
+    public int getRuid()
+    {
+        return ruid;
+    }
+
+    public void setRuid(int ruid)
+    {
+        this.ruid = ruid;
+    }
+
+    public int getDuid()
+    {
+        return duid;
+    }
+
+    public void setDuid(int duid)
+    {
+        this.duid = duid;
+    }
 }

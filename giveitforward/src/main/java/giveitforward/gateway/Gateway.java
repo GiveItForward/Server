@@ -30,13 +30,13 @@ public class Gateway
 
     /********************************* User PATHS *******************************************/
     @GET
-    @Path("/login/{un}/{pw}")
+    @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(@PathParam("un") String username, @PathParam("pw") String password)
+    public Response userLogin(@Context HttpHeaders headers)
     {
 
-//        String username = headers.getRequestHeader("username").get(0);
-//        String password = headers.getRequestHeader("password").get(0);
+        String username = headers.getRequestHeader("email").get(0);
+        String password = headers.getRequestHeader("password").get(0);
 
         ManageUser manager = new ManageUser();
         User userResult = manager.loginUser(username, password);
@@ -55,13 +55,34 @@ public class Gateway
 
         } else
         {
-            return Response.status(401)
+            return Response.serverError()
                     .entity("Logged in user : false")
                     .header("Access-Control-Allow-Origin", "*")
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         }
     }
+
+
+    /**
+     * This method is needed because the browser sends /signup first an OPTION method request in
+     * order to figure out what kind of methods the server allows.
+     * @return An ok response with
+     */
+    @OPTIONS
+    @Path("/login")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response loginOptions()//(@Context HttpHeaders headers)
+    {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Allow", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
 
     // this method is for /signup a new user
     @POST
@@ -83,7 +104,7 @@ public class Gateway
         int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
 
         if(userResult == null){
-            return Response.ok()
+            return Response.serverError()
                     .entity("Created user : false")
                     .header("Access-Control-Allow-Origin", "*")
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
@@ -108,7 +129,9 @@ public class Gateway
         return Response.ok()
                 .entity(jsonUser.toString())
                 .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, username, password, uid")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Allow", "GET, POST, DELETE, PUT")
                 .build();
     }
 
@@ -247,6 +270,26 @@ public class Gateway
                 .entity(requestJSON.toString())
                 .header("Access-Control-Allow-Origin", "*")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+
+    /**
+     * This method is needed because the browser sends /signup first an OPTION method request in
+     * order to figure out what kind of methods the server allows.
+     * @return An ok response with
+     */
+    @OPTIONS
+    @Path("/requests/donateuid")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reqDonateOptions()//(@Context HttpHeaders headers)
+    {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Allow", "GET, POST, DELETE, PUT")
                 .build();
     }
 

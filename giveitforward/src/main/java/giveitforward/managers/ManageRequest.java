@@ -1,5 +1,6 @@
 package giveitforward.managers;
 
+import com.sun.org.apache.regexp.internal.RE;
 import giveitforward.models.Request;
 import giveitforward.models.User;
 import org.hibernate.*;
@@ -138,8 +139,8 @@ public class ManageRequest {
      * @return a list of requests fulfilled by the user with the given uid.
      */
     public List<Request> getRequestsFilterByDonateUid(String dUid) {
-        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
-            "upr.uidDonate = " + dUid);
+        return makeQuery("select r from Request r where " +
+            "r.duid = " + dUid);
     }
 
     /**
