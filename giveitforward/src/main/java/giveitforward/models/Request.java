@@ -26,10 +26,10 @@ public class Request {
     private Timestamp requesttime;
 
     @Column(name="ruid")
-    private int ruid;
+    private Integer ruid;
 
     @Column(name="duid")
-    private int duid;
+    private Integer duid;
 
     public int getRid() {
         return rid;

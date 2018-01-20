@@ -66,6 +66,7 @@ public class GiveItForwardJSON
     {
         JSONObject object = new JSONObject();
         object.put("rid", request.getRid());
+        object.put("ruid", request.getRuid());
         object.put("description", request.getDescription());
         object.put("amount", request.getAmount());
         object.put("image", request.getImage());

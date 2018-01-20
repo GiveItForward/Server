@@ -253,6 +253,25 @@ public class Gateway
                 .build();
     }
 
+    /**
+     * This method is needed because the browser sends /signup first an OPTION method request in
+     * order to figure out what kind of methods the server allows.
+     * @return An ok response with
+     */
+    @OPTIONS
+    @Path("/requests")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reqOptions()//(@Context HttpHeaders headers)
+    {
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Allow", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
     @GET
     @Path("/requests/donateuid")
     @Produces(MediaType.APPLICATION_JSON)
