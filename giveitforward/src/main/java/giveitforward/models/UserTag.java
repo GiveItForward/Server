@@ -53,6 +53,7 @@ public class UserTag extends Model{
         JSONObject object = new JSONObject();
         object.put("tid", this.tid);
         object.put("tagname", this.tagname);
+        object.put("verified", false);
         return object;
     }
 

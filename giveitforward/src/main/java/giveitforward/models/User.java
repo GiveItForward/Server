@@ -174,6 +174,21 @@ public class User extends Model {
         object.put("orgId", this.orgId);
         object.put("image", this.image);
         object.put("bio", this.bio);
+
+        // TODO - until tags are implemented send through fake placeholders for jen
+        JSONArray arr = new JSONArray();
+
+        UserTag tag1 = new UserTag();
+        tag1.setUserTid(12);
+        tag1.setUserTag("other");
+
+        UserTag tag2 = new UserTag();
+        tag2.setUserTid(12);
+        tag2.setUserTag("other");
+
+        arr.put(tag1.asJSON());
+        arr.put(tag2.asJSON());
+        object.put("tags", arr);
         return object;
     }
 

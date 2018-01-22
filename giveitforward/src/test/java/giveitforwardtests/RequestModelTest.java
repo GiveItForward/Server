@@ -23,7 +23,7 @@ public class RequestModelTest {
          Integer duid = 1;
          Integer tag1 = 5;
          Integer tag2 = 8;
-        Request r = new Request(description, amount, image, ruid, thankYou, duid, tag1, tag2);
+        Request r = new Request(description, amount, image, ruid, thankYou, duid);
 
         System.out.println(r.asJSON());
 

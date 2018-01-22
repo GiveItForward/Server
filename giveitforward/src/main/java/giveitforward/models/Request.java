@@ -1,4 +1,5 @@
 package giveitforward.models;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -31,6 +32,14 @@ public class Request extends Model {
     @JoinColumn(name = "ruid")
     private User rUser;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tag1")
+    private UserTag tag1;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tag2")
+    private UserTag tag2;
+
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "rid")
 //    private ThankYou thankYou;
@@ -38,21 +47,15 @@ public class Request extends Model {
     @Column(name = "duid")
     private Integer duid;
 
-    @Column(name = "tag1")
-    private Integer tag1;
 
-    @Column(name = "tag2")
-    private Integer tag2;
 
-    public Request(String description, Double amount, String image, User rUser, ThankYou thankYou, Integer duid, Integer tag1, Integer tag2) {
+    public Request(String description, Double amount, String image, User rUser, ThankYou thankYou, Integer duid) {
         this.description = description;
         this.amount = amount;
         this.image = image;
         this.rUser = rUser;
 //        this.thankYou = thankYou;
         this.duid = duid;
-        this.tag1 = tag1;
-        this.tag2 = tag2;
     }
 
     public Request() {
@@ -116,10 +119,12 @@ public class Request extends Model {
         object.put("amount", this.amount);
         object.put("image", this.image);
         object.put("duid", this.duid);
-        object.put("tagId1", this.tag1);
-        object.put("tagId2", this.tag2);
+        object.put("tagId1", this.tag1.asJSON());
+        object.put("tagId2", this.tag2.asJSON());
 //        object.put("thankYou", this.thankYou.asJSON());
         object.put("rUser", this.rUser.asJSON());
+        object.put("requestTime", this.getRequesttime());
+        object.put("donateTime", this.getDonateTime());
         return object;
     }
 
@@ -152,27 +157,30 @@ public class Request extends Model {
         this.rUser = requestor;
     }
 
-    public Integer getTag1() {
-        return tag1;
-    }
-
-    public void setTag1(Integer tag1) {
-        this.tag1 = tag1;
-    }
-
-    public Integer getTag2() {
-        return tag2;
-    }
-
-    public void setTag2(Integer tag2) {
-        this.tag2 = tag2;
-    }
-
     public Timestamp getDonateTime() {
         return donateTime;
     }
 
     public void setDonateTime(Timestamp donateTime) {
         this.donateTime = donateTime;
+    }
+
+
+    public void setTag1(UserTag tag1)
+    {
+        this.tag1 = tag1;
+    }
+
+    public UserTag getTag1(){
+        return this.tag1;
+    }
+
+    public void setTag2(UserTag tag2)
+    {
+        this.tag2 = tag2;
+    }
+
+    public UserTag getTag2(){
+        return this.tag2;
     }
 }
