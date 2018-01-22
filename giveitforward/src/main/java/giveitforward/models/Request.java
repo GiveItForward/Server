@@ -91,6 +91,13 @@ public class Request extends Model {
         object.put("description", this.description);
         object.put("amount", this.amount);
         object.put("image", this.image);
+        object.put("duid", this.duid);
+        object.put("tag1", this.tag1);
+        object.put("tag2", this.tag2);
+        object.put("ruid", this.ruid.getUid());
+        object.put("r_photo", this.ruid.getPhoto());
+        object.put("r_username", this.ruid.getUsername());
+        object.put("r_email", this.ruid.getEmail());
         return object;
     }
 
