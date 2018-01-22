@@ -152,7 +152,7 @@ public class ManageUserTag {
         {
             t = session.beginTransaction();
 
-            String q = "select t.tagname from UserTagPair as p join p.id.tagid as t where p.id.userid = :id";
+            String q = "select t.tagname from UserTagPair u, UserTag t where t.tid = u.id.tid and u.id.uid = :id";
             allTags = session.createQuery(q).setInteger("id", uid).list();
 
             t.commit();

@@ -13,7 +13,7 @@ public class User extends Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uid_generator")
-    @SequenceGenerator(name="uid_generator", sequenceName = "users_uid_seq")
+    @SequenceGenerator(name = "uid_generator", sequenceName = "users_uid_seq")
     @Column(name = "uid", unique = true, nullable = false)
     private Integer uid;
 
@@ -44,11 +44,8 @@ public class User extends Model {
     @Column(name = "inactivedate")
     private Timestamp inactivedate;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UserTagPair> tagpairs;
+    public User() {
 
-    public User(){
-            
     }
 
     public User(Integer uid, String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
@@ -73,8 +70,7 @@ public class User extends Model {
         this.signupdate = signupdate;
     }
 
-    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
-    {
+    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -163,13 +159,13 @@ public class User extends Model {
         this.inactivedate = inactivedate;
     }
 
-    public List<UserTagPair> getTagpairs() {
-        return tagpairs;
-    }
-
-    public void setTagpairs(List<UserTagPair> tagpairs) {
-        this.tagpairs = tagpairs;
-    }
+//    public List<UserTagPair> getTagpairs() {
+//        return tagpairs;
+//    }
+//
+//    public void setTagpairs(List<UserTagPair> tagpairs) {
+//        this.tagpairs = tagpairs;
+//    }
 
     public String asString() {
         return null;

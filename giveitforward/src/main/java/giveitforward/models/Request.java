@@ -34,9 +34,14 @@ public class Request extends Model {
     @JoinColumn(name = "ruid")
     private User ruid;
 
-    @Column(name="duid")
+    @Column(name = "duid")
     private Integer duid;
 
+    @Column(name = "tag1")
+    private Integer tag1;
+
+    @Column(name = "tag2")
+    private Integer tag2;
 
     public int getRid() {
         return rid;
@@ -117,5 +122,21 @@ public class Request extends Model {
     public void setRequestor(User requestor)
     {
         this.ruid = requestor;
+    }
+
+    public Integer getTag1() {
+        return tag1;
+    }
+
+    public void setTag1(Integer tag1) {
+        this.tag1 = tag1;
+    }
+
+    public Integer getTag2() {
+        return tag2;
+    }
+
+    public void setTag2(Integer tag2) {
+        this.tag2 = tag2;
     }
 }

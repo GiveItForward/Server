@@ -19,9 +19,6 @@ public class UserTag extends Model{
     @Column(name = "tagname")
     private String tagname;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UserTagPair> userpairs;
-
     public UserTag(String tagname) {
         this.tagname = tagname;
     }
