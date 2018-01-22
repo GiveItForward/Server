@@ -1,5 +1,7 @@
 package giveitforward.models;
 
+import org.json.JSONObject;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,7 +10,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "thank_you")
-public class ThankYou {
+public class ThankYou implements Model{
 
     @Id
     @Column(name = "rid")
@@ -59,5 +61,17 @@ public class ThankYou {
 
     public void setDate(Timestamp date) {
         this.date = date;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        return null;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 }

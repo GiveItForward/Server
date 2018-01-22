@@ -1,18 +1,21 @@
 package giveitforward.models;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "notification")
-public class Notification {
+public class Notification extends Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nid", unique = true, nullable = false)
     private int nid;
 
-    //TODO: I don't think we need this...
     @Column(name = "date")
     private Timestamp date;
 
@@ -52,5 +55,22 @@ public class Notification {
 
     public void setUid(int uid) {
         this.uid = uid;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        JSONObject object = new JSONObject();
+        object.put("nid", this.nid);
+        object.put("date", this.date);
+        object.put("message", this.message);
+        object.put("uid", this.message);
+        return object;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 }

@@ -1,10 +1,16 @@
 package giveitforward.models;
+import giveitforward.models.RequestTag;
+import giveitforward.models.User;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "request")
-public class Request {
+public class Request extends Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +28,12 @@ public class Request {
 
     @Column(name = "requesttime")
     private Timestamp requesttime;
+
+    @Column (name = "duid")
+    private int duid;
+
+    @Column (name = "ruid")
+    private int ruid;
 
     public int getRid() {
         return rid;
@@ -64,4 +76,24 @@ public class Request {
     }
 
     public String asString() { return "rid: " + this.rid + ", amount: " + this.amount + "."; }
+
+    public JSONObject asJSON() {
+        JSONObject object = new JSONObject();
+        object.put("rid", this.rid);
+        object.put("description", this.description);
+        object.put("amount", this.amount);
+        object.put("image", this.image);
+        return object;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        this.rid = obj.getInt("rid");
+        this.image = obj.getString("image");
+        this.amount = obj.getDouble("amount");
+        this.description = obj.getString("description");
+        return true;
+
+        //TODO: If something goes wrong, return false!
+    }
+
 }

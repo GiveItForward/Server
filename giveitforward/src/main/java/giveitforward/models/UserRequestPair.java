@@ -1,10 +1,12 @@
 package giveitforward.models;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "user_request_pair")
-public class UserRequestPair {
+public class UserRequestPair implements Model{
 
     @EmbeddedId
     private UidRid id;
@@ -29,6 +31,18 @@ public class UserRequestPair {
 
     public UidRid getId() {
         return id;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        return null;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 }
 

@@ -39,6 +39,8 @@ public class ManageUser {
         }
     }
 
+
+
     private User getUserFromEmail(String email)
     {
         Session session = factory.openSession();
@@ -190,6 +192,16 @@ public class ManageUser {
         return u;
     }
 
+    //TODO: make a soft search?
+
+    /**
+     * Queries the DB for
+     * @param username
+     * @return
+     */
+    public List<User> getUserFromUsername(String username){
+        return makeQuery("from User where username = " + username);
+    }
 
     public List<User> getAllUsers(){
 //        return makeQuery("SELECT uid, username, email, bio, isAdmin, " +

@@ -1,12 +1,14 @@
 package giveitforward.models;
 
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 
 @Entity
 @Table(name = "user_tag_pair")
-public class UserTagPair {
+public class UserTagPair implements Model{
 
     @EmbeddedId
     private UidTid id;
@@ -42,6 +44,18 @@ public class UserTagPair {
 
     public void setVerifiedBy(int verifiedBy) {
         this.verifiedBy = verifiedBy;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        return null;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 
     @Embeddable

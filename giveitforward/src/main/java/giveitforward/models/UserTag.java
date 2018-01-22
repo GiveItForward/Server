@@ -1,12 +1,14 @@
 package giveitforward.models;
 
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "tag")
-public class UserTag {
+public class UserTag implements Model{
 
 
     @Id
@@ -52,5 +54,20 @@ public class UserTag {
 
     public void setUserpairs(List<UserTagPair> userpairs) {
         this.userpairs = userpairs;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        JSONObject object = new JSONObject();
+        object.put("tid", this.tid);
+        object.put("tagname", this.tagname);
+        return object;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 }

@@ -1,13 +1,17 @@
 package giveitforward.models;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "elevated_user")
-public class ElevatedUser {
+public class ElevatedUser implements Model<ElevatedUser>{
 
     //Again, I don't think this value is generated because it's
     //from another table...
@@ -55,5 +59,21 @@ public class ElevatedUser {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        return null;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
+    }
+
+    public JSONArray asJSONCollection(List<ElevatedUser> collection) {
+        return null;
     }
 }

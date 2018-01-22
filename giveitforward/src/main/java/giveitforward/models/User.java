@@ -1,5 +1,7 @@
 package giveitforward.models;
 
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 @Entity
 //@Table(name = "user", schema = "postgres")
 @Table(name = "users")
-public class User {
+public class User implements Model{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uid_generator")
@@ -157,5 +159,17 @@ public class User {
 
     public void setTagpairs(List<UserTagPair> tagpairs) {
         this.tagpairs = tagpairs;
+    }
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        return null;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 }

@@ -4,10 +4,7 @@ import giveitforward.managers.ManageOrganization;
 import giveitforward.managers.ManageRequest;
 import giveitforward.managers.ManageUser;
 import giveitforward.managers.ManageUserTag;
-import giveitforward.models.Organization;
-import giveitforward.models.Request;
-import giveitforward.models.User;
-import giveitforward.models.UserTag;
+import giveitforward.models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -246,7 +243,7 @@ public class Gateway
         String rUid = headers.getRequestHeader("uid").get(0);
         List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
 
-        JSONArray requestJSON = GiveItForwardJSON.getRequestJSONCollection(requests);
+        JSONArray requestJSON = asJSONCollection(requests);
 
         return Response.ok()
                 .entity(requestJSON.toString())
@@ -285,5 +282,19 @@ public class Gateway
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         }
+    }
+
+
+    /**
+     * Returns a JSON array consisting of many object to turn into a JSONArray
+     * @return
+     */
+    public static JSONArray asJSONCollection(List<Model> collection) {
+        JSONArray jsonArray = new JSONArray();
+        for (Model el : collection)
+        {
+            jsonArray.put(el.asJSON());
+        }
+        return jsonArray;
     }
 }

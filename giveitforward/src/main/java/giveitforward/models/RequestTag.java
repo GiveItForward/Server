@@ -1,10 +1,12 @@
 package giveitforward.models;
 
+import org.json.JSONObject;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "tag")
-public class RequestTag {
+public class RequestTag implements Model{
 
 
     @Id
@@ -46,5 +48,18 @@ public class RequestTag {
 
     public void setRequestTagname(String tagname) {
         this.tagname = tagname;
+    }
+
+
+    public String asString() {
+        return null;
+    }
+
+    public JSONObject asJSON() {
+        return null;
+    }
+
+    public boolean populateFromJSON(JSONObject obj) {
+        return false;
     }
 }
