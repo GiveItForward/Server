@@ -136,7 +136,7 @@ public class ManageRequest {
      */
     public List<Request> getAllRequests() {
 
-        return makeQuery("select r from Request r where r.duid != null");
+        return makeQuery("select r from Request r where r.duid is null");
     }
 
     /**
