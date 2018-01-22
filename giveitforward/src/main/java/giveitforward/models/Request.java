@@ -29,7 +29,7 @@ public class Request extends Model {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ruid")
-    private User ruid;
+    private User rUser;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "rid")
@@ -44,11 +44,11 @@ public class Request extends Model {
     @Column(name = "tag2")
     private Integer tag2;
 
-    public Request(String description, Double amount, String image, User ruid, ThankYou thankYou, Integer duid, Integer tag1, Integer tag2) {
+    public Request(String description, Double amount, String image, User rUser, ThankYou thankYou, Integer duid, Integer tag1, Integer tag2) {
         this.description = description;
         this.amount = amount;
         this.image = image;
-        this.ruid = ruid;
+        this.rUser = rUser;
         this.thankYou = thankYou;
         this.duid = duid;
         this.tag1 = tag1;
@@ -119,7 +119,7 @@ public class Request extends Model {
         object.put("tagId1", this.tag1);
         object.put("tagId2", this.tag2);
         object.put("thankYou", this.thankYou.asJSON());
-        object.put("ruid", this.ruid.asJSON());
+        object.put("rUser", this.rUser.asJSON());
         return object;
     }
 
@@ -144,12 +144,12 @@ public class Request extends Model {
 
     public User getRequestor()
     {
-        return ruid;
+        return rUser;
     }
 
     public void setRequestor(User requestor)
     {
-        this.ruid = requestor;
+        this.rUser = requestor;
     }
 
     public Integer getTag1() {

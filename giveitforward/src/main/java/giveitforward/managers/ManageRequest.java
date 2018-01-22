@@ -110,7 +110,7 @@ public class ManageRequest {
      * @return count of donations made, -1 if error is thrown.
      */
     public int getCountDonationsByUID(int uid) {
-        String queryString = "select count(*) from UserRequestPair where uid_donate = :id";
+        String queryString = "select count(*) from Request where duid = :id";
         String paramType = "id";
         int paramVal = uid;
         return makeCountQuery(queryString, paramType, paramVal);
@@ -122,7 +122,7 @@ public class ManageRequest {
      * @return count of requests made, -1 if error is thrown.
      */
     public int getCountRequestsByUID(int uid) {
-        String queryString = "select count(*) from UserRequestPair where uid_request = :id";
+        String queryString = "select count(*) from Request where rUser.uid = :id and duid is not null";
         String paramType = "id";
         int paramVal = uid;
         return makeCountQuery(queryString, paramType, paramVal);
@@ -136,7 +136,7 @@ public class ManageRequest {
      */
     public List<Request> getAllRequests() {
 
-        return makeQuery("select r from Request r where r.duid is null");
+        return makeQuery("select r from Request r where r.duid != null");
     }
 
     /**
