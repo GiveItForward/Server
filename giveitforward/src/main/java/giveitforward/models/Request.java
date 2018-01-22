@@ -1,13 +1,7 @@
 package giveitforward.models;
-import giveitforward.models.RequestTag;
-import giveitforward.models.User;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table(name = "request")
@@ -34,6 +28,10 @@ public class Request extends Model {
     @JoinColumn(name = "ruid")
     private User ruid;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "rid")
+    private ThankYou thankYou;
+
     @Column(name = "duid")
     private Integer duid;
 
@@ -42,6 +40,18 @@ public class Request extends Model {
 
     @Column(name = "tag2")
     private Integer tag2;
+
+    public Request(String description, Double amount, String image, User ruid, ThankYou thankYou, Integer duid, Integer tag1, Integer tag2) {
+        this.description = description;
+        this.amount = amount;
+        this.image = image;
+        this.ruid = ruid;
+        this.thankYou = thankYou;
+        this.duid = duid;
+        this.tag1 = tag1;
+        this.tag2 = tag2;
+    }
+
 
     public int getRid() {
         return rid;
@@ -94,10 +104,8 @@ public class Request extends Model {
         object.put("duid", this.duid);
         object.put("tag1", this.tag1);
         object.put("tag2", this.tag2);
-        object.put("ruid", this.ruid.getUid());
-        object.put("r_photo", this.ruid.getPhoto());
-        object.put("r_username", this.ruid.getUsername());
-        object.put("r_email", this.ruid.getEmail());
+        object.put("thankyou", this.thankYou.asJSON());
+        object.put("ruid", this.ruid.asJSON());
         return object;
     }
 
@@ -107,7 +115,6 @@ public class Request extends Model {
         this.amount = obj.getDouble("amount");
         this.description = obj.getString("description");
         return true;
-
         //TODO: If something goes wrong, return false!
     }
 

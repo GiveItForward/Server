@@ -68,7 +68,12 @@ public class ThankYou extends Model{
     }
 
     public JSONObject asJSON() {
-        return null;
+        JSONObject object = new JSONObject();
+        object.put("rid", this.rid);
+        object.put("note", this.note);
+        object.put("image", this.image);
+        object.put("date", this.date);
+        return object;
     }
 
     public boolean populateFromJSON(JSONObject obj) {
