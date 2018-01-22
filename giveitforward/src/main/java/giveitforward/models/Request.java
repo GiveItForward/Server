@@ -52,6 +52,9 @@ public class Request extends Model {
         this.tag2 = tag2;
     }
 
+    public Request() {
+    }
+
 
     public int getRid() {
         return rid;
@@ -93,7 +96,15 @@ public class Request extends Model {
         this.requesttime = requesttime;
     }
 
-    public String asString() { return "rid: " + this.rid + ", amount: " + this.amount + "."; }
+    public String asString() {
+        String base = "rid: " + this.rid + ", amount: " + this.amount + ".";
+        if (thankYou != null) {
+            base += ", thankYou: true";
+        } else {
+            base += ", thankYou: false";
+        }
+        return base;
+    }
 
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();

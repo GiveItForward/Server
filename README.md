@@ -44,7 +44,9 @@ Each API call is defined by a path which may or may not consist of multiple head
 ###### JSON Formats
 | Model | JSON |
 |-------|------|
-|Request|{"tag_id1":5,<br>"image":"img",<br>"amount":20,<br>"thankyou":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"note":"note",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"image":"image",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"rid":0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>"duid":1,<br>"tag_id2":8,<br>"description":"des",<br>"ruid":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"photo":"photo",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bio":"bio",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"isAdmin":false,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"email":"e@email.co",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"username":"usrnme"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>"rid":0<br>}|
+|Request|{"tag_id1":5, <br>"image":"img", <br>"amount":20, <br>"thankyou":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE Thank You* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"duid":1, <br>"tag_id2":8, <br>"description":"des", <br>"ruid":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE User* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
+|User | <br>{"uid":0, <br>"photo":"photo", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"username":"usrnme"  <br>}|
+|Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 
 ### Security:
 

@@ -31,6 +31,9 @@ public class ThankYou extends Model{
         this.image = image;
     }
 
+    public ThankYou() {
+    }
+
     public Integer getRid() {
         return rid;
     }

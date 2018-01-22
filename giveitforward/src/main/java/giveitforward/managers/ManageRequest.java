@@ -39,12 +39,13 @@ public class ManageRequest {
 //             */
 //         }
 //
-////        for(Model r : mr.getRequestsFilterByDonateUid("4")){
-////            System.out.println(r.asString());
-////            /* returns
-////                rid: 2, amount: 35.0.
-////             */
-////        }
+        for(Model r : mr.getRequestsFilterByDonateUid("4")){
+//            System.out.println(r.asString());
+            System.out.println(r.asJSON());
+            /* returns
+                rid: 2, amount: 35.0, thankYou: true
+             */
+        }
 //
 //        for(Model r : mr.getRequestsFilterByRequestUidOpen("1")){
 //            System.out.println(r.asString());
@@ -52,6 +53,7 @@ public class ManageRequest {
 //                rid: 1, amount: 20.0
 //             */
 //        }
+
 
     }
 
