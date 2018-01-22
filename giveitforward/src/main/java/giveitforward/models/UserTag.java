@@ -45,14 +45,6 @@ public class UserTag extends Model{
         this.tagname = tagname;
     }
 
-    public List<UserTagPair> getUserpairs() {
-        return userpairs;
-    }
-
-    public void setUserpairs(List<UserTagPair> userpairs) {
-        this.userpairs = userpairs;
-    }
-
     public String asString() {
         return null;
     }
