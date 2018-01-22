@@ -27,19 +27,21 @@ public class ManageOrganization
         ManageOrganization manager = new ManageOrganization();
 
 
-//        //Approved orgs
-//        List<Organization> orgs = manager.getAllOrgs();
-//        for(Organization o : orgs){
-//
-//            System.out.println(o.asString());
-//        }
-
-        //Pending orgs
-        List<Organization> orgs2 = manager.getAllPendingOrgs();
-        for(Organization o : orgs2){
+        //Approved orgs
+        List<Organization> orgs = manager.getAllOrgs();
+        for(Organization o : orgs){
 
             System.out.println(o.asString());
+            System.out.println(o.asJSON());
         }
+
+        //Pending orgs
+//        List<Organization> orgs2 = manager.getAllPendingOrgs();
+//        for(Organization o : orgs2){
+//
+//            System.out.println(o.asString());
+//            System.out.println(o.asJSON());
+//        }
 
     }
 

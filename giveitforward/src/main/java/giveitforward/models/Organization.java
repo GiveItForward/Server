@@ -35,11 +35,22 @@ public class Organization extends Model {
     @Column(name = "description")
     private String description;
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Column(name = "address")
     private String address;
 
     @Column(name = "image")
     private String image;
+
+    @Column(name = "bio")
+    private String bio;
 
     public Organization(){}
 
@@ -124,6 +135,7 @@ public class Organization extends Model {
         object.put("description", this.description);
         object.put("address", this.address);
         object.put("image", this.image);
+        object.put("bio", this.bio);
         return object;
     }
 
