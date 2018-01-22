@@ -13,16 +13,16 @@ import java.sql.Timestamp;
 public class RequestModelTest {
     public static void main(String[] args) {
 
-        int rid = 1;
+        int rid = 0;
         String description = "des";
          Double amount = 20.0;
          String image = "img";
 //         Timestamp requesttime = null;
          User ruid = new User("email@email.com", "username", "password", false, null, "photo", "bio");
          ThankYou thankYou = new ThankYou(rid, "note", "image");
-         Integer duid = null;
-         Integer tag1 = null;
-         Integer tag2 = null;
+         Integer duid = 1;
+         Integer tag1 = 5;
+         Integer tag2 = 8;
         Request r = new Request(description, amount, image, ruid, thankYou, duid, tag1, tag2);
 
         System.out.println(r.asJSON());

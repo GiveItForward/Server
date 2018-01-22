@@ -271,6 +271,7 @@ public class Gateway
                 .build();
     }
 
+    //MyDonations
     @GET
     @Path("/requests/donateuid")
     @Produces(MediaType.APPLICATION_JSON)
