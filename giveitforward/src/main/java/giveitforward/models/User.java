@@ -42,9 +42,6 @@ public class User {
     @Column(name = "inactivedate")
     private Timestamp inactivedate;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UserTagPair> tagpairs;
-
     public User(){
             
     }
@@ -159,13 +156,5 @@ public class User {
 
     public void setInactivedatedate(Timestamp inactivedate) {
         this.inactivedate = inactivedate;
-    }
-
-    public List<UserTagPair> getTagpairs() {
-        return tagpairs;
-    }
-
-    public void setTagpairs(List<UserTagPair> tagpairs) {
-        this.tagpairs = tagpairs;
     }
 }

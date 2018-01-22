@@ -21,10 +21,10 @@ public class UserTagPair {
         return id;
     }
 
-    public void setId(User uid, UserTag tag) {
+    public void setId(Integer uid, Integer tag) {
         id = new UidTid();
-        id.setTagid(tag);
-        id.setUserid(uid);
+        id.setTid(tag);
+        id.setUid(uid);
     }
 
 
@@ -47,33 +47,26 @@ public class UserTagPair {
     @Embeddable
     static class UidTid implements Serializable {
 
-        @ManyToOne
-        @JoinColumn(name="userid")
-        private User userid;
+        @Column(name="userid")
+        private Integer uid;
 
-        @ManyToOne
-        @JoinColumn(name="tagid")
-        private UserTag tagid;
+        @Column(name="tagid")
+        private Integer tid;
 
-        public UidTid() {
-            tagid = new UserTag();
-            userid = new User();
+        public Integer getUid() {
+            return uid;
         }
 
-        public User getUserid() {
-            return userid;
+        public void setUid(Integer uidRequest) {
+            this.uid = uidRequest;
         }
 
-        public void setUserid(User uidRequest) {
-            this.userid = uidRequest;
+        public Integer getTid() {
+            return tid;
         }
 
-        public UserTag getTagid() {
-            return tagid;
-        }
-
-        public void setTagid(UserTag tagid) {
-            this.tagid = tagid;
+        public void setTid(Integer tagid) {
+            this.tid = tagid;
         }
     }
 }
