@@ -24,16 +24,16 @@ public class Request extends Model {
     @Column(name = "requesttime")
     private Timestamp requesttime;
 
-    @Column(name = "donationtime")
-    private Timestamp donationtime;
+    @Column(name = "donatetime")
+    private Timestamp donateTime;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ruid")
     private User rUser;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "rid")
-    private ThankYou thankYou;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "rid")
+//    private ThankYou thankYou;
 
     @Column(name = "duid")
     private Integer duid;
@@ -49,7 +49,7 @@ public class Request extends Model {
         this.amount = amount;
         this.image = image;
         this.rUser = rUser;
-        this.thankYou = thankYou;
+//        this.thankYou = thankYou;
         this.duid = duid;
         this.tag1 = tag1;
         this.tag2 = tag2;
@@ -101,11 +101,11 @@ public class Request extends Model {
 
     public String asString() {
         String base = "rid: " + this.rid + ", amount: " + this.amount + ".";
-        if (thankYou != null) {
-            base += ", thankYou: true";
-        } else {
+//        if (thankYou != null) {
+//            base += ", thankYou: true";
+//        } else {
             base += ", thankYou: false";
-        }
+//        }
         return base;
     }
 
@@ -118,7 +118,7 @@ public class Request extends Model {
         object.put("duid", this.duid);
         object.put("tagId1", this.tag1);
         object.put("tagId2", this.tag2);
-        object.put("thankYou", this.thankYou.asJSON());
+//        object.put("thankYou", this.thankYou.asJSON());
         object.put("rUser", this.rUser.asJSON());
         return object;
     }
@@ -168,12 +168,11 @@ public class Request extends Model {
         this.tag2 = tag2;
     }
 
-
-    public Timestamp getDonationtime() {
-        return donationtime;
+    public Timestamp getDonateTime() {
+        return donateTime;
     }
 
-    public void setDonationtime(Timestamp donationtime) {
-        this.donationtime = donationtime;
+    public void setDonateTime(Timestamp donateTime) {
+        this.donateTime = donateTime;
     }
 }

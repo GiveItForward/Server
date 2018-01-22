@@ -38,7 +38,7 @@ public class ManageRequest {
 //                rid: 3, amount: 20.0.
 //             */
 //         }
-//
+
         for(Model r : mr.getRequestsFilterByDonateUid("4")){
 //            System.out.println(r.asString());
             System.out.println(r.asJSON());
@@ -156,7 +156,7 @@ public class ManageRequest {
      */
     public List<Request> getRequestsFilterByRequestUid(String rUid) {
 
-        return makeQuery("select r from Request r where r.ruid = " + rUid);
+        return makeQuery("select r from Request r where r.rUser.uid = " + rUid);
     }
 
     /**
@@ -165,7 +165,7 @@ public class ManageRequest {
      * @return a list of open requests created by a user with the given uid.
      */
     public List<Request> getRequestsFilterByRequestUidOpen(String rUid) {
-        return makeQuery("select r from Request r where r.ruid = " + rUid + " and r.duid is null");
+        return makeQuery("select r from Request r where r.rUser.ruid = " + rUid + " and r.duid is null");
     }
 
 
