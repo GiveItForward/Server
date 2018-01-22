@@ -8,7 +8,7 @@ import java.sql.Time;
 
 @Entity
 @Table(name = "user_tag_pair")
-public class UserTagPair implements Model{
+public class UserTagPair extends Model{
 
     @EmbeddedId
     private UidTid id;

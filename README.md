@@ -20,7 +20,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 | Path          | Headers   | Properties |  
 | ------------- |-----------|-----------|  
-| /signup     | username : {username} <br> password : {password} <br> email : {email} <br> \*isAdmin : {true/false}  <br> \*oid : {associated oid} <br> photo : {profile_pic} <br> bio : {text biography} | - isAdmin: true if the user will have admin privileges, false for normal users. <br> - oid: organization managed by the user, may be empty. <br> <br> - Returns all open requests as a JSONArray of requests. |  
+| /signup     |  | - Returns the User, user tags, and num of donations and fulfilled requests.
 | /login |  username : {username} <br> password : {password} | - verifies a users credentials and logs a user into a session.
 | /users | None | - Returns a list of all users
 

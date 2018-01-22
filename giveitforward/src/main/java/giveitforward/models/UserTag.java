@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "tag")
-public class UserTag implements Model{
+public class UserTag extends Model{
 
 
     @Id

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "elevated_user")
-public class ElevatedUser implements Model<ElevatedUser>{
+public class ElevatedUser extends Model{
 
     //Again, I don't think this value is generated because it's
     //from another table...

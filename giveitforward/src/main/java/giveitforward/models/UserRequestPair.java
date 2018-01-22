@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "user_request_pair")
-public class UserRequestPair implements Model{
+public class UserRequestPair extends Model{
 
     @EmbeddedId
     private UidRid id;

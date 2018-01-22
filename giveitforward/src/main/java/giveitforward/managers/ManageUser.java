@@ -152,6 +152,40 @@ public class ManageUser {
         return u;
     }
 
+    public User signupUser(User newUser)
+    {
+        Session session = factory.openSession();
+        Transaction t = null;
+        User u = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            u = new User(newUser.getEmail(), newUser.getUsername(), newUser.getPassword(), newUser.getIsAdmin(),
+                    newUser.getOrgId(), newUser.getPhoto(), newUser.getBio(), new Timestamp(System.currentTimeMillis()));
+            session.save(u);
+            session.flush();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return u;
+        } finally
+        {
+            session.close();
+            factory.close();
+        }
+
+        System.out.println("successfully added user");
+        return u;
+    }
+
     /**
      *  Sets the user's deactivation time to the current time - signifying that this user is deactivated
      * @param email user's email to be deactivated
@@ -239,4 +273,6 @@ public class ManageUser {
             return r;
         }
     }
+
+
 }

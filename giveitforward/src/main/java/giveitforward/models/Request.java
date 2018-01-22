@@ -3,6 +3,7 @@ import giveitforward.models.RequestTag;
 import giveitforward.models.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,11 +30,13 @@ public class Request extends Model {
     @Column(name = "requesttime")
     private Timestamp requesttime;
 
-    @Column (name = "duid")
-    private int duid;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ruid")
+    private User ruid;
 
-    @Column (name = "ruid")
-    private int ruid;
+    @Column(name="duid")
+    private Integer duid;
+
 
     public int getRid() {
         return rid;
@@ -96,4 +99,23 @@ public class Request extends Model {
         //TODO: If something goes wrong, return false!
     }
 
+    public int getDuid()
+    {
+        return duid;
+    }
+
+    public void setDuid(int duid)
+    {
+        this.duid = duid;
+    }
+
+    public User getRequestor()
+    {
+        return ruid;
+    }
+
+    public void setRequestor(User requestor)
+    {
+        this.ruid = requestor;
+    }
 }

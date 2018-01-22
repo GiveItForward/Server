@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tag")
-public class RequestTag implements Model{
+public class RequestTag extends Model{
 
 
     @Id

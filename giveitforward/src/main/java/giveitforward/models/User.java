@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 //@Table(name = "user", schema = "postgres")
 @Table(name = "users")
-public class User implements Model{
+public class User extends Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uid_generator")
@@ -71,6 +71,16 @@ public class User implements Model{
         this.photo = photo;
         this.bio = bio;
         this.signupdate = signupdate;
+    }
+
+    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
+    {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.isAdmin = isAdmin;
+        this.photo = photo;
+        this.bio = bio;
     }
 
     public Integer getUid() {

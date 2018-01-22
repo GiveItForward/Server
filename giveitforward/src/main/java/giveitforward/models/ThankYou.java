@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "thank_you")
-public class ThankYou implements Model{
+public class ThankYou extends Model{
 
     @Id
     @Column(name = "rid")

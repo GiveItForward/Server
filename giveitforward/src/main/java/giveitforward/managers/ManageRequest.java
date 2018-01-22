@@ -1,6 +1,8 @@
 package giveitforward.managers;
 
+import com.sun.org.apache.regexp.internal.RE;
 import giveitforward.models.Request;
+import giveitforward.models.Model;
 import giveitforward.models.User;
 import org.hibernate.*;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -23,30 +25,33 @@ public class ManageRequest {
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
 //
-//        List<Request> req = mr.getAllRequests();
-//        for(Request r : req){
+//        List<Model> req = mr.getAllRequests();
+//        for(Model r : req){
 //
 //            System.out.println(r.asString());
 //        }
-//
-//        for(Request r : mr.getRequestsFilterByRequestUid("1")){
+
+//        for(Model r : mr.getRequestsFilterByRequestUid("1")){
 //            System.out.println(r.asString());
 //            /* returns
 //                rid: 1, amount: 20.0.
 //                rid: 3, amount: 20.0.
 //             */
 //         }
+
+        for(Model r : mr.getRequestsFilterByDonateUid("4")){
+            System.out.println(r.asString());
+            /* returns
+                rid: 2, amount: 35.0.
+             */
+        }
 //
-//        for(Request r : mr.getRequestsFilterByDonateUid("4")){
+//        for(Model r : mr.getRequestsFilterByRequestUidOpen("1")){
 //            System.out.println(r.asString());
 //            /* returns
-//                rid: 2, amount: 35.0.
+//                rid: 1, amount: 20.0
 //             */
 //        }
-
-        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
-            System.out.println(r.asString());
-        }
 
     }
 
@@ -127,9 +132,8 @@ public class ManageRequest {
     /**
      * @return returns all pending requests in the DB.
      */
-    public List<Request> getAllRequests() {
-        //TODO: Fix this, should only return pending requests.
-        return makeQuery("from Request");
+    public List<Model> getAllRequests() {
+        return makeQuery("select r from Request r where r.duid is null");
     }
 
     /**
@@ -137,9 +141,9 @@ public class ManageRequest {
      * @param dUid uid
      * @return a list of requests fulfilled by the user with the given uid.
      */
-    public List<Request> getRequestsFilterByDonateUid(String dUid) {
-        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
-            "upr.uidDonate = " + dUid);
+    public List<Model> getRequestsFilterByDonateUid(String dUid) {
+        return makeQuery("select r from Request r where " +
+            "r.duid = " + dUid);
     }
 
     /**
@@ -147,10 +151,9 @@ public class ManageRequest {
      * @param rUid
      * @return a list of open and closed requests created by a user with the given uid.
      */
-    public List<Request> getRequestsFilterByRequestUid(String rUid) {
+    public List<Model> getRequestsFilterByRequestUid(String rUid) {
 
-        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
-                "upr.id.uidRequest = " + rUid);
+        return makeQuery("select r from Request r where r.ruid = " + rUid);
     }
 
     /**
@@ -158,10 +161,9 @@ public class ManageRequest {
      * @param rUid
      * @return a list of open requests created by a user with the given uid.
      */
-    public List<Request> getRequestsFilterByRequestUidOpen(String rUid) {
+    public List<Model> getRequestsFilterByRequestUidOpen(String rUid) {
         //SQL: select r.* from request r, user_request_pair upr where r.rid = upr.rid and upr.uid_request = 5 and upr.uid_donate is null;
-        return makeQuery("select r from Request r, UserRequestPair upr where r.rid = upr.id.rid and " +
-                "upr.id.uidRequest = " + rUid + " and upr.uidDonate is null");
+        return makeQuery("select r from Request r where r.ruid = " + rUid + " and r.duid is null");
     }
 
 
@@ -171,15 +173,15 @@ public class ManageRequest {
      * @param query HQL query to be performed.
      * @return a list of Requests which results from the given query.
      */
-    private List<Request> makeQuery(String query) {
+    private List<Model> makeQuery(String query) {
         Session session = factory.openSession();
         Transaction t = null;
-        List<Request> r = null;
+        List<Model> r = null;
 
         try
         {
             t = session.beginTransaction();
-            r = (List<Request>) session.createQuery(query).list();
+            r = (List<Model>) session.createQuery(query).list();
             t.commit();
         } catch (Exception e)
         {
