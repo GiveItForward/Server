@@ -3,6 +3,7 @@ package giveitforward.models;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import java.util.List;
+import java.sql.Timestamp;
 
 public abstract class Model {
 
@@ -35,4 +36,17 @@ public abstract class Model {
         }
         return jsonArray;
     }
+
+//    public static String getDisplayDate(Timestamp time) {
+//        String res = time.toString();
+//        String pieces[] = res.split("-");
+//        res = month(pieces[1]) + ", " + pieces[2] + ", " + pieces[0];
+//        return res;
+//    }
+//
+//    private String month(String month_no){
+//        switch (month_no) {
+//            case ""
+//        }
+//    }
 }

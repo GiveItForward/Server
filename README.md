@@ -44,10 +44,10 @@ Each API call is defined by a path which may or may not consist of multiple head
 ###### JSON Formats
 | Model | JSON |
 |-------|------|
-|Request|{"tag_id1":5, <br>"image":"img", <br>"amount":20, <br>"thankyou":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE Thank You* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"duid":1, <br>"tag_id2":8, <br>"description":"des", <br>"ruid":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE User* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
-|User | <br>{"uid":0, <br>"photo":"photo", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"username":"usrnme"  <br>}|
+|Request|{"tagId1":5, <br>"image":"img", <br>"amount":20, <br>"thankYou":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE Thank You* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"duid":1, <br>"tagId2":8, <br>"description":"des", <br>"ruid":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE User* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
+|User | <br>{"uid":0, <br>"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"username":"usrnme"  <br>}|
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
-|Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"bio":"more words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
+|Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 
 ### Security:
 

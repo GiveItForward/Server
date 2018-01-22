@@ -24,6 +24,9 @@ public class Request extends Model {
     @Column(name = "requesttime")
     private Timestamp requesttime;
 
+    @Column(name = "donationtime")
+    private Timestamp donationtime;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ruid")
     private User ruid;
@@ -113,9 +116,9 @@ public class Request extends Model {
         object.put("amount", this.amount);
         object.put("image", this.image);
         object.put("duid", this.duid);
-        object.put("tag_id1", this.tag1);
-        object.put("tag_id2", this.tag2);
-        object.put("thankyou", this.thankYou.asJSON());
+        object.put("tagId1", this.tag1);
+        object.put("tagId2", this.tag2);
+        object.put("thankYou", this.thankYou.asJSON());
         object.put("ruid", this.ruid.asJSON());
         return object;
     }
@@ -163,5 +166,14 @@ public class Request extends Model {
 
     public void setTag2(Integer tag2) {
         this.tag2 = tag2;
+    }
+
+
+    public Timestamp getDonationtime() {
+        return donationtime;
+    }
+
+    public void setDonationtime(Timestamp donationtime) {
+        this.donationtime = donationtime;
     }
 }

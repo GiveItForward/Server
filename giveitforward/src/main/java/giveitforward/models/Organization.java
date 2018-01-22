@@ -49,8 +49,6 @@ public class Organization extends Model {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "bio")
-    private String bio;
 
     public Organization(){}
 
@@ -135,7 +133,6 @@ public class Organization extends Model {
         object.put("description", this.description);
         object.put("address", this.address);
         object.put("image", this.image);
-        object.put("bio", this.bio);
         return object;
     }
 

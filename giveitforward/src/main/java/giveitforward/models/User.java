@@ -35,7 +35,7 @@ public class User extends Model {
     private Integer orgId;
 
     @Column(name = "photo")
-    private String photo;
+    private String image;
 
     @Column(name = "bio")
     private String bio;
@@ -57,7 +57,7 @@ public class User extends Model {
         this.password = password;
         this.isAdmin = isAdmin;
         this.orgId = orgId;
-        this.photo = photo;
+        this.image = photo;
         this.bio = bio;
     }
 
@@ -67,7 +67,7 @@ public class User extends Model {
         this.password = password;
         this.isAdmin = isAdmin;
         this.orgId = orgId;
-        this.photo = photo;
+        this.image = photo;
         this.bio = bio;
         this.signupdate = signupdate;
     }
@@ -77,7 +77,7 @@ public class User extends Model {
         this.username = username;
         this.password = password;
         this.isAdmin = isAdmin;
-        this.photo = photo;
+        this.image = photo;
         this.bio = bio;
     }
 
@@ -130,11 +130,11 @@ public class User extends Model {
     }
 
     public String getPhoto() {
-        return photo;
+        return image;
     }
 
     public void setPhoto(String photo) {
-        this.photo = photo;
+        this.image = photo;
     }
 
     public String getBio() {
@@ -172,7 +172,7 @@ public class User extends Model {
         object.put("username", this.username);
         object.put("isAdmin", this.isAdmin);
         object.put("orgId", this.orgId);
-        object.put("photo", this.photo);
+        object.put("image", this.image);
         object.put("bio", this.bio);
         return object;
     }
