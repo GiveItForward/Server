@@ -72,8 +72,4 @@ public class ElevatedUser extends Model{
     public boolean populateFromJSON(JSONObject obj) {
         return false;
     }
-
-    public JSONArray asJSONCollection(List<ElevatedUser> collection) {
-        return null;
-    }
 }

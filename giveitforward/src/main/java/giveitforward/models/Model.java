@@ -23,5 +23,16 @@ public abstract class Model {
      */
     public abstract boolean populateFromJSON(JSONObject obj);
 
-
+    /**
+    * Returns a JSON array consisting of many object to turn into a JSONArray
+    * @return
+    */
+    public static JSONArray asJSONCollection(List collection) {
+        JSONArray jsonArray = new JSONArray();
+        for (Object el : collection)
+        {
+            jsonArray.put(((Model)el).asJSON());
+        }
+        return jsonArray;
+    }
 }

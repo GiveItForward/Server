@@ -27,12 +27,12 @@ public class ManageOrganization
         ManageOrganization manager = new ManageOrganization();
 
 
-        //Approved orgs
-        List<Organization> orgs = manager.getAllOrgs();
-        for(Organization o : orgs){
-
-            System.out.println(o.asString());
-        }
+//        //Approved orgs
+//        List<Organization> orgs = manager.getAllOrgs();
+//        for(Organization o : orgs){
+//
+//            System.out.println(o.asString());
+//        }
 
         //Pending orgs
         List<Organization> orgs2 = manager.getAllPendingOrgs();
@@ -128,6 +128,7 @@ public class ManageOrganization
      */
     public List<Organization> getAllPendingOrgs()
     {
+
         return makeQuery("from Organization where approveddate is null");
     }
 
@@ -136,6 +137,7 @@ public class ManageOrganization
      */
     public List<Organization> getAllOrgs()
     {
+
         return makeQuery("from Organization where approveddate is not null");
     }
 

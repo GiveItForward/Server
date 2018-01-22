@@ -1,5 +1,6 @@
 package giveitforward.models;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 //@Table(name = "user", schema = "postgres")
 @Table(name = "users")
 public class User extends Model {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uid_generator")
@@ -159,23 +161,31 @@ public class User extends Model {
         this.inactivedate = inactivedate;
     }
 
-//    public List<UserTagPair> getTagpairs() {
-//        return tagpairs;
-//    }
-//
-//    public void setTagpairs(List<UserTagPair> tagpairs) {
-//        this.tagpairs = tagpairs;
-//    }
-
     public String asString() {
         return null;
     }
 
     public JSONObject asJSON() {
-        return null;
+        JSONObject object = new JSONObject();
+        object.put("uid", this.uid);
+        object.put("email", this.email);
+        object.put("username", this.username);
+        object.put("isAdmin", this.isAdmin);
+        object.put("orgId", this.orgId);
+        object.put("photo", this.photo);
+        object.put("bio", this.bio);
+        return object;
     }
 
-    public boolean populateFromJSON(JSONObject obj) {
-        return false;
+    public boolean populateFromJSON(JSONObject object) {
+        this.uid = object.getInt("uid");
+        this.email = object.getString("email");
+        this.username = object.getString("username");
+        this.password = object.getString("password");
+        //this.isAdmin = object.getBoolean("isAdmin");
+        //this.orgId = object.getInt("orgId");
+        //this.photo = object.getString("photo");
+        this.bio = object.getString("bio");
+        return true;
     }
 }

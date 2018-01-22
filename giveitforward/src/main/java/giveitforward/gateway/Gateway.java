@@ -89,7 +89,8 @@ public class Gateway
     @Produces(MediaType.APPLICATION_JSON)
     public Response newUser(String userJSon)//(String userJson)
     {
-        User newUser = GiveItForwardJSON.getUserFromJSON(new JSONObject(userJSon));
+        User newUser = new User();
+        newUser.populateFromJSON(new JSONObject(userJSon));
 
         ManageUser manager = new ManageUser();
         User userResult = manager.signupUser(newUser);
@@ -115,7 +116,7 @@ public class Gateway
 
     private Response getUserObjectResponse(User userResult, List<String> tags, int numOfDonations, int numOfFulfilledRequests)
     {
-        JSONObject jsonUser = GiveItForwardJSON.writeUserToJSON(userResult);
+        JSONObject jsonUser = userResult.asJSON();
 
         if(tags != null && !tags.isEmpty()){
             jsonUser.put("tags", new JSONArray(tags));
@@ -148,7 +149,7 @@ public class Gateway
 
     }
 
-    // TODO - this is to deactiate a users account (put an inactive date and remove them from system visibility)
+    // TODO - this is to deactivate a users account (put an inactive date and remove them from system visibility)
     @DELETE
     @Path("/signup")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -198,7 +199,7 @@ public class Gateway
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         } else {
-            JSONArray userJson = GiveItForwardJSON.writeAllUsersToJSon(userResult);
+            JSONArray userJson = Model.asJSONCollection(userResult);
             return Response.status(401)
                     .entity("Result of creating user true\n\n: " + userJson)
                     .header("Access-Control-Allow-Origin", "*")
@@ -222,7 +223,7 @@ public class Gateway
         ManageOrganization manager = new ManageOrganization();
         List<Organization> orgs = manager.getAllOrgs();
 
-        JSONArray orgJSON = GiveItForwardJSON.getOrgJSONCollection(orgs);
+        JSONArray orgJSON = Model.asJSONCollection(orgs);
 
         return Response.ok()
                 .entity(orgJSON.toString())
@@ -240,9 +241,9 @@ public class Gateway
     {
 
         ManageRequest manager = new ManageRequest();
-        List<Model> requests = manager.getAllRequests();
+        List<Request> requests = manager.getAllRequests();
 
-        JSONArray requestJSON = asJSONCollection(requests);
+        JSONArray requestJSON = Model.asJSONCollection(requests);
 
         return Response.ok()
                 .entity(requestJSON.toString())
@@ -279,9 +280,9 @@ public class Gateway
         ManageRequest manager = new ManageRequest();
 
         String dUid = headers.getRequestHeader("uid").get(0);
-        List<Model> requests = manager.getRequestsFilterByDonateUid(dUid);
+        List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
 
-        JSONArray requestJSON = asJSONCollection(requests);
+        JSONArray requestJSON = Model.asJSONCollection(requests);
 
         return Response.ok()
                 .entity(requestJSON.toString())
@@ -319,9 +320,9 @@ public class Gateway
         ManageRequest manager = new ManageRequest();
         String rUid = headers.getRequestHeader("uid").get(0);
         
-        List<Model> requests = manager.getRequestsFilterByRequestUid(rUid);
+        List<Request> requests = manager.getRequestsFilterByRequestUid(rUid);
 
-        JSONArray requestJSON = asJSONCollection(requests);
+        JSONArray requestJSON = Model.asJSONCollection(requests);
 
         return Response.ok()
                 .entity(requestJSON.toString())
@@ -338,9 +339,9 @@ public class Gateway
 
         ManageRequest manager = new ManageRequest();
         String rUid = headers.getRequestHeader("uid").get(0);
-        List<Model> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
+        List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
 
-        JSONArray requestJSON = asJSONCollection(requests);
+        JSONArray requestJSON = Model.asJSONCollection(requests);
 
         return Response.ok()
                 .entity(requestJSON.toString())
@@ -363,7 +364,7 @@ public class Gateway
 
         if (tagResult != null)
         {
-            JSONArray jsonTags = GiveItForwardJSON.writeTagsToJSon(tagResult);
+            JSONArray jsonTags = Model.asJSONCollection(tagResult);
 
             return Response.ok() //200
                     .entity(jsonTags.toString())
@@ -379,19 +380,5 @@ public class Gateway
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         }
-    }
-
-
-    /**
-     * Returns a JSON array consisting of many object to turn into a JSONArray
-     * @return
-     */
-    public static JSONArray asJSONCollection(List<Model> collection) {
-        JSONArray jsonArray = new JSONArray();
-        for (Object el : collection)
-        {
-            jsonArray.put(((Model)el).asJSON());
-        }
-        return jsonArray;
     }
 }
