@@ -66,7 +66,9 @@ public class GiveItForwardJSON
     {
         JSONObject object = new JSONObject();
         object.put("rid", request.getRid());
-        object.put("ruid", request.getRuid());
+        object.put("requestorUsername", request.getRequestor().getUsername());
+        object.put("requestorPhoto", request.getRequestor().getPhoto());
+        object.put("requestorTags", new JSONArray()); // get the tags from request.getRequestor().getTags() which will be a one to many relationship
         object.put("description", request.getDescription());
         object.put("amount", request.getAmount());
         object.put("image", request.getImage());

@@ -25,11 +25,13 @@ public class Request {
     @Column(name = "requesttime")
     private Timestamp requesttime;
 
-    @Column(name="ruid")
-    private Integer ruid;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ruid")
+    private User requestor;
 
     @Column(name="duid")
     private Integer duid;
+
 
     public int getRid() {
         return rid;
@@ -73,16 +75,6 @@ public class Request {
 
     public String asString() { return "rid: " + this.rid + ", amount: " + this.amount + "."; }
 
-    public int getRuid()
-    {
-        return ruid;
-    }
-
-    public void setRuid(int ruid)
-    {
-        this.ruid = ruid;
-    }
-
     public int getDuid()
     {
         return duid;
@@ -91,5 +83,15 @@ public class Request {
     public void setDuid(int duid)
     {
         this.duid = duid;
+    }
+
+    public User getRequestor()
+    {
+        return requestor;
+    }
+
+    public void setRequestor(User requestor)
+    {
+        this.requestor = requestor;
     }
 }

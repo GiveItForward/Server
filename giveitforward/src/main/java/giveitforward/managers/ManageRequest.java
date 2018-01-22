@@ -129,8 +129,7 @@ public class ManageRequest {
      * @return returns all pending requests in the DB.
      */
     public List<Request> getAllRequests() {
-        //TODO: Fix this, should only return pending requests.
-        return makeQuery("from Request");
+        return makeQuery("select r from Request r where r.duid is null");
     }
 
     /**
