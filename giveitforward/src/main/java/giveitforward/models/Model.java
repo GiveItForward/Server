@@ -42,8 +42,8 @@ public abstract class Model {
             return null;
         }
         String res = time.toString();
-        String pieces[] = res.split("-");
-        res = month(Integer.parseInt(pieces[1])) + ", " + pieces[2] + ", " + pieces[0];
+        String pieces[] = res.split("[- ]");
+        res = month(Integer.parseInt(pieces[1])) + " " + pieces[2] + ", " + pieces[0];
         return res;
     }
 

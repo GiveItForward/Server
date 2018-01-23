@@ -46,6 +46,7 @@ public class ManageRequest {
 //                rid: 2, amount: 35.0, thankYou: true
 //             */
 //        }
+
 //
 //        for(Model r : mr.getRequestsFilterByRequestUidOpen("1")){
 //            System.out.println(r.asString());
@@ -122,7 +123,8 @@ public class ManageRequest {
      * @return count of requests made, -1 if error is thrown.
      */
     public int getCountRequestsByUID(int uid) {
-        String queryString = "select count(*) from Request where ruid.uid = :id";
+
+        String queryString = "select count(*) from Request where rUser.uid = :id and duid is not null";
         String paramType = "id";
         int paramVal = uid;
         return makeCountQuery(queryString, paramType, paramVal);
@@ -156,7 +158,7 @@ public class ManageRequest {
      */
     public List<Request> getRequestsFilterByRequestUid(String rUid) {
 
-        return makeQuery("select r from Request r where r.ruid = " + rUid);
+        return makeQuery("select r from Request r where r.rUser.uid = " + rUid);
     }
 
     /**
@@ -165,7 +167,7 @@ public class ManageRequest {
      * @return a list of open requests created by a user with the given uid.
      */
     public List<Request> getRequestsFilterByRequestUidOpen(String rUid) {
-        return makeQuery("select r from Request r where r.ruid = " + rUid + " and r.duid is null");
+        return makeQuery("select r from Request r where r.rUser.ruid = " + rUid + " and r.duid is null");
     }
 
 
