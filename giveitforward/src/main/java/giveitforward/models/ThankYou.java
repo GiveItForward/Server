@@ -75,7 +75,7 @@ public class ThankYou extends Model{
         object.put("rid", this.rid);
         object.put("note", this.note);
         object.put("image", this.image);
-        object.put("date", this.date);
+        object.put("date", getDisplayDate(this.date));
         return object;
     }
 

@@ -64,7 +64,7 @@ public class Notification extends Model {
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();
         object.put("nid", this.nid);
-        object.put("date", this.date);
+        object.put("date", getDisplayDate(this.date));
         object.put("message", this.message);
         object.put("uid", this.message);
         return object;
