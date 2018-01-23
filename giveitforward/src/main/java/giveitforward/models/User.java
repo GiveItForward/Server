@@ -34,6 +34,14 @@ public class User extends Model {
     @Column(name = "oid")
     private Integer orgId;
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     @Column(name = "photo")
     private String image;
 

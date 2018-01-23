@@ -37,16 +37,43 @@ public abstract class Model {
         return jsonArray;
     }
 
-//    public static String getDisplayDate(Timestamp time) {
-//        String res = time.toString();
-//        String pieces[] = res.split("-");
-//        res = month(pieces[1]) + ", " + pieces[2] + ", " + pieces[0];
-//        return res;
-//    }
-//
-//    private String month(String month_no){
-//        switch (month_no) {
-//            case ""
-//        }
-//    }
+    public static String getDisplayDate(Timestamp time) {
+        if (time == null){
+            return null;
+        }
+        String res = time.toString();
+        String pieces[] = res.split("-");
+        res = month(Integer.parseInt(pieces[1])) + ", " + pieces[2] + ", " + pieces[0];
+        return res;
+    }
+
+    private static String month(int month_no){
+        switch (month_no) {
+            case 1:
+                return "Jan";
+            case 2:
+                return "Feb";
+            case 3:
+                return "Mar";
+            case 4:
+                return "Apr";
+            case 5:
+                return "May";
+            case 6:
+                return "Jun";
+            case 7:
+                return "Jul";
+            case 8:
+                return "Aug";
+            case 9:
+                return "Sep";
+            case 10:
+                return "Oct";
+            case 11:
+                return "Nov";
+            case 12:
+                return "Dec";
+        }
+        return null;
+    }
 }

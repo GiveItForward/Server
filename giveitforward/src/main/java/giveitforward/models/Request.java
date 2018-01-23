@@ -118,8 +118,11 @@ public class Request extends Model {
         object.put("duid", this.duid);
         object.put("tagId1", this.tag1);
         object.put("tagId2", this.tag2);
-        object.put("thankYou", this.thankYou.asJSON());
+        if(this.thankYou != null)
+            object.put("thankYou", this.thankYou.asJSON());
         object.put("ruid", this.ruid.asJSON());
+        object.put("requestTime", getDisplayDate(this.requesttime));
+        object.put("donateTime", getDisplayDate(this.donationtime));
         return object;
     }
 

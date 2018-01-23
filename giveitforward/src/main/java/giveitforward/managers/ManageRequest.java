@@ -25,11 +25,11 @@ public class ManageRequest {
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
 //
-//        List<Model> req = mr.getAllRequests();
-//        for(Model r : req){
-//
-//            System.out.println(r.asString());
-//        }
+        List<Request> req = mr.getAllRequests();
+        for(Request r : req){
+
+            System.out.println(r.asJSON());
+        }
 
 //        for(Model r : mr.getRequestsFilterByRequestUid("1")){
 //            System.out.println(r.asString());
@@ -39,13 +39,13 @@ public class ManageRequest {
 //             */
 //         }
 //
-        for(Model r : mr.getRequestsFilterByDonateUid("4")){
-//            System.out.println(r.asString());
-            System.out.println(r.asJSON());
-            /* returns
-                rid: 2, amount: 35.0, thankYou: true
-             */
-        }
+//        for(Model r : mr.getRequestsFilterByDonateUid("4")){
+////            System.out.println(r.asString());
+//            System.out.println(r.asJSON());
+//            /* returns
+//                rid: 2, amount: 35.0, thankYou: true
+//             */
+//        }
 //
 //        for(Model r : mr.getRequestsFilterByRequestUidOpen("1")){
 //            System.out.println(r.asString());
@@ -110,7 +110,7 @@ public class ManageRequest {
      * @return count of donations made, -1 if error is thrown.
      */
     public int getCountDonationsByUID(int uid) {
-        String queryString = "select count(*) from UserRequestPair where uid_donate = :id";
+        String queryString = "select count(*) from Request where duid = :id";
         String paramType = "id";
         int paramVal = uid;
         return makeCountQuery(queryString, paramType, paramVal);
@@ -122,7 +122,7 @@ public class ManageRequest {
      * @return count of requests made, -1 if error is thrown.
      */
     public int getCountRequestsByUID(int uid) {
-        String queryString = "select count(*) from UserRequestPair where uid_request = :id";
+        String queryString = "select count(*) from Request where ruid.uid = :id";
         String paramType = "id";
         int paramVal = uid;
         return makeCountQuery(queryString, paramType, paramVal);
