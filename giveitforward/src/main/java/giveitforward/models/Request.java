@@ -40,9 +40,9 @@ public class Request extends Model {
     @JoinColumn(name = "tag2")
     private UserTag tag2;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "rid")
-//    private ThankYou thankYou;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "rid")
+    private ThankYou thankYou;
 
     @Column(name = "duid")
     private Integer duid;
@@ -121,7 +121,7 @@ public class Request extends Model {
         object.put("duid", this.duid);
         object.put("tagId1", this.tag1.asJSON());
         object.put("tagId2", this.tag2.asJSON());
-//        object.put("thankYou", this.thankYou.asJSON());
+        object.put("thankYou", this.thankYou.asJSON());
         object.put("rUser", this.rUser.asJSON());
         object.put("requestTime", this.getRequesttime());
         object.put("donateTime", this.getDonateTime());
@@ -171,7 +171,8 @@ public class Request extends Model {
         this.tag1 = tag1;
     }
 
-    public UserTag getTag1(){
+    public UserTag getTag1()
+    {
         return this.tag1;
     }
 
@@ -182,5 +183,15 @@ public class Request extends Model {
 
     public UserTag getTag2(){
         return this.tag2;
+    }
+
+    public ThankYou getThankYou()
+    {
+        return this.thankYou;
+    }
+
+    public void setThankYou(ThankYou thankYou)
+    {
+        this.thankYou = thankYou;
     }
 }
