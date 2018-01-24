@@ -2,22 +2,14 @@ package giveitforward.managers;
 
 
 import giveitforward.models.Organization;
-import giveitforward.models.Request;
 import giveitforward.models.User;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.criterion.Restrictions;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ManageOrganization
 {
-    private static SessionFactory factory;
 
     /**
      * Used for quick testing.
@@ -42,19 +34,10 @@ public class ManageOrganization
 //            System.out.println(o.asString());
 //            System.out.println(o.asJSON());
 //        }
-
     }
 
     public ManageOrganization()
     {
-        try
-        {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex)
-        {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
     }
 
     /**
@@ -67,7 +50,7 @@ public class ManageOrganization
      */
     public Organization createOrganization(String name, String email, String website, String phone_number)
     {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         Organization org = null;
 
@@ -91,7 +74,6 @@ public class ManageOrganization
         } finally
         {
             session.close();
-            factory.close();
         }
 
         System.out.println("successfully added organization");
@@ -151,7 +133,7 @@ public class ManageOrganization
      * @return a list of Requests which results from the given query.
      */
     private List<Organization> makeQuery(String query) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         List<Organization> orgs = null;
 
@@ -171,7 +153,6 @@ public class ManageOrganization
         } finally
         {
             session.close();
-            factory.close();
             return orgs;
         }
     }

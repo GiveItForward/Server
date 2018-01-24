@@ -5,7 +5,9 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 //@Table(name = "user", schema = "postgres")
@@ -34,14 +36,6 @@ public class User extends Model {
     @Column(name = "oid")
     private Integer orgId;
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
     @Column(name = "photo")
     private String image;
 
@@ -53,6 +47,14 @@ public class User extends Model {
 
     @Column(name = "inactivedate")
     private Timestamp inactivedate;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "user_tag_pair",
+            joinColumns = { @JoinColumn(name = "userid") },
+            inverseJoinColumns = { @JoinColumn(name = "tagid") }
+    )
+    private Set<UserTag> tags = new HashSet<UserTag>();
 
     public User() {
 
@@ -87,6 +89,22 @@ public class User extends Model {
         this.isAdmin = isAdmin;
         this.image = photo;
         this.bio = bio;
+    }
+
+    public Set<UserTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<UserTag> tags) {
+        this.tags = tags;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public Integer getUid() {
@@ -170,7 +188,14 @@ public class User extends Model {
     }
 
     public String asString() {
-        return null;
+        String tag_display = "";
+        if(tags.isEmpty() == false) {
+            for (UserTag tag : tags) {
+                tag_display += tag.asString() + "\n";
+            }
+            return "name: " + username + "\nemail: " + email + "\ntags:\n" + tag_display;
+        }
+        return "name: " + username + "\nemail: " + email;
     }
 
     public JSONObject asJSON() {
@@ -182,21 +207,26 @@ public class User extends Model {
         object.put("orgId", this.orgId);
         object.put("image", this.image);
         object.put("bio", this.bio);
+        JSONArray arr = new JSONArray();
+        for(UserTag tag: tags){
+            arr.put(tag.asJSON());
+        }
+        object.put("tags", arr);
 
         // TODO - until tags are implemented send through fake placeholders for jen
-        JSONArray arr = new JSONArray();
-
-        UserTag tag1 = new UserTag();
-        tag1.setUserTid(12);
-        tag1.setUserTag("other");
-
-        UserTag tag2 = new UserTag();
-        tag2.setUserTid(12);
-        tag2.setUserTag("other");
-
-        arr.put(tag1.asJSON());
-        arr.put(tag2.asJSON());
-        object.put("tags", arr);
+//
+//
+//        UserTag tag1 = new UserTag();
+//        tag1.setUserTid(12);
+//        tag1.setUserTag("other");
+//
+//        UserTag tag2 = new UserTag();
+//        tag2.setUserTid(12);
+//        tag2.setUserTag("other");
+//
+//        arr.put(tag1.asJSON());
+//        arr.put(tag2.asJSON());
+//        object.put("tags", arr);
         return object;
     }
 
@@ -211,4 +241,5 @@ public class User extends Model {
         this.bio = object.getString("bio");
         return true;
     }
+
 }

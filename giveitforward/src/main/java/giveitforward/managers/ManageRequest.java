@@ -1,19 +1,12 @@
 package giveitforward.managers;
 
-import com.sun.org.apache.regexp.internal.RE;
 import giveitforward.models.Request;
-import giveitforward.models.Model;
-import giveitforward.models.User;
 import org.hibernate.*;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ManageRequest {
 
-    private static SessionFactory factory;
 
     /**
      * Used for quick testing.
@@ -48,23 +41,17 @@ public class ManageRequest {
 //        }
 
 //
-//        for(Model r : mr.getRequestsFilterByRequestUidOpen("1")){
-//            System.out.println(r.asString());
-//            /* returns
-//                rid: 1, amount: 20.0
-//             */
-//        }
+        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
+            System.out.println(r.asString());
+            /* returns
+                rid: 1, amount: 20.0
+             */
+        }
 
 
     }
 
     public ManageRequest(){
-        try {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
     }
 
     /**
@@ -167,7 +154,7 @@ public class ManageRequest {
      * @return a list of open requests created by a user with the given uid.
      */
     public List<Request> getRequestsFilterByRequestUidOpen(String rUid) {
-        return makeQuery("select r from Request r where r.rUser.ruid = " + rUid + " and r.duid is null");
+        return makeQuery("select r from Request r where r.rUser.uid = " + rUid + " and r.duid is null");
     }
 
 
@@ -178,7 +165,7 @@ public class ManageRequest {
      * @return a list of Requests which results from the given query.
      */
     private List<Request> makeQuery(String query) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();//factory.openSession();
         Transaction t = null;
         List<Request> r = null;
 
@@ -198,7 +185,7 @@ public class ManageRequest {
         } finally
         {
             session.close();
-            factory.close();
+//            factory.close();
             return r;
         }
     }
@@ -211,7 +198,7 @@ public class ManageRequest {
      * @return
      */
     private int makeCountQuery(String queryString, String parameterType, Object parameterValue) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Query query = session.createQuery(queryString);
         query.setParameter(parameterType, parameterValue);
 
@@ -230,7 +217,6 @@ public class ManageRequest {
         finally
         {
             session.close();
-            factory.close();
             return count;
         }
     }

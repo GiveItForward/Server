@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ManageRequestTag {
 
-    private static SessionFactory factory;
 
     public static void main(String[] args) {
 
@@ -20,12 +19,7 @@ public class ManageRequestTag {
     }
 
     public ManageRequestTag(){
-        try {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+
     }
 
     /**
@@ -34,7 +28,7 @@ public class ManageRequestTag {
      */
     public RequestTag createRequestTag(String tagname) {
 
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         RequestTag tag;
 
@@ -58,7 +52,6 @@ public class ManageRequestTag {
         } finally
         {
             session.close();
-            factory.close();
         }
 
         System.out.println("successfully added tag");
@@ -70,7 +63,7 @@ public class ManageRequestTag {
      * @return
      */
     public RequestTag updateTag(int tid, String tagname) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Query query = session.createQuery("update Tag set tagname = :val where tid = :id");
         query.setParameter("val", tagname);
         query.setParameter("id", tid);
@@ -92,7 +85,7 @@ public class ManageRequestTag {
      * @return true if the tag was successfully removed.
      */
     public boolean deleteRequestTag(int tid) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Query query = session.createQuery("delete RequestTag where tid = :id");
         query.setParameter("id", tid);
 
@@ -124,7 +117,6 @@ public class ManageRequestTag {
         finally
         {
             session.close();
-            factory.close();
         }
     }
 
@@ -134,7 +126,7 @@ public class ManageRequestTag {
      */
     public List<RequestTag> getAllRequestTags() {
 
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         List<RequestTag> r = null;
 
@@ -157,7 +149,6 @@ public class ManageRequestTag {
         } finally
         {
             session.close();
-            factory.close();
             return r;
         }
     }

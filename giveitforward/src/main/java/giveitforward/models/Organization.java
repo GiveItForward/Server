@@ -35,14 +35,6 @@ public class Organization extends Model {
     @Column(name = "description")
     private String description;
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     @Column(name = "address")
     private String address;
 
@@ -59,6 +51,14 @@ public class Organization extends Model {
         this.email = email;
         this.website = website;
         this.phone_number = phone_number;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public int getOid() {

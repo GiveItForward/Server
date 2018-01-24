@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 
 public class ManageThankYou {
 
-    private static SessionFactory factory;
 
     public static void main(String[] args) {
 
@@ -21,12 +20,7 @@ public class ManageThankYou {
     }
 
     public ManageThankYou(){
-        try {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+
     }
 
     /**
@@ -34,7 +28,7 @@ public class ManageThankYou {
      * @return
      */
     public ThankYou createThankYou(int rid, String note, String image) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         ThankYou ty = null;
 
@@ -56,7 +50,6 @@ public class ManageThankYou {
 
         } finally {
             session.close();
-            factory.close();
         }
         return ty;
     }
@@ -76,7 +69,7 @@ public class ManageThankYou {
      * @return true if the ThankYou was successfully removed.
      */
     public boolean deleteThankYou(int rid) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Query query = session.createQuery("delete ThankYou where rid = :id");
         query.setParameter("id", rid);
 
@@ -108,7 +101,6 @@ public class ManageThankYou {
         finally
         {
             session.close();
-            factory.close();
         }
     }
 }

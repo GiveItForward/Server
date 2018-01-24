@@ -3,16 +3,14 @@ package giveitforward.managers;
 import giveitforward.models.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.SessionFactory;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 public class ManageUser {
-    private static SessionFactory factory;
 
     public static void main(String[] args) {
         String email = "single_mama@email.com";
@@ -27,23 +25,22 @@ public class ManageUser {
 
         //mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
         //mu.loginUser("boo@email.com", "pswd");
-        mu.deactivateUser("boo@email.com");
+//        mu.deactivateUser("boo@email.com");
+
+        for(User u : mu.getAllUsers()){
+            System.out.println(u.asJSON());
+        }
+
     }
 
     public ManageUser() {
-        try {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
     }
 
 
 
     private User getUserFromEmail(String email)
     {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         User u = null;
 
@@ -68,7 +65,6 @@ public class ManageUser {
         } finally
         {
             session.close();
-            factory.close();
             return u;
         }
     }
@@ -121,7 +117,7 @@ public class ManageUser {
      */
     public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
     {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         User u = null;
 
@@ -145,7 +141,6 @@ public class ManageUser {
         } finally
         {
             session.close();
-            factory.close();
         }
 
         System.out.println("successfully added user");
@@ -154,7 +149,7 @@ public class ManageUser {
 
     public User signupUser(User newUser)
     {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         User u = null;
 
@@ -179,7 +174,6 @@ public class ManageUser {
         } finally
         {
             session.close();
-            factory.close();
         }
 
         System.out.println("successfully added user");
@@ -197,7 +191,7 @@ public class ManageUser {
 
         u.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
 
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
         try
@@ -219,7 +213,6 @@ public class ManageUser {
         } finally
         {
             session.close();
-            factory.close();
         }
 
         System.out.println("successfully deactivated user");
@@ -249,7 +242,7 @@ public class ManageUser {
      * @return a list of Users which results from the given query.
      */
     private List<User> makeQuery(String query) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         List<User> r = null;
 
@@ -269,7 +262,6 @@ public class ManageUser {
         } finally
         {
             session.close();
-            factory.close();
             return r;
         }
     }

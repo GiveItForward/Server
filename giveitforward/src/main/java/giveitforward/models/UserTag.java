@@ -46,7 +46,8 @@ public class UserTag extends Model{
     }
 
     public String asString() {
-        return null;
+
+        return "tagname: " + tagname;
     }
 
     public JSONObject asJSON() {

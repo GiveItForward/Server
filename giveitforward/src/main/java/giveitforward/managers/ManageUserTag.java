@@ -11,7 +11,6 @@ import java.util.*;
 
 public class ManageUserTag {
 
-    private static SessionFactory factory;
 
     public static void main(String[] args) {
 
@@ -21,12 +20,7 @@ public class ManageUserTag {
     }
 
     public ManageUserTag(){
-        try {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+
     }
 
     /**
@@ -35,7 +29,7 @@ public class ManageUserTag {
      */
     public UserTag createTag(String tagname) {
 
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         UserTag tag;
 
@@ -59,7 +53,6 @@ public class ManageUserTag {
         } finally
         {
             session.close();
-            factory.close();
         }
 
         System.out.println("successfully added tag");
@@ -71,7 +64,7 @@ public class ManageUserTag {
      * @return
      */
     public UserTag updateTag(int tid, String tagname) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Query query = session.createQuery("update UserTag set tagname = :val where tid = :id");
         query.setParameter("val", tagname);
         query.setParameter("id", tid);
@@ -93,7 +86,7 @@ public class ManageUserTag {
      * @return true if the tag was successfully removed.
      */
     public boolean deleteTag(int tid) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Query query = session.createQuery("delete UserTag where tid = :id");
         query.setParameter("id", tid);
 
@@ -125,7 +118,6 @@ public class ManageUserTag {
         finally
         {
             session.close();
-            factory.close();
         }
     }
 
@@ -144,7 +136,7 @@ public class ManageUserTag {
      * @return a list of tags
      */
     public List<String> getAllTagsByUID(int uid) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         List<String> allTags = null;
 
@@ -167,7 +159,6 @@ public class ManageUserTag {
         } finally
         {
             session.close();
-            factory.close();
             return allTags;
         }
     }
@@ -177,7 +168,7 @@ public class ManageUserTag {
      * @return a list of Users which results from the given query.
      */
     private List<UserTag> makeQuery(String query) {
-        Session session = factory.openSession();
+        Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         List<UserTag> ut = null;
 
@@ -197,7 +188,6 @@ public class ManageUserTag {
         } finally
         {
             session.close();
-            factory.close();
             return ut;
         }
     }

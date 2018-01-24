@@ -11,8 +11,8 @@ import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Path("/")
 public class Gateway
@@ -32,33 +32,29 @@ public class Gateway
     @Produces(MediaType.APPLICATION_JSON)
     public Response userLogin(@Context HttpHeaders headers)
     {
+            String username = headers.getRequestHeader("email").get(0);
+            String password = headers.getRequestHeader("password").get(0);
 
-        String username = headers.getRequestHeader("email").get(0);
-        String password = headers.getRequestHeader("password").get(0);
+            ManageUser manager = new ManageUser();
+            User userResult = manager.loginUser(username, password);
 
-        ManageUser manager = new ManageUser();
-        User userResult = manager.loginUser(username, password);
+            if (userResult != null) {
+                ManageUserTag tagManager = new ManageUserTag();
+                List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
 
-        ManageUserTag tagManager = new ManageUserTag();
-        List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
+                ManageRequest reqManager = new ManageRequest();
+                int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
+                int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
 
-        ManageRequest reqManager = new ManageRequest();
-        int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
-        int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
+                return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
 
-
-        if (userResult != null)
-        {
-            return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
-
-        } else
-        {
-            return Response.serverError()
-                    .entity("Logged in user : false")
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        }
+            } else {
+                return Response.serverError()
+                        .entity("Logged in user : false")
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                        .build();
+            }
     }
 
 
@@ -282,8 +278,24 @@ public class Gateway
 
         String dUid = headers.getRequestHeader("uid").get(0);
         List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
+        //get donate amount from all requests for the current year
+        double donate_amount = 0.0;
+
+        //current year
+        int current_year = Calendar.getInstance().get(Calendar.YEAR);
+
+        for(Request r : requests){
+            if(getYear(r.getDonateTime()) == current_year) {
+                donate_amount += r.getAmount();
+            }
+        }
 
         JSONArray requestJSON = Model.asJSONCollection(requests);
+
+        // add donate amount to response.
+        JSONObject object = new JSONObject();
+        object.put("donationsThisYear", donate_amount);
+        requestJSON.put(object);
 
         return Response.ok()
                 .entity(requestJSON.toString())
@@ -402,5 +414,11 @@ public class Gateway
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .build();
         }
+    }
+
+    private int getYear(Timestamp t){//your object here.
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date(t.getTime()));
+        return cal.get(Calendar.YEAR);
     }
 }

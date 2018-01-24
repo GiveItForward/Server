@@ -119,8 +119,10 @@ public class Request extends Model {
         object.put("amount", this.amount);
         object.put("image", this.image);
         object.put("duid", this.duid);
-        object.put("tagId1", this.tag1);
-        object.put("tagId2", this.tag2);
+        if(this.tag1 != null)
+            object.put("tag1", this.tag1.asJSON());
+        if(this.tag2 != null)
+            object.put("tag2", this.tag2.asJSON());
         if(this.thankYou != null)
             object.put("thankYou", this.thankYou.asJSON());
         object.put("rUser", this.rUser.asJSON());

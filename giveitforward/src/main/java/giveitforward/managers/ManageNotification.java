@@ -7,15 +7,8 @@ import org.hibernate.cfg.AnnotationConfiguration;
 public class ManageNotification {
 
 
-    private static SessionFactory factory;
 
     public ManageNotification(){
-        try {
-            factory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
     }
 
     /**
