@@ -58,26 +58,6 @@ public class Gateway
     }
 
 
-    /**
-     * This method is needed because the browser sends /signup first an OPTION method request in
-     * order to figure out what kind of methods the server allows.
-     * @return An ok response with
-     */
-    @OPTIONS
-    @Path("/login")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response loginOptions()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-
     // this method is for /signup a new user
     @POST
     @Path("/signup")
@@ -160,25 +140,6 @@ public class Gateway
 
     }
 
-    /**
-     * This method is needed because the browser sends /signup first an OPTION method request in
-     * order to figure out what kind of methods the server allows.
-     * @return An ok response with
-     */
-    @OPTIONS
-    @Path("/signup")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response optionsNewUser()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
@@ -248,25 +209,6 @@ public class Gateway
                 .build();
     }
 
-    /**
-     * This method is needed because the browser sends /signup first an OPTION method request in
-     * order to figure out what kind of methods the server allows.
-     * @return An ok response with
-     */
-    @OPTIONS
-    @Path("/requests")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reqOptions()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
     //MyDonations
     @GET
     @Path("/requests/donateuid")
@@ -305,25 +247,6 @@ public class Gateway
     }
 
 
-    /**
-     * This method is needed because the browser sends /signup first an OPTION method request in
-     * order to figure out what kind of methods the server allows.
-     * @return An ok response with
-     */
-    @OPTIONS
-    @Path("/requests/donateuid")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reqDonateOptions()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
     //MyRequests
     @GET
     @Path("/requests/requestuid")
@@ -342,25 +265,6 @@ public class Gateway
                 .entity(requestJSON.toString())
                 .header("Access-Control-Allow-Origin", "*")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-    /**
-     * This method is needed because the browser sends /signup first an OPTION method request in
-     * order to figure out what kind of methods the server allows.
-     * @return An ok response with
-     */
-    @OPTIONS
-    @Path("/requests/requestuid")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response reqRuidOptions()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, password, uid")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
                 .build();
     }
 
