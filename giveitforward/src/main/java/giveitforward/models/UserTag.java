@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "tag")
+@Table(name = "user_tag")
 public class UserTag extends Model{
 
 

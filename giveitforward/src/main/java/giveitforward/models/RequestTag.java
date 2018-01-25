@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "tag")
+@Table(name = "request_tag")
 public class RequestTag extends Model{
 
 
@@ -17,11 +17,8 @@ public class RequestTag extends Model{
     @Column(name = "tagname")
     private String tagname;
 
-    @Column(name = "tag")
-    private String tag;
-
-    public RequestTag(String tag) {
-        this.tag = tag;
+    public RequestTag(String tagname) {
+        this.tagname = tagname;
     }
 
     public RequestTag() { }
@@ -32,14 +29,6 @@ public class RequestTag extends Model{
 
     public void setRequestTid(int tid) {
         this.tid = tid;
-    }
-
-    public String getRequestTag() {
-        return tag;
-    }
-
-    public void setRequestTag(String tag) {
-        this.tag = tag;
     }
 
     public String getRequestTagname() {

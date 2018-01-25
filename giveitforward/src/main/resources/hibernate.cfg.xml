@@ -18,6 +18,7 @@
         <mapping class="giveitforward.models.Notification"/>
         <mapping class="giveitforward.models.Organization"/>
         <mapping class="giveitforward.models.Request"/>
+        <mapping class="giveitforward.models.RequestTag"/>
         <mapping class="giveitforward.models.UserTag"/>
         <mapping class="giveitforward.models.ThankYou"/>
         <mapping class="giveitforward.models.UserTagPair"/>
