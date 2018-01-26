@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -231,14 +232,35 @@ public class User extends Model {
     }
 
     public boolean populateFromJSON(JSONObject object) {
-        this.uid = object.getInt("uid");
-        this.email = object.getString("email");
-        this.username = object.getString("username");
-        this.password = object.getString("password");
-        //this.isAdmin = object.getBoolean("isAdmin");
-        //this.orgId = object.getInt("orgId");
-        //this.photo = object.getString("photo");
-        this.bio = object.getString("bio");
+        try{
+            this.uid = object.getInt("uid");
+            this.email = object.getString("email");
+            this.username = object.getString("username");
+            this.password = object.getString("password");
+            //this.isAdmin = object.getBoolean("isAdmin");
+            //this.orgId = object.getInt("orgId");
+            //this.photo = object.getString("photo");
+            this.bio = object.getString("bio");
+        } catch(JSONException e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean populateSignupUserFromJSON(JSONObject object){
+        try{
+            this.email = object.getString("email");
+            this.username = object.getString("username");
+            this.password = object.getString("password");
+            //this.isAdmin = object.getBoolean("isAdmin");
+            //this.orgId = object.getInt("orgId");
+            //this.photo = object.getString("photo");
+            this.bio = object.getString("bio");
+        } catch(JSONException e){
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 

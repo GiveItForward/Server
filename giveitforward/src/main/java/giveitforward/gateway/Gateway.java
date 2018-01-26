@@ -66,7 +66,7 @@ public class Gateway
     public Response newUser(String userJSon)//(String userJson)
     {
         User newUser = new User();
-        newUser.populateFromJSON(new JSONObject(userJSon));
+        newUser.populateSignupUserFromJSON(new JSONObject(userJSon));
 
         ManageUser manager = new ManageUser();
         User userResult = manager.signupUser(newUser);
