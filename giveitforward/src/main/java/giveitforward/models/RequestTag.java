@@ -41,14 +41,20 @@ public class RequestTag extends Model{
 
 
     public String asString() {
-        return null;
+        return "tid: " + this.tid + "tagname: " + this.tagname + ".";
     }
 
     public JSONObject asJSON() {
-        return null;
+        JSONObject object = new JSONObject();
+        object.put("tid", this.tid);
+        object.put("tagname", this.tagname);
+        return object;
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        return false;
+        this.tid = obj.getInt("tid");
+        this.tagname = obj.getString("tagname");
+        return true;
+        //TODO: If something goes wrong, return false!
     }
 }
