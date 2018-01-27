@@ -234,10 +234,12 @@ public class Gateway
 
         JSONArray requestJSON = Model.asJSONCollection(requests);
 
-        // add donate amount to response.
-        JSONObject object = new JSONObject();
-        object.put("donationsThisYear", donate_amount);
-        requestJSON.put(object);
+        // This is breaking jens client code: leaving it for future reference
+
+//        // add donate amount to response.
+//        JSONObject object = new JSONObject();
+//        object.put("donationsThisYear", donate_amount);
+//        requestJSON.put(object);
 
         return Response.ok()
                 .entity(requestJSON.toString())
