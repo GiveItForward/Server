@@ -1,5 +1,6 @@
 package giveitforward.models;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -117,12 +118,21 @@ public class Request extends Model {
         object.put("amount", this.amount);
         object.put("image", this.image);
         object.put("duid", this.duid);
+
         if(this.tag1 != null)
             object.put("tag1", this.tag1.asJSON());
+        else
+            object.put("tag1", "");
+
         if(this.tag2 != null)
             object.put("tag2", this.tag2.asJSON());
+        else
+            object.put("tag2", "");
+
         if(this.thankYou != null)
             object.put("thankYou", this.thankYou.asJSON());
+        else object.put("thankYou", "");
+        
         object.put("rUser", this.rUser.asJSON());
         object.put("requestTime", getDisplayDate(this.requesttime));
         object.put("donateTime", getDisplayDate(this.donateTime));
@@ -130,12 +140,18 @@ public class Request extends Model {
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        this.rid = obj.getInt("rid");
-        this.image = obj.getString("image");
-        this.amount = obj.getDouble("amount");
-        this.description = obj.getString("description");
+        try {
+            this.image = obj.getString("image");
+            this.amount = obj.getDouble("amount");
+            this.description = obj.getString("description");
+//            this.rUser = new User();
+//            JSONObject o = new JSONObject()
+//            this.rUser.populateFromJSON(obj.getJSONObject("rUser"));
+        } catch(JSONException e){
+            e.printStackTrace();
+            return false;
+        }
         return true;
-        //TODO: If something goes wrong, return false!
     }
 
     public int getDuid()
