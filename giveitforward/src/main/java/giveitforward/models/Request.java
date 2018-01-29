@@ -132,7 +132,7 @@ public class Request extends Model {
         if(this.thankYou != null)
             object.put("thankYou", this.thankYou.asJSON());
         else object.put("thankYou", "");
-        
+
         object.put("rUser", this.rUser.asJSON());
         object.put("requestTime", getDisplayDate(this.requesttime));
         object.put("donateTime", getDisplayDate(this.donateTime));

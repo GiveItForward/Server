@@ -104,48 +104,48 @@ public class ManageUser {
         }
     }
 
-    /**
-     * Attempts to add a new user to the DB with the provided information
-     * @param email     user's email (must be unique!)
-     * @param username  user's username
-     * @param password  user's password
-     * @param isAdmin   boolean whether the user is an admin or not
-     * @param orgId     orgID of associated organization is the user is signing up as an org
-     * @param photo     optional profile picture
-     * @param bio       short string of information about the user
-     * @return  The user object after being successfully signed up OR null if sign up was unsuccessful
-     */
-    public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
-    {
-        Session session = SessionFactorySingleton.getFactory().openSession();
-        Transaction t = null;
-        User u = null;
-
-        try
-        {
-            t = session.beginTransaction();
-
-            u = new User(email, username, password, isAdmin, orgId, photo, bio, new Timestamp(System.currentTimeMillis()));
-            session.save(u);
-            session.flush();
-            t.commit();
-        } catch (Exception e)
-        {
-            if (t != null)
-            {
-                t.rollback();
-            }
-            System.out.println("ROLLBACK");
-            e.printStackTrace();
-            return u;
-        } finally
-        {
-            session.close();
-        }
-
-        System.out.println("successfully added user");
-        return u;
-    }
+//    /**
+//     * Attempts to add a new user to the DB with the provided information
+//     * @param email     user's email (must be unique!)
+//     * @param username  user's username
+//     * @param password  user's password
+//     * @param isAdmin   boolean whether the user is an admin or not
+//     * @param orgId     orgID of associated organization is the user is signing up as an org
+//     * @param photo     optional profile picture
+//     * @param bio       short string of information about the user
+//     * @return  The user object after being successfully signed up OR null if sign up was unsuccessful
+//     */
+//    public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
+//    {
+//        Session session = SessionFactorySingleton.getFactory().openSession();
+//        Transaction t = null;
+//        User u = null;
+//
+//        try
+//        {
+//            t = session.beginTransaction();
+//
+//            u = new User(email, username, password, isAdmin, orgId, photo, bio, new Timestamp(System.currentTimeMillis()));
+//            session.save(u);
+//            session.flush();
+//            t.commit();
+//        } catch (Exception e)
+//        {
+//            if (t != null)
+//            {
+//                t.rollback();
+//            }
+//            System.out.println("ROLLBACK");
+//            e.printStackTrace();
+//            return u;
+//        } finally
+//        {
+//            session.close();
+//        }
+//
+//        System.out.println("successfully added user");
+//        return u;
+//    }
 
     public User signupUser(User newUser)
     {

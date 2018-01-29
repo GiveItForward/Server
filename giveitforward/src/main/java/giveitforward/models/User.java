@@ -237,9 +237,7 @@ public class User extends Model {
             this.email = object.getString("email");
             this.username = object.getString("username");
             this.password = object.getString("password");
-            //this.isAdmin = object.getBoolean("isAdmin");
-            //this.orgId = object.getInt("orgId");
-            //this.photo = object.getString("photo");
+//            this.image = object.getString("image");
             this.bio = object.getString("bio");
         } catch(JSONException e){
             e.printStackTrace();
@@ -255,7 +253,7 @@ public class User extends Model {
             this.password = object.getString("password");
             //this.isAdmin = object.getBoolean("isAdmin");
             //this.orgId = object.getInt("orgId");
-            //this.photo = object.getString("photo");
+//            this.image = object.getString("image");
             this.bio = object.getString("bio");
         } catch(JSONException e){
             e.printStackTrace();

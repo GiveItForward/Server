@@ -1,8 +1,10 @@
 package giveitforward.managers;
 
 import giveitforward.models.Request;
+import giveitforward.models.User;
 import org.hibernate.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ManageRequest {
@@ -58,9 +60,32 @@ public class ManageRequest {
      * Creates a new request.
      * @return
      */
-    public Request createRequest() {
-        //TODO: Implement
-        return null;
+    public Request createRequest(Request req) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            session.save(req);
+            session.flush();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return req;
+        } finally
+        {
+            session.close();
+        }
+
+        System.out.println("successfully added user");
+        return req;
     }
 
     /**
