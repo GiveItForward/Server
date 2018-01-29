@@ -70,6 +70,7 @@ public class User extends Model {
         this.orgId = orgId;
         this.image = photo;
         this.bio = bio;
+        this.signupdate = new Timestamp(System.currentTimeMillis());
     }
 
     public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, Timestamp signupdate) {
@@ -81,6 +82,7 @@ public class User extends Model {
         this.image = photo;
         this.bio = bio;
         this.signupdate = signupdate;
+        this.signupdate = new Timestamp(System.currentTimeMillis());
     }
 
     public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
@@ -90,6 +92,7 @@ public class User extends Model {
         this.isAdmin = isAdmin;
         this.image = photo;
         this.bio = bio;
+        this.signupdate = new Timestamp(System.currentTimeMillis());
     }
 
     public Set<UserTag> getTags() {

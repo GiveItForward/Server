@@ -1,6 +1,7 @@
 package giveitforward.managers;
 
 import giveitforward.models.Request;
+import giveitforward.models.User;
 import org.hibernate.*;
 
 import java.util.List;
@@ -14,15 +15,16 @@ public class ManageRequest {
     public static void main(String[] args) {
 
         ManageRequest mr = new ManageRequest();
-
+        //mr.fulfillRequest(3, 4);
+        //Request r = mr.createRequest("NEW REQUEST", 20.00, "image", 1);
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
 //
-        List<Request> req = mr.getAllRequests();
-        for(Request r : req){
-
-            System.out.println(r.asJSON());
-        }
+//        List<Request> req = mr.getAllRequests();
+//        for(Request r : req){
+//
+//            System.out.println(r.asJSON());
+//        }
 
 //        for(Model r : mr.getRequestsFilterByRequestUid("1")){
 //            System.out.println(r.asString());
@@ -41,12 +43,12 @@ public class ManageRequest {
 //        }
 
 //
-        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
-            System.out.println(r.asString());
-            /* returns
-                rid: 1, amount: 20.0
-             */
-        }
+//        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
+//            System.out.println(r.asString());
+//            /* returns
+//                rid: 1, amount: 20.0
+//             */
+//        }
 
 
     }
@@ -58,18 +60,56 @@ public class ManageRequest {
      * Creates a new request.
      * @return
      */
-    public Request createRequest() {
-        //TODO: Implement
-        return null;
+    public Request createRequest(String description, double amount, String image, int ruid) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        ManageUser m = new ManageUser();
+        User ruser = m.getUserfromUID(ruid);
+        Request r = null;
+
+        try {
+            t = session.beginTransaction();
+            r = new Request(description, amount, image, ruser,null, null);
+            session.save(r);
+            session.flush();
+            t.commit();
+        } catch (Exception e) {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return null;
+        } finally
+        {
+            session.close();
+        }
+
+        System.out.println("successfully added request");
+        return r;
     }
 
     /**
      * Marks a request as fulfilled.
      * @return true if the transaction was successfully completed.
      */
-    public boolean fulfillRequest() {
-        //TODO: Implement
-        return false;
+    public boolean fulfillRequest(int rid, int duid) {
+        Session s = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        try {
+            t = s.beginTransaction();
+            Request r = (Request) s.get(Request.class, rid);
+            r.setDuid(duid);
+            s.update(r);
+            s.flush();
+            t.commit();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            s.close();
+        }
+        return true;
     }
 
     /**
