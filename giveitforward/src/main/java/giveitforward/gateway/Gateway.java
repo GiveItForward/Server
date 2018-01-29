@@ -90,25 +90,7 @@ public class Gateway
 
     }
 
-    private Response getUserObjectResponse(User userResult, List<String> tags, int numOfDonations, int numOfFulfilledRequests)
-    {
-        JSONObject jsonUser = userResult.asJSON();
 
-        if(tags != null && !tags.isEmpty()){
-            jsonUser.put("tags", new JSONArray(tags));
-        }
-
-        jsonUser.put("donateCount", numOfDonations);
-        jsonUser.put("receiveCount", numOfFulfilledRequests);
-
-        return Response.ok()
-                .entity(jsonUser.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, username, password, uid")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
-                .build();
-    }
 
     // TODO - this is to update a user
     @PUT
@@ -283,11 +265,37 @@ public class Gateway
 
         JSONArray requestJSON = Model.asJSONCollection(requests);
 
-        return Response.ok()
-                .entity(requestJSON.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
+        return getSuccessObjectResponse(requestJSON.toString());
+    }
+
+    @POST
+    @Path("/requests/create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response newRequest(String requestJSON)
+    {
+        Request newRequest = new Request();
+        newRequest.populateFromJSON(new JSONObject(requestJSON));
+
+        ManageRequest manager = new ManageRequest();
+        Request requestResult = manager.createRequest(newRequest);
+
+//        ManageUserTag tagManager = new ManageUserTag();
+//        List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
+//
+//        ManageRequest reqManager = new ManageRequest();
+//        int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
+//        int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
+
+        if(requestResult == null){
+            return Response.serverError()
+                    .entity("Created user : false")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+        } else {
+            return getSuccessObjectResponse(requestResult.asJSON().toString());
+        }
     }
 
 
@@ -326,5 +334,41 @@ public class Gateway
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date(t.getTime()));
         return cal.get(Calendar.YEAR);
+    }
+
+
+
+
+
+
+    /****************************** RESPONSES **************************************/
+
+
+    private Response getUserObjectResponse(User userResult, List<String> tags, int numOfDonations, int numOfFulfilledRequests)
+    {
+        JSONObject jsonUser = userResult.asJSON();
+
+        if(tags != null && !tags.isEmpty()){
+            jsonUser.put("tags", new JSONArray(tags));
+        }
+
+        jsonUser.put("donateCount", numOfDonations);
+        jsonUser.put("receiveCount", numOfFulfilledRequests);
+
+        return Response.ok()
+                .entity(jsonUser.toString())
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, username, password, uid")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .header("Allow", "GET, POST, DELETE, PUT")
+                .build();
+    }
+
+    private Response getSuccessObjectResponse(String json) {
+        return Response.ok()
+                .entity(json)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .build();
     }
 }

@@ -4,6 +4,7 @@ import giveitforward.models.Request;
 import giveitforward.models.User;
 import org.hibernate.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ManageRequest {
@@ -60,17 +61,18 @@ public class ManageRequest {
      * Creates a new request.
      * @return
      */
-    public Request createRequest(String description, double amount, String image, int ruid) {
+    public Request createRequest(Request req) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         ManageUser m = new ManageUser();
-        User ruser = m.getUserfromUID(ruid);
-        Request r = null;
 
         try {
+
             t = session.beginTransaction();
-            r = new Request(description, amount, image, ruser,null, null);
-            session.save(r);
+            User ruser = m.getUserfromUID(req.getRequestor().getUid());
+            req.setRequestor(ruser);
+
+            session.save(req);
             session.flush();
             t.commit();
         } catch (Exception e) {
@@ -80,14 +82,13 @@ public class ManageRequest {
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-            return null;
+            return req;
         } finally
         {
             session.close();
         }
-
         System.out.println("successfully added request");
-        return r;
+        return req;
     }
 
     /**
