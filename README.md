@@ -18,11 +18,13 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 ###### Users
 
-| Path          | Headers   | Properties |  
-| ------------- |-----------|-----------|  
-| /signup     |  | - Returns the User, user tags, and num of donations and fulfilled requests.
-| /login |  username : {username} <br> password : {password} | - verifies a users credentials and logs a user into a session.
-| /users | None | - Returns a list of all users
+| Path          | HTTP Method | Headers   | Properties |  
+| ------------- |------|-----------|------------|  
+| /users/create |POST|  TODO | - Returns the User, user tags, and num of donations and fulfilled requests.
+| /users/login |GET|  username : {username} <br> password : {password} | - verifies a users credentials and logs a user into a session.
+| /users |GET| None | - Returns a list of all users
+| /users/delete |DELETE| TODO | TODO |
+| /users/update |PUT| TODO | TODO |
 
 \* indicates an optional header.
 

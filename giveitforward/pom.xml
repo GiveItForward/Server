@@ -73,19 +73,13 @@
         </dependency>
 
 
-        <!--newly added-->
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-core</artifactId>-->
-            <!--<version>3.3.2.GA</version>-->
-            <!--&lt;!&ndash;<version>3.6.0.Final</version>&ndash;&gt;-->
-        <!--</dependency>-->
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.hibernate/hibernate &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate</artifactId>-->
-            <!--<version>3.2.3.ga</version>-->
-        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-ses</artifactId>
+            <version>1.11.271</version>
+        </dependency>
+
 
 
 

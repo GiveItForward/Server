@@ -1,0 +1,231 @@
+package giveitforward.managers;
+
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+import com.amazonaws.services.simpleemail.model.*;
+import giveitforward.models.Request;
+import giveitforward.models.User;
+import giveitforward.models.EmailCodes;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+
+import java.security.SecureRandom;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.List;
+
+public class EmailManager {
+
+    public static void main(String[] args) {
+//        EmailCodes ec = new EmailCodes(2, "11111111111111111111111111111111", 'c');
+//        boolean result = save(ec);
+//        if(result == false){
+//            System.err.println("result invalid");
+//        }
+
+        confirmEmail("k7ndh7p2jn81iebkt2cektfqgt      ");
+    }
+
+    public static boolean sendConfirmEmail(User u) {
+        //TODO: Create a row in EmailCodes for the user.
+        String hash = getRandomHash();
+        Character type = 'c';
+        EmailCodes ec = new EmailCodes(u.getUid(), hash, type);
+
+        //TODO: Save the row.
+        boolean status = save(ec);
+
+
+        //TODO: Send the email.
+        String from = "no-reply@giveitforward.us";  // Replace with your "From" address. This address must be verified.
+        String emailBody = "Welcome to giveitforward.us! Please confirm your email by clicking the following link www.giveitforward.us/confirm/" + hash;
+        String emailSubject = "Give it Forward, confirm email";
+        String to = u.getEmail();
+        // Construct an object to contain the recipient address.
+        Destination destination = new Destination().withToAddresses(new String[]{to});
+
+        // Create the subject and body of the message.
+        Content subject = new Content().withData(emailSubject);
+        Content textBody = new Content().withData(emailBody);
+        Body body = new Body().withText(textBody);
+
+        // Create a message with the specified subject and body.
+        Message message = new Message().withSubject(subject).withBody(body);
+
+        // Assemble the email.
+        SendEmailRequest request = new SendEmailRequest().withSource(from).withDestination(destination).withMessage(message);
+
+        try {
+            System.out.println("Attempting to send an email through Amazon SES by using the AWS SDK for Java...");
+
+            /*
+             * The ProfileCredentialsProvider will return your [default]
+             * credential profile by reading from the credentials file located at
+             * (~/.aws/credentials).
+             *
+             * TransferManager manages a pool of threads, so we create a
+             * single instance and share it throughout our application.
+             */
+            ProfileCredentialsProvider credentialsProvider = new ProfileCredentialsProvider();
+            try {
+                credentialsProvider.getCredentials();
+            } catch (Exception e) {
+                throw new AmazonClientException(
+                        "Cannot load the credentials from the credential profiles file. " +
+                                "Please make sure that your credentials file is at the correct " +
+                                "location (~/.aws/credentials), and is in valid format.",
+                        e);
+            }
+
+            // Instantiate an Amazon SES client, which will make the service call with the supplied AWS credentials.
+            AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                    .withCredentials(credentialsProvider)
+                    // Choose the AWS region of the Amazon SES endpoint you want to connect to. Note that your production
+                    // access status, sending limits, and Amazon SES identity-related settings are specific to a given
+                    // AWS region, so be sure to select an AWS region in which you set up Amazon SES. Here, we are using
+                    // the US East (N. Virginia) region. Examples of other regions that Amazon SES supports are US_WEST_2
+                    // and EU_WEST_1. For a complete list, see http://docs.aws.amazon.com/ses/latest/DeveloperGuide/regions.html
+                    .withRegion("us-east-1")
+                    .build();
+
+            // Send the email.
+            client.sendEmail(request);
+            System.out.println("Email sent!");
+
+        } catch (Exception ex) {
+            System.out.println("The email was not sent.");
+            System.out.println("Error message: " + ex.getMessage());
+        }
+        return false;
+    }
+
+    public static User confirmEmail(String hash){
+
+        //Match the has to a uid in the email_codes table.
+        String query = "select e from EmailCodes e where e.uHash = '" + hash + "'";
+        EmailCodes ec = makeQuery(query);
+
+        if(ec == null){
+            System.err.println("Failled to match hash in email_codes table");
+            return null;
+        }
+
+        //set the signup date in the user table.
+        User u = new ManageUser().confirmEmail(ec.getUid());
+        if(u == null) {
+            System.err.println("Failled to update user");
+            return null;
+        }
+
+        //delete the email_code from the table
+        delete(ec);
+
+        System.err.println("Email Confirmed");
+        return u;
+    }
+
+    /**
+     * Saves the email code to the db.
+     * @param ec
+     * @return
+     */
+    private static boolean save(EmailCodes ec) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            session.save(ec);
+            session.flush();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return false;
+        } finally
+        {
+            session.close();
+        }
+
+        System.out.println("successfully added user");
+        return true;
+    }
+
+    /**
+     * Removes the EmailCode from the db
+     * @param ec
+     * @return
+     */
+    private static boolean delete(EmailCodes ec) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            session.delete(ec);
+            session.flush();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return false;
+        } finally
+        {
+            session.close();
+        }
+
+        System.out.println("successfully added user");
+        return true;
+    }
+
+
+    private static String getRandomHash() {
+        SecureRandom random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
+    }
+
+    /**
+     * @param query HQL query to be performed.
+     * @return a list of Requests which results from the given query.
+     */
+    private static EmailCodes makeQuery(String query) {
+        Session session = SessionFactorySingleton.getFactory().openSession();//factory.openSession();
+        Transaction t = null;
+        EmailCodes ec = null;
+
+        try
+        {
+            t = session.beginTransaction();
+            ec = ((List<EmailCodes>)session.createQuery(query).list()).get(0);
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            return ec;
+        }
+    }
+
+}

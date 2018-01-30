@@ -69,6 +69,39 @@ public class ManageUser {
         }
     }
 
+    private User getUserFromUid(int uid)
+    {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        User u = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            Criteria criteria = session.createCriteria(User.class);
+            criteria.add(Restrictions.eq("uid", uid));
+
+            u = (User) criteria.uniqueResult();
+
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            return u;
+        }
+    }
+
+
+
     /**
      * Retrieves a user from the DB given an email and verifies the password if the user exists
      * @param email user email attempting to log in
@@ -104,49 +137,6 @@ public class ManageUser {
         }
     }
 
-//    /**
-//     * Attempts to add a new user to the DB with the provided information
-//     * @param email     user's email (must be unique!)
-//     * @param username  user's username
-//     * @param password  user's password
-//     * @param isAdmin   boolean whether the user is an admin or not
-//     * @param orgId     orgID of associated organization is the user is signing up as an org
-//     * @param photo     optional profile picture
-//     * @param bio       short string of information about the user
-//     * @return  The user object after being successfully signed up OR null if sign up was unsuccessful
-//     */
-//    public User signupUser(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio)
-//    {
-//        Session session = SessionFactorySingleton.getFactory().openSession();
-//        Transaction t = null;
-//        User u = null;
-//
-//        try
-//        {
-//            t = session.beginTransaction();
-//
-//            u = new User(email, username, password, isAdmin, orgId, photo, bio, new Timestamp(System.currentTimeMillis()));
-//            session.save(u);
-//            session.flush();
-//            t.commit();
-//        } catch (Exception e)
-//        {
-//            if (t != null)
-//            {
-//                t.rollback();
-//            }
-//            System.out.println("ROLLBACK");
-//            e.printStackTrace();
-//            return u;
-//        } finally
-//        {
-//            session.close();
-//        }
-//
-//        System.out.println("successfully added user");
-//        return u;
-//    }
-
     public User signupUser(User newUser)
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
@@ -181,6 +171,23 @@ public class ManageUser {
     }
 
     /**
+     * Sets the Signup time in the User table to verify that a users email has been confirmed.
+     * @param uid
+     * @return
+     */
+    public User confirmEmail(int uid){
+        // Get user
+        User u = getUserFromUid(uid);
+
+        if(u == null){
+            return null;
+        }
+
+        u.setSignupdate(new Timestamp(System.currentTimeMillis()));
+        return updateQuery(u);
+    }
+
+    /**
      *  Sets the user's deactivation time to the current time - signifying that this user is deactivated
      * @param email user's email to be deactivated
      * @return  the updated user object
@@ -189,34 +196,13 @@ public class ManageUser {
     {
         User u = getUserFromEmail(email);
 
-        u.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
-
-        Session session = SessionFactorySingleton.getFactory().openSession();
-        Transaction t = null;
-
-        try
-        {
-            t = session.beginTransaction();
-
-            session.update(u);
-            session.flush();
-            t.commit();
-        } catch (Exception e)
-        {
-            if (t != null)
-            {
-                t.rollback();
-            }
-            System.out.println("ROLLBACK");
-            e.printStackTrace();
+        if(u == null){
             return null;
-        } finally
-        {
-            session.close();
         }
 
-        System.out.println("successfully deactivated user");
-        return u;
+        u.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
+        return updateQuery(u);
+
     }
 
     //TODO: make a soft search?
@@ -266,5 +252,33 @@ public class ManageUser {
         }
     }
 
+    private User updateQuery(User updatedUser) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            session.update(updatedUser);
+            session.flush();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return null;
+        } finally
+        {
+            session.close();
+        }
+
+        System.out.println("successfully updated user");
+        return updatedUser;
+    }
 
 }

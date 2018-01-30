@@ -1,9 +1,6 @@
 package giveitforward.gateway;
 
-import giveitforward.managers.ManageOrganization;
-import giveitforward.managers.ManageRequest;
-import giveitforward.managers.ManageUser;
-import giveitforward.managers.ManageUserTag;
+import giveitforward.managers.*;
 import giveitforward.models.Request;
 import giveitforward.models.*;
 import org.json.JSONArray;
@@ -28,13 +25,13 @@ public class Gateway
 
     /********************************* User PATHS *******************************************/
     @GET
-    @Path("/login")
+    @Path("/users/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response userLogin(@Context HttpHeaders headers)
     {
             String username = headers.getRequestHeader("email").get(0);
             String password = headers.getRequestHeader("password").get(0);
-
+            System.out.println("login!");
             ManageUser manager = new ManageUser();
             User userResult = manager.loginUser(username, password);
 
@@ -60,7 +57,7 @@ public class Gateway
 
     // this method is for /signup a new user
     @POST
-    @Path("/signup")
+    @Path("/users/create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response newUser(String userJSon)//(String userJson)
@@ -70,6 +67,9 @@ public class Gateway
 
         ManageUser manager = new ManageUser();
         User userResult = manager.signupUser(newUser);
+
+        //Send confirmation email
+        EmailManager.sendConfirmEmail(userResult);
 
         ManageUserTag tagManager = new ManageUserTag();
         List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
@@ -94,7 +94,7 @@ public class Gateway
 
     // TODO - this is to update a user
     @PUT
-    @Path("/signup")
+    @Path("/users/update")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces(MediaType.APPLICATION_JSON)
     public Response putNewUser()//(@Context HttpHeaders headers)
@@ -109,7 +109,7 @@ public class Gateway
 
     // TODO - this is to deactivate a users account (put an inactive date and remove them from system visibility)
     @DELETE
-    @Path("/signup")
+    @Path("/users/delete")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser()//(@Context HttpHeaders headers)
@@ -146,6 +146,32 @@ public class Gateway
                     .build();
         }
 
+    }
+
+    //Response is to login the user?
+    @GET
+    @Path("/confirm/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response confirmEmail(@Context HttpHeaders headers, @PathParam("id") String emailHash)
+    {
+        User userResult = EmailManager.confirmEmail(emailHash);
+        if (userResult != null) {
+            ManageUserTag tagManager = new ManageUserTag();
+            List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
+
+            ManageRequest reqManager = new ManageRequest();
+            int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
+            int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
+
+            return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
+
+        } else {
+            return Response.serverError()
+                    .entity("Logged in user : false")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .build();
+        }
     }
 
 
