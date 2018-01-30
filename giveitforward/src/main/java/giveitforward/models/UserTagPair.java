@@ -60,9 +60,11 @@ public class UserTagPair extends Model {
 
 		if (this.id.tag == null) {
 			object.put("tagname", "");
+			object.put("tid", "");
 		}
 		else {
 			object.put("tagname", this.id.tag.getUsertagName());
+			object.put("tid", this.id.tag.getUserTid());
 		}
 
 		if (this.verifiedBy == null) {
