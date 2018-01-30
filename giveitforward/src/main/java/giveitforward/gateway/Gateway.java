@@ -1,400 +1,292 @@
 package giveitforward.gateway;
 
 import giveitforward.managers.*;
-import giveitforward.models.Request;
 import giveitforward.models.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 
 @Path("/")
-public class Gateway
-{
-    @GET
-    @Path("/ping")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response test()
-    {
-        return Response.status(200).entity("Hi! Welcome to Give It Forward.").build();
-    }
-
-
-    /********************************* User PATHS *******************************************/
-    @GET
-    @Path("/users/login")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(@Context HttpHeaders headers)
-    {
-            String username = headers.getRequestHeader("email").get(0);
-            String password = headers.getRequestHeader("password").get(0);
-            System.out.println("login!");
-            ManageUser manager = new ManageUser();
-            User userResult = manager.loginUser(username, password);
-
-            if (userResult != null) {
-                ManageUserTag tagManager = new ManageUserTag();
-                List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
-
-                ManageRequest reqManager = new ManageRequest();
-                int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
-                int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
-
-                return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
-
-            } else {
-                return Response.serverError()
-                        .entity("Logged in user : false")
-                        .header("Access-Control-Allow-Origin", "*")
-                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                        .build();
-            }
-    }
-
-
-    // this method is for /signup a new user
-    @POST
-    @Path("/users/create")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response newUser(String userJSon)//(String userJson)
-    {
-        User newUser = new User();
-        newUser.populateSignupUserFromJSON(new JSONObject(userJSon));
-
-        ManageUser manager = new ManageUser();
-        User userResult = manager.signupUser(newUser);
-
-        //Send confirmation email
-        EmailManager.sendConfirmEmail(userResult);
-
-        ManageUserTag tagManager = new ManageUserTag();
-        List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
-
-        ManageRequest reqManager = new ManageRequest();
-        int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
-        int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
-
-        if(userResult == null){
-            return Response.serverError()
-                    .entity("Created user : false")
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        } else {
-            return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
-        }
-
-    }
-
-
-
-    // TODO - this is to update a user
-    @PUT
-    @Path("/users/update")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response putNewUser()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .entity("HI".toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-
-    }
-
-    // TODO - this is to deactivate a users account (put an inactive date and remove them from system visibility)
-    @DELETE
-    @Path("/users/delete")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteUser()//(@Context HttpHeaders headers)
-    {
-        return Response.ok()
-                .entity("HI".toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-
-    }
-
-    @GET
-    @Path("/users")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers(@Context HttpHeaders headers)
-    {
-
-        ManageUser manager = new ManageUser();
-        List<User> userResult = manager.getAllUsers();
-
-        if(userResult == null){
-            return Response.ok()
-                    .entity("Unable to get all users")
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        } else {
-            JSONArray userJson = Model.asJSONCollection(userResult);
-            return Response.status(401)
-                    .entity("Result of creating user true\n\n: " + userJson)
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        }
-
-    }
-
-    //Response is to login the user?
-    @GET
-    @Path("/confirm/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response confirmEmail(@Context HttpHeaders headers, @PathParam("id") String emailHash)
-    {
-        User userResult = EmailManager.confirmEmail(emailHash);
-        if (userResult != null) {
-            ManageUserTag tagManager = new ManageUserTag();
-            List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
-
-            ManageRequest reqManager = new ManageRequest();
-            int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
-            int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
-
-            return getUserObjectResponse(userResult, tags, numOfDonations, numOfFulfilledRequests);
-
-        } else {
-            return Response.serverError()
-                    .entity("Logged in user : false")
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        }
-    }
-
-
-    /********************************* ORG PATHS *******************************************/
-    /**
-     * Returns a list of all approved organizations.
-     */
-    @GET
-    @Path("/organizations")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getOrganizations(@Context HttpHeaders headers)
-    {
-
-        ManageOrganization manager = new ManageOrganization();
-        List<Organization> orgs = manager.getAllOrgs();
-
-        JSONArray orgJSON = Model.asJSONCollection(orgs);
-
-        return Response.ok()
-                .entity(orgJSON.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-
-    /******************************* REQUEST PATHS *****************************************/
-    @GET
-    @Path("/requests")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestFeed(@Context HttpHeaders headers)
-    {
-
-        ManageRequest manager = new ManageRequest();
-        List<Request> requests = manager.getAllRequests();
-
-        JSONArray requestJSON = Model.asJSONCollection(requests);
-
-        return Response.ok()
-                .entity(requestJSON.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-    //MyDonations
-    @GET
-    @Path("/requests/donateuid")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestFeedFilterByDonateUid(@Context HttpHeaders headers)
-    {
-
-        ManageRequest manager = new ManageRequest();
-
-        String dUid = headers.getRequestHeader("uid").get(0);
-        List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
-        //get donate amount from all requests for the current year
-        double donate_amount = 0.0;
-
-        //current year
-        int current_year = Calendar.getInstance().get(Calendar.YEAR);
-
-        for(Request r : requests){
-            if(getYear(r.getDonateTime()) == current_year) {
-                donate_amount += r.getAmount();
-            }
-        }
-
-        JSONArray requestJSON = Model.asJSONCollection(requests);
-
-        // This is breaking jens client code: leaving it for future reference
-
-//        // add donate amount to response.
-//        JSONObject object = new JSONObject();
-//        object.put("donationsThisYear", donate_amount);
-//        requestJSON.put(object);
-
-        return Response.ok()
-                .entity(requestJSON.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-
-    //MyRequests
-    @GET
-    @Path("/requests/requestuid")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestFeedFilterByRequestUid(@Context HttpHeaders headers)
-    {
-
-        ManageRequest manager = new ManageRequest();
-        String rUid = headers.getRequestHeader("uid").get(0);
-        
-        List<Request> requests = manager.getRequestsFilterByRequestUid(rUid);
-
-        JSONArray requestJSON = Model.asJSONCollection(requests);
-
-        return Response.ok()
-                .entity(requestJSON.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-
-    @GET
-    @Path("/requests/requestuid/open")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRequestFeedFilterByRequestUidOpen(@Context HttpHeaders headers)
-    {
-
-        ManageRequest manager = new ManageRequest();
-        String rUid = headers.getRequestHeader("uid").get(0);
-        List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
-
-        JSONArray requestJSON = Model.asJSONCollection(requests);
-
-        return getSuccessObjectResponse(requestJSON.toString());
-    }
-
-    @POST
-    @Path("/requests/create")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response newRequest(String requestJSON)
-    {
-        Request newRequest = new Request();
-        newRequest.populateFromJSON(new JSONObject(requestJSON));
-
-        ManageRequest manager = new ManageRequest();
-        Request requestResult = manager.createRequest(newRequest);
-
-//        ManageUserTag tagManager = new ManageUserTag();
-//        List<String> tags = tagManager.getAllTagsByUID(userResult.getUid());
-//
-//        ManageRequest reqManager = new ManageRequest();
-//        int numOfDonations = reqManager.getCountDonationsByUID(userResult.getUid());
-//        int numOfFulfilledRequests = reqManager.getCountRequestsByUID(userResult.getUid());
-
-        if(requestResult == null){
-            return Response.serverError()
-                    .entity("Created user : false")
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        } else {
-            return getSuccessObjectResponse(requestResult.asJSON().toString());
-        }
-    }
-
-
-    /*********************************** Tag PATHS *****************************************/
-
-    @GET
-    @Path("/tags")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllTags()
-    {
-
-        ManageUserTag manager = new ManageUserTag();
-        List<UserTag> tagResult = manager.getAllTags();
-
-        if (tagResult != null)
-        {
-            JSONArray jsonTags = Model.asJSONCollection(tagResult);
-
-            return Response.ok() //200
-                    .entity(jsonTags.toString())
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-
-        } else
-        {
-            return Response.status(401)
-                    .entity("Call Failed")
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .build();
-        }
-    }
-
-    private int getYear(Timestamp t){//your object here.
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date(t.getTime()));
-        return cal.get(Calendar.YEAR);
-    }
-
-
-
-
-
-
-    /****************************** RESPONSES **************************************/
-
-
-    private Response getUserObjectResponse(User userResult, List<String> tags, int numOfDonations, int numOfFulfilledRequests)
-    {
-        JSONObject jsonUser = userResult.asJSON();
-
-        if(tags != null && !tags.isEmpty()){
-            jsonUser.put("tags", new JSONArray(tags));
-        }
-
-        jsonUser.put("donateCount", numOfDonations);
-        jsonUser.put("receiveCount", numOfFulfilledRequests);
-
-        return Response.ok()
-                .entity(jsonUser.toString())
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, email, username, password, uid")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .header("Allow", "GET, POST, DELETE, PUT")
-                .build();
-    }
-
-    private Response getSuccessObjectResponse(String json) {
-        return Response.ok()
-                .entity(json)
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .build();
-    }
+public class Gateway {
+	@GET
+	@Path("/ping")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response test() {
+		return Response.status(200).entity("Hi! Welcome to Give It Forward.").build();
+	}
+
+
+	/********************************* User PATHS *******************************************/
+	@GET
+	@Path("/users/login")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response userLogin(@Context HttpHeaders headers) {
+
+		String username = headers.getRequestHeader("email").get(0);
+		String password = headers.getRequestHeader("password").get(0);
+
+		ManageUser manager = new ManageUser();
+		User userResult = manager.loginUser(username, password);
+
+		String err = "Unable to log in user.";
+
+		return manageUserResponse(err, userResult);
+	}
+
+
+	// this method is for /signup a new user
+	@POST
+	@Path("/users/create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response newUser(String userJSon)//(String userJson)
+	{
+		User newUser = new User();
+		newUser.populateSignupUserFromJSON(new JSONObject(userJSon));
+
+		ManageUser manager = new ManageUser();
+		User userResult = manager.signupUser(newUser);
+
+		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+		if (!confirmed){
+			manager.deleteUser(userResult);
+			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+		}
+
+		String err = "Unable to create user.";
+
+		return manageUserResponse(err, userResult);
+	}
+
+	//response is to login the user?
+	@GET
+	@Path("/confirm/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response confirmEmail(@Context HttpHeaders headers, @PathParam("id") String emailHash) {
+		User userResult = ManageEmail.confirmEmail(emailHash);
+
+		String err = "Confirmation failed";
+
+		return manageUserResponse(err, userResult);
+	}
+
+	// TODO - this is to update a user
+	@PUT
+	@Path("/users/update")
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response putNewUser()//(@Context HttpHeaders headers)
+	{
+		return Response.ok()
+				.entity("HI".toString())
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				.build();
+	}
+
+	// TODO - this is to deactivate a users account (put an inactive date and remove them from system visibility)
+	@DELETE
+	@Path("/users/delete")
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteUser()//(@Context HttpHeaders headers)
+	{
+		return Response.ok()
+				.entity("HI".toString())
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				.build();
+	}
+
+	@GET
+	@Path("/users")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllUsers(@Context HttpHeaders headers) {
+		ManageUser manager = new ManageUser();
+		List<User> users = manager.getAllUsers();
+
+		String err = "Unable to get all users";
+
+		return manageCollectionResponse(err, users);
+	}
+
+
+	/********************************* ORG PATHS *******************************************/
+	/**
+	 * Returns a list of all approved organizations.
+	 */
+	@GET
+	@Path("/organizations")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getOrganizations(@Context HttpHeaders headers) {
+		ManageOrganization manager = new ManageOrganization();
+		List<Organization> orgs = manager.getAllOrgs();
+
+		String err = "unable to fetch orgs";
+
+		return manageCollectionResponse(err, orgs);
+	}
+
+
+	/******************************* REQUEST PATHS *****************************************/
+	@GET
+	@Path("/requests")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestFeed(@Context HttpHeaders headers) {
+		ManageRequest manager = new ManageRequest();
+		List<Request> requests = manager.getAllRequests();
+
+		String err = "unable to fetch requests";
+
+		return manageCollectionResponse(err, requests);
+	}
+
+	//MyDonations
+	@GET
+	@Path("/requests/donateuid")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestFeedFilterByDonateUid(@Context HttpHeaders headers) {
+		String dUid = headers.getRequestHeader("uid").get(0);
+
+		ManageRequest manager = new ManageRequest();
+		List<Request> requests = manager.getRequestsFilterByDonateUid(dUid);
+
+		String err = "unable to fetch requests with the duid " + dUid;
+
+		return manageCollectionResponse(err, requests);
+	}
+
+
+	//MyRequests
+	@GET
+	@Path("/requests/requestuid")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestFeedFilterByRequestUid(@Context HttpHeaders headers) {
+		String rUid = headers.getRequestHeader("uid").get(0);
+
+		ManageRequest manager = new ManageRequest();
+		List<Request> requests = manager.getRequestsFilterByRequestUid(rUid);
+
+		String err = "unable to fetch requests with the ruid " + rUid;
+
+		return manageCollectionResponse(err, requests);
+	}
+
+
+	@GET
+	@Path("/requests/requestuid/open")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestFeedFilterByRequestUidOpen(@Context HttpHeaders headers) {
+		String rUid = headers.getRequestHeader("uid").get(0);
+
+		ManageRequest manager = new ManageRequest();
+		List<Request> requests = manager.getRequestsFilterByRequestUidOpen(rUid);
+
+		String err = "unable to fetch open requests with the ruid " + rUid;
+
+		return manageCollectionResponse(err, requests);
+	}
+
+	@POST
+	@Path("/requests/create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response newRequest(String requestJSON) {
+		Request newRequest = new Request();
+		newRequest.populateFromJSON(new JSONObject(requestJSON));
+
+		ManageRequest manager = new ManageRequest();
+		Request requestResult = manager.createRequest(newRequest);
+
+		String err = "Unable to create request";
+
+		return manageObjectResonse(err, requestResult);
+	}
+
+
+	/*********************************** Tag PATHS *****************************************/
+
+	@GET
+	@Path("/tags")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllTags() {
+		ManageUserTag manager = new ManageUserTag();
+		List<UserTag> tags = manager.getAllTags();
+
+		String err = "unable to fetch tags";
+
+		return manageCollectionResponse(err, tags);
+	}
+
+
+	/*********************************************** Helpers *************************************/
+
+	private int getYear(Timestamp t) {//your object here.
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date(t.getTime()));
+		return cal.get(Calendar.YEAR);
+	}
+
+	private Response manageCollectionResponse(String err, List objs) {
+		if (objs != null) {
+			String objJSON = Model.asJSONCollection(objs).toString();
+			return GIFResponse.getSuccessObjectResponse(objJSON);
+		}
+		else {
+			return GIFResponse.getFailueResponse(err);
+		}
+	}
+
+	private Response manageUserResponse(String err, User user) {
+		if (user != null) {
+
+			ManageRequest reqManager = new ManageRequest();
+			int numOfDonations = reqManager.getCountDonationsByUID(user.getUid());
+			int numOfFulfilledRequests = reqManager.getCountRequestsByUID(user.getUid());
+
+			JSONObject jsonUser = user.asJSON();
+
+			jsonUser.put("donateCount", numOfDonations);
+			jsonUser.put("receiveCount", numOfFulfilledRequests);
+
+			return GIFResponse.getSuccessObjectResponse(jsonUser.toString());
+		}
+		else {
+			return GIFResponse.getFailueResponse(err);
+		}
+	}
+
+	private Response manageObjectResonse(String err, Model object) {
+		if (object != null) {
+			String objJSON = object.asJSON().toString();
+			return GIFResponse.getSuccessObjectResponse(objJSON);
+		}
+		else {
+			return GIFResponse.getFailueResponse(err);
+		}
+	}
+
+	private Double getDonateAmmount(List<Request> requests) {
+		double donate_amount = 0.0;
+
+		//current year
+		int current_year = Calendar.getInstance().get(Calendar.YEAR);
+
+		for (Request r : requests) {
+			if (getYear(r.getDonateTime()) == current_year) {
+				donate_amount += r.getAmount();
+			}
+		}
+		return donate_amount;
+	}
 }
