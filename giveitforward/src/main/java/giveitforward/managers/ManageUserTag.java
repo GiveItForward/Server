@@ -127,7 +127,7 @@ public class ManageUserTag {
      */
     public List<UserTag> getAllTags() {
 
-        return makeQuery("select tagname from UserTag order by tagname ASC");
+        return makeQuery("from UserTag order by tagname ASC");
     }
 
     /**
