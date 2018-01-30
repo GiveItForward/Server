@@ -18,4 +18,7 @@ UPDATE  users SET isadmin = true where email = '';
 INSERT INTO elevated_user (uid, first_name, last_name, phone_num)
   SELECT uid, 'first name', 'last name', 'phone num' FROM users WHERE email = '';
 
+/* UPDATE A USER'S INFO */
+UPDATE users SET bio = '', photo = '' where username='';
+
 /* NOTE: USER ELEVATION FOR AN ORG IS IN THE ORG SQL FILE */

@@ -22,14 +22,17 @@ public class ManageUser {
         String bio = "whats up";
 
         ManageUser mu = new ManageUser();
+        User u = mu.getUserfromUID(1);
+//        mu.updateUser(new User(1,"boo@email.com", "boo", "b7fb0394c7183fd5cac17fb41961c826212a185070e4c1d2f4920e51c1dee35f",
+//                false, null, "/img/glasses_profile_pic.png", "updated bio"));
 
         //mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
         //mu.loginUser("boo@email.com", "pswd");
 //        mu.deactivateUser("boo@email.com");
-
-        for(User u : mu.getAllUsers()){
-            System.out.println(u.asJSON());
-        }
+//
+//        for(User u : mu.getAllUsers()){
+//            System.out.println(u.asJSON());
+//        }
 
     }
 
@@ -252,6 +255,7 @@ public class ManageUser {
         }
     }
 
+
     private User updateQuery(User updatedUser) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
@@ -261,6 +265,7 @@ public class ManageUser {
             t = session.beginTransaction();
 
             session.update(updatedUser);
+
             session.flush();
             t.commit();
         } catch (Exception e)
@@ -271,7 +276,9 @@ public class ManageUser {
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
+
             return null;
+
         } finally
         {
             session.close();
@@ -279,6 +286,50 @@ public class ManageUser {
 
         System.out.println("successfully updated user");
         return updatedUser;
+
     }
 
+
+        /**
+         * Updates the given user with the updated fields in the user object
+         * @param user - the updated user
+         * @return - true if the user was successfully updated
+         */
+        public boolean updateUser(User user) {
+            Session session = SessionFactorySingleton.getFactory().openSession();
+            Transaction t = null;
+
+            try
+            {
+                t = session.beginTransaction();
+
+                session.update(user);
+                session.flush();
+                t.commit();
+            } catch (Exception e)
+            {
+                if (t != null)
+                {
+                    t.rollback();
+                }
+                System.out.println("ROLLBACK");
+                e.printStackTrace();
+                return false;
+            } finally
+            {
+                session.close();
+            }
+
+            System.out.println("successfully updated user");
+            return true;
+        }
+
+    /**
+     * Get a user object from DB matching on UID
+     * @param uid - uid of desired user
+     * @return - the user with that uid
+     */
+    public User getUserfromUID(int uid) {
+        return makeQuery("from User where uid = " + uid).get(0);
+    }
 }

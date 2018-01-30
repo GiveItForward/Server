@@ -16,15 +16,16 @@ public class ManageRequest {
     public static void main(String[] args) {
 
         ManageRequest mr = new ManageRequest();
-
+        //mr.fulfillRequest(3, 4);
+        //Request r = mr.createRequest("NEW REQUEST", 20.00, "image", 1);
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
 //
-        List<Request> req = mr.getAllRequests();
-        for(Request r : req){
-
-            System.out.println(r.asJSON());
-        }
+//        List<Request> req = mr.getAllRequests();
+//        for(Request r : req){
+//
+//            System.out.println(r.asJSON());
+//        }
 
 //        for(Model r : mr.getRequestsFilterByRequestUid("1")){
 //            System.out.println(r.asString());
@@ -43,12 +44,12 @@ public class ManageRequest {
 //        }
 
 //
-        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
-            System.out.println(r.asString());
-            /* returns
-                rid: 1, amount: 20.0
-             */
-        }
+//        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
+//            System.out.println(r.asString());
+//            /* returns
+//                rid: 1, amount: 20.0
+//             */
+//        }
 
 
     }
@@ -63,15 +64,18 @@ public class ManageRequest {
     public Request createRequest(Request req) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
+        ManageUser m = new ManageUser();
 
-        try
-        {
+        try {
+
             t = session.beginTransaction();
+            User ruser = m.getUserfromUID(req.getRequestor().getUid());
+            req.setRequestor(ruser);
+
             session.save(req);
             session.flush();
             t.commit();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             if (t != null)
             {
                 t.rollback();
@@ -83,8 +87,7 @@ public class ManageRequest {
         {
             session.close();
         }
-
-        System.out.println("successfully added user");
+        System.out.println("successfully added request");
         return req;
     }
 
@@ -92,9 +95,22 @@ public class ManageRequest {
      * Marks a request as fulfilled.
      * @return true if the transaction was successfully completed.
      */
-    public boolean fulfillRequest() {
-        //TODO: Implement
-        return false;
+    public boolean fulfillRequest(int rid, int duid) {
+        Session s = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        try {
+            t = s.beginTransaction();
+            Request r = (Request) s.get(Request.class, rid);
+            r.setDuid(duid);
+            s.update(r);
+            s.flush();
+            t.commit();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            s.close();
+        }
+        return true;
     }
 
     /**

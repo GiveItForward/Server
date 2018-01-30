@@ -15,7 +15,7 @@ public class ManageUserTag {
     public static void main(String[] args) {
 
         ManageUserTag mt = new ManageUserTag();
-
+        List<UserTag> u = mt.getAllTags();
         List<String> l = mt.getAllTagsByUID(2);
     }
 
@@ -127,7 +127,7 @@ public class ManageUserTag {
      */
     public List<UserTag> getAllTags() {
 
-        return makeQuery("from UserTag");
+        return makeQuery("select tagname from UserTag order by tagname ASC");
     }
 
     /**
@@ -144,7 +144,8 @@ public class ManageUserTag {
         {
             t = session.beginTransaction();
 
-            String q = "select t.tagname from UserTagPair u, UserTag t where t.tid = u.id.tid and u.id.uid = :id";
+            String q = "select t.tagname from UserTagPair u, UserTag t where t.tid = u.id.tid " +
+                    "and u.id.uid = :id order by t.tagname ASC";
             allTags = session.createQuery(q).setInteger("id", uid).list();
 
             t.commit();

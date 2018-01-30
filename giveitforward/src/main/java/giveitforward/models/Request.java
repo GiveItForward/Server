@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "request")
@@ -55,6 +56,7 @@ public class Request extends Model {
         this.rUser = rUser;
 //        this.thankYou = thankYou;
         this.duid = duid;
+        this.requesttime = new Timestamp(System.currentTimeMillis());
     }
 
     public Request() {

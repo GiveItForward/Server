@@ -1,20 +1,23 @@
 /* ALL TAG QUERIES */
 
 /* GET ALL TAGS */
-SELECT tagname from tag;
+SELECT tagname FROM user_tag;
 
 /* GET ALL TAGS ASSOCIATED WITH A CERTAIN UID */
-SELECT tagname from tag t, user_tag_pair u where t.tid = u.tagid and u.userid = '';
+SELECT tagname FROM user_tag t, user_tag_pair u where t.tid = u.tagid and u.userid = '';
+
+/* GET ALL TAGS IN ALPHABETICAL ORDER */
+select tagname FROM user_tag ORDER BY tagname ASC;
 
 /* CREATE TAG */
-INSERT INTO tag (tagname)
+INSERT INTO user_tag (tagname)
     VALUES ('');
 
 /* UPDATE TAG */
-UPDATE tag SET tagname = '' WHERE tid = '';
+UPDATE user_tag SET tagname = '' WHERE tid = '';
 
 /* DELETE TAG */
-DELETE FROM tag WHERE tid = '';
+DELETE FROM user_tag WHERE tid = '';
 
 /* ADD A NEW TAG FOR A USER (this may need to be prefaced with selects to get tid/uids)*/
 INSERT INTO user_tag_pair (uid, tid, time_limit, verified_by)
