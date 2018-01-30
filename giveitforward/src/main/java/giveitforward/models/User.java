@@ -49,13 +49,18 @@ public class User extends Model {
     @Column(name = "inactivedate")
     private Timestamp inactivedate;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "user_tag_pair",
-            joinColumns = { @JoinColumn(name = "userid") },
-            inverseJoinColumns = { @JoinColumn(name = "tagid") }
-    )
-    private Set<UserTag> tags = new HashSet<UserTag>();
+
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+//    @JoinTable(
+//            name = "user_tag_pair",
+//            joinColumns = { @JoinColumn(name = "userid") },
+//            inverseJoinColumns = { @JoinColumn(name = "tagid") }
+//    )
+//    private Set<UserTag> tags = new HashSet<UserTag>();
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @JoinColumn(name = "userid")
+    private Set<UserTagPair> tags = new HashSet<UserTagPair>();
 
     public User() {
 
@@ -95,11 +100,19 @@ public class User extends Model {
         this.signupdate = new Timestamp(System.currentTimeMillis());
     }
 
-    public Set<UserTag> getTags() {
-        return tags;
-    }
+//    public Set<UserTag> getTags() {
+//        return tags;
+//    }
+//
+//    public void setTags(Set<UserTag> tags) {
+//        this.tags = tags;
+//    }
 
-    public void setTags(Set<UserTag> tags) {
+    public Set<UserTagPair> getTags() {
+    return tags;
+}
+
+    public void setTags(Set<UserTagPair> tags) {
         this.tags = tags;
     }
 
@@ -194,7 +207,7 @@ public class User extends Model {
     public String asString() {
         String tag_display = "";
         if(tags.isEmpty() == false) {
-            for (UserTag tag : tags) {
+            for (UserTagPair tag : tags) {
                 tag_display += tag.asString() + "\n";
             }
             return "name: " + username + "\nemail: " + email + "\ntags:\n" + tag_display;
@@ -204,6 +217,7 @@ public class User extends Model {
 
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();
+
         object.put("uid", this.uid);
         object.put("email", this.email);
         object.put("username", this.username);
@@ -211,26 +225,20 @@ public class User extends Model {
         object.put("orgId", this.orgId);
         object.put("image", this.image);
         object.put("bio", this.bio);
+
         JSONArray arr = new JSONArray();
-        for(UserTag tag: tags){
-            arr.put(tag.asJSON());
+
+        if(tags.isEmpty()){
+            arr.put(new UserTagPair().asJSON());
         }
+        else {
+            for (UserTagPair tag : tags) {
+                arr.put(tag.asJSON());
+            }
+        }
+
         object.put("tags", arr);
 
-        // TODO - until tags are implemented send through fake placeholders for jen
-//
-//
-//        UserTag tag1 = new UserTag();
-//        tag1.setUserTid(12);
-//        tag1.setUserTag("other");
-//
-//        UserTag tag2 = new UserTag();
-//        tag2.setUserTid(12);
-//        tag2.setUserTag("other");
-//
-//        arr.put(tag1.asJSON());
-//        arr.put(tag2.asJSON());
-//        object.put("tags", arr);
         return object;
     }
 

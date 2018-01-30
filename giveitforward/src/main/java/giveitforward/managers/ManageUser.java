@@ -22,7 +22,8 @@ public class ManageUser {
         String bio = "whats up";
 
         ManageUser mu = new ManageUser();
-        User u = mu.getUserfromUID(1);
+//        User u = mu.getUserfromUID(1);
+//        System.err.println(u.asJSON());
 //        mu.updateUser(new User(1,"boo@email.com", "boo", "b7fb0394c7183fd5cac17fb41961c826212a185070e4c1d2f4920e51c1dee35f",
 //                false, null, "/img/glasses_profile_pic.png", "updated bio"));
 
@@ -30,9 +31,9 @@ public class ManageUser {
         //mu.loginUser("boo@email.com", "pswd");
 //        mu.deactivateUser("boo@email.com");
 //
-//        for(User u : mu.getAllUsers()){
-//            System.out.println(u.asJSON());
-//        }
+        for(User u : mu.getAllUsers()){
+            System.err.println(u.asJSON());
+        }
 
     }
 

@@ -3,6 +3,8 @@ package giveitforward.models;
 import org.json.JSONObject;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "request_tag")
@@ -16,6 +18,7 @@ public class RequestTag extends Model{
 
     @Column(name = "tagname")
     private String tagname;
+
 
     public RequestTag(String tagname) {
         this.tagname = tagname;

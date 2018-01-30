@@ -6,81 +6,111 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 
+
 @Entity
 @Table(name = "user_tag_pair")
-public class UserTagPair extends Model{
+public class UserTagPair extends Model {
 
-    @EmbeddedId
-    private UidTid id;
+	@EmbeddedId
+	private UidTid id;
 
-    @Column(name = "time_limit")
-    private Time time;
+	@Column(name = "time_limit")
+	private Time time;
 
-    @Column(name = "verified_by")
-    private Integer verifiedBy;
+	@Column(name = "verified_by")
+	private Integer verifiedBy;
 
-    public UidTid getId() {
-        return id;
-    }
+	public UserTagPair() {
+		id = new UidTid();
+	}
 
-    public void setId(Integer uid, Integer tag) {
-        id = new UidTid();
-        id.setTid(tag);
-        id.setUid(uid);
-    }
+	public UidTid getId() {
+		return id;
+	}
+
+	public void setId(Integer uid, UserTag tag) {
+		id = new UidTid();
+		id.setTag(tag);
+		id.setUid(uid);
+	}
 
 
-    public Time getTime() {
-        return time;
-    }
+	public Time getTime() {
+		return time;
+	}
 
-    public void setTime(Time time) {
-        this.time = time;
-    }
+	public void setTime(Time time) {
+		this.time = time;
+	}
 
-    public int getVerifiedBy() {
-        return verifiedBy;
-    }
+	public int getVerifiedBy() {
+		return verifiedBy;
+	}
 
-    public void setVerifiedBy(int verifiedBy) {
-        this.verifiedBy = verifiedBy;
-    }
+	public void setVerifiedBy(int verifiedBy) {
+		this.verifiedBy = verifiedBy;
+	}
 
-    public String asString() {
-        return null;
-    }
+	public String asString() {
+		return null;
+	}
 
-    public JSONObject asJSON() {
-        return null;
-    }
+	public JSONObject asJSON() {
+		JSONObject object = new JSONObject();
 
-    public boolean populateFromJSON(JSONObject obj) {
-        return false;
-    }
+		if (this.id.tag == null) {
+			object.put("tagname", "");
+		}
+		else {
+			object.put("tagname", this.id.tag.getUsertagName());
+		}
 
-    @Embeddable
-    static class UidTid implements Serializable {
+		if (this.verifiedBy == null) {
+			object.put("verifiedBy", "");
+		}
+		else {
+			object.put("verifiedBy", this.verifiedBy);
+		}
 
-        @Column(name="userid")
-        private Integer uid;
+		if (this.time == null) {
+			object.put("timeLimit", "");
+		}
+		else {
+			object.put("timeLimit", this.time);
+		}
 
-        @Column(name="tagid")
-        private Integer tid;
+		return object;
+	}
 
-        public Integer getUid() {
-            return uid;
-        }
+	public boolean populateFromJSON(JSONObject obj) {
+		return false;
+	}
 
-        public void setUid(Integer uidRequest) {
-            this.uid = uidRequest;
-        }
+	@Embeddable
+	static class UidTid implements Serializable {
 
-        public Integer getTid() {
-            return tid;
-        }
+		@Column(name = "userid")
+		private Integer uid;
 
-        public void setTid(Integer tagid) {
-            this.tid = tagid;
-        }
-    }
+		@ManyToOne(cascade = CascadeType.ALL)
+		@JoinColumn(name = "tagid", referencedColumnName = "tid")
+		private UserTag tag;
+
+		public Integer getUid() {
+			return uid;
+		}
+
+		public void setUid(Integer uidRequest) {
+			this.uid = uidRequest;
+		}
+
+
+		public UserTag getTag() {
+			return tag;
+		}
+
+		public void setTag(UserTag tag) {
+			this.tag = tag;
+		}
+	}
 }
