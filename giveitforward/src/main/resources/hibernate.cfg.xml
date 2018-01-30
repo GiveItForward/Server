@@ -23,7 +23,7 @@
         <mapping class="giveitforward.models.ThankYou"/>
         <mapping class="giveitforward.models.UserTagPair"/>
         <mapping class="giveitforward.models.ElevatedUser"/>
-        <mapping class="giveitforward.models.EmailCodes"/>
+        <mapping class="giveitforward.models.EmailCode"/>
     </session-factory>
 </hibernate-configuration>
 

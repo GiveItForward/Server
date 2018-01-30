@@ -217,7 +217,6 @@ public class User extends Model {
 
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();
-
         object.put("uid", this.uid);
         object.put("email", this.email);
         object.put("username", this.username);
@@ -238,7 +237,6 @@ public class User extends Model {
         }
 
         object.put("tags", arr);
-
         return object;
     }
 

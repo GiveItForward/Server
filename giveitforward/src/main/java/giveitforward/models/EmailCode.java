@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "email_codes")
-public class EmailCodes extends Model {
+public class EmailCode extends Model {
 
     @Id
     @Column(name = "uid", unique = true, nullable = false)
@@ -19,13 +19,13 @@ public class EmailCodes extends Model {
     @Column(name = "type")
     private Character type;
 
-    public EmailCodes(int uid, String uhash, Character type) {
+    public EmailCode(int uid, String uhash, Character type) {
         this.uid = uid;
         this.uHash = uhash;
         this.type = type;
     }
 
-    public EmailCodes() {
+    public EmailCode() {
     }
 
 

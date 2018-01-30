@@ -5,41 +5,43 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
-import giveitforward.models.Request;
+import giveitforward.models.EmailCode;
 import giveitforward.models.User;
-import giveitforward.models.EmailCodes;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 
 import java.security.SecureRandom;
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.List;
 
-public class EmailManager {
+public class ManageEmail {
 
     public static void main(String[] args) {
-//        EmailCodes ec = new EmailCodes(2, "11111111111111111111111111111111", 'c');
+//        EmailCode ec = new EmailCode(2, "11111111111111111111111111111111", 'c');
 //        boolean result = save(ec);
 //        if(result == false){
 //            System.err.println("result invalid");
 //        }
-
-        confirmEmail("k7ndh7p2jn81iebkt2cektfqgt      ");
+//s
+//        confirmEmail("11111111111111111111111111111111");
     }
 
     public static boolean sendConfirmEmail(User u) {
-        //TODO: Create a row in EmailCodes for the user.
+    	if(u == null){
+    		return false;
+		}
+
+        //Create a row in EmailCode for the user.
         String hash = getRandomHash();
         Character type = 'c';
-        EmailCodes ec = new EmailCodes(u.getUid(), hash, type);
+        EmailCode ec = new EmailCode(u.getUid(), hash, type);
 
-        //TODO: Save the row.
+        //Save the row.
         boolean status = save(ec);
 
 
-        //TODO: Send the email.
+        //Send the email.
         String from = "no-reply@giveitforward.us";  // Replace with your "From" address. This address must be verified.
         String emailBody = "Welcome to giveitforward.us! Please confirm your email by clicking the following link www.giveitforward.us/confirm/" + hash;
         String emailSubject = "Give it Forward, confirm email";
@@ -98,15 +100,17 @@ public class EmailManager {
         } catch (Exception ex) {
             System.out.println("The email was not sent.");
             System.out.println("Error message: " + ex.getMessage());
+            return false;
         }
-        return false;
+
+        return true;
     }
 
     public static User confirmEmail(String hash){
 
         //Match the has to a uid in the email_codes table.
-        String query = "select e from EmailCodes e where e.uHash = '" + hash + "'";
-        EmailCodes ec = makeQuery(query);
+        String query = "select e from EmailCode e where e.uHash = '" + hash + "'";
+        EmailCode ec = makeQuery(query);
 
         if(ec == null){
             System.err.println("Failled to match hash in email_codes table");
@@ -132,7 +136,7 @@ public class EmailManager {
      * @param ec
      * @return
      */
-    private static boolean save(EmailCodes ec) {
+    private static boolean save(EmailCode ec) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -165,7 +169,7 @@ public class EmailManager {
      * @param ec
      * @return
      */
-    private static boolean delete(EmailCodes ec) {
+    private static boolean delete(EmailCode ec) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -203,15 +207,15 @@ public class EmailManager {
      * @param query HQL query to be performed.
      * @return a list of Requests which results from the given query.
      */
-    private static EmailCodes makeQuery(String query) {
+    private static EmailCode makeQuery(String query) {
         Session session = SessionFactorySingleton.getFactory().openSession();//factory.openSession();
         Transaction t = null;
-        EmailCodes ec = null;
+        EmailCode ec = null;
 
         try
         {
             t = session.beginTransaction();
-            ec = ((List<EmailCodes>)session.createQuery(query).list()).get(0);
+            ec = ((List<EmailCode>)session.createQuery(query).list()).get(0);
             t.commit();
         } catch (Exception e)
         {

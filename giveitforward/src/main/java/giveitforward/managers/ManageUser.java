@@ -106,6 +106,35 @@ public class ManageUser {
 
 
 
+    public boolean deleteUser(User user){
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+
+		try
+		{
+			t = session.beginTransaction();
+
+			session.delete(user);
+			session.flush();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return false;
+		} finally
+		{
+			session.close();
+		}
+
+		System.out.println("successfully added user");
+		return true;
+	}
+
     /**
      * Retrieves a user from the DB given an email and verifies the password if the user exists
      * @param email user email attempting to log in
