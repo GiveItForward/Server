@@ -217,13 +217,53 @@ public class User extends Model {
 
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();
-        object.put("uid", this.uid);
-        object.put("email", this.email);
-        object.put("username", this.username);
+
+        if(this.uid == null){
+			object.put("uid", "");
+		}
+		else {
+			object.put("uid", this.uid);
+		}
+
+		if(this.email == null) {
+        	object.put("email", "");
+		}
+		else {
+			object.put("email", this.email);
+		}
+
+		if(this.username == null) {
+        	object.put("username", "");
+		}
+		else {
+			object.put("username", this.username);
+		}
+
+		object.put("isAdmin", this.isAdmin);
+
         object.put("isAdmin", this.isAdmin);
-        object.put("orgId", this.orgId);
-        object.put("image", this.image);
-        object.put("bio", this.bio);
+
+
+		if(this.orgId == null) {
+        	object.put("orgId", "");
+		}
+		else {
+			object.put("orgId", this.orgId);
+		}
+
+		if (this.image == null) {
+			object.put("image", "");
+		}
+		else {
+			object.put("image", this.image);
+		}
+
+		if(this.bio == null) {
+			object.put("bio", "");
+		}
+		else {
+			object.put("bio", this.bio);
+		}
 
         JSONArray arr = new JSONArray();
 
@@ -245,7 +285,7 @@ public class User extends Model {
             this.uid = object.getInt("uid");
             this.email = object.getString("email");
             this.username = object.getString("username");
-            this.password = object.getString("password");
+//            this.password = object.getString("password");
 //            this.image = object.getString("image");
             this.bio = object.getString("bio");
         } catch(JSONException e){
@@ -260,9 +300,8 @@ public class User extends Model {
             this.email = object.getString("email");
             this.username = object.getString("username");
             this.password = object.getString("password");
-            //this.isAdmin = object.getBoolean("isAdmin");
-            //this.orgId = object.getInt("orgId");
-//            this.image = object.getString("image");
+//            this.orgId = object.getInt("orgId");
+            this.image = object.getString("image");
             this.bio = object.getString("bio");
         } catch(JSONException e){
             e.printStackTrace();

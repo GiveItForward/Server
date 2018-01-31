@@ -3,6 +3,7 @@ package giveitforward.managers;
 
 import giveitforward.models.User;
 import giveitforward.models.UserTag;
+import giveitforward.models.UserTagPair;
 import org.hibernate.SessionFactory;
 import org.hibernate.*;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -17,11 +18,46 @@ public class ManageUserTag {
         ManageUserTag mt = new ManageUserTag();
         List<UserTag> u = mt.getAllTags();
         List<String> l = mt.getAllTagsByUID(2);
+
+        User user = new ManageUser().getUserfromUID(1);
+        mt.AddTagToUser(u.get(0), user);
     }
 
     public ManageUserTag(){
 
     }
+
+    public boolean AddTagToUser(UserTag tag, User user){
+		UserTag realTag = getTagByTagname(tag.getUsertagName());
+    	UserTagPair utp = new UserTagPair(user.getUid(), realTag);
+
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+
+		try
+		{
+			t = session.beginTransaction();
+
+			session.save(utp);
+			session.flush();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return false;
+		} finally
+		{
+			session.close();
+		}
+
+		System.out.println("successfully added tag");
+		return true;
+	}
 
     /**
      * Creates a new tag.
@@ -163,6 +199,18 @@ public class ManageUserTag {
             return allTags;
         }
     }
+
+
+    public UserTag getTagByTagname(String tagname){
+    	String query = "select u from UserTag u where u.tagname = '" + tagname + "'";
+    	System.out.println(query);
+    	List<UserTag> res = makeQuery(query);
+    	if(res.size() != 1){
+    		return null;
+		}
+		return res.get(0);
+	}
+
 
     /**
      * @param query HQL query to be performed.

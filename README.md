@@ -18,9 +18,9 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 ###### Users
 
-| Path          | HTTP Method | Headers   | Properties |  
+| Path          | HTTP Method | Headers/Params   | Properties |  
 | ------------- |------|-----------|------------|  
-| /users/create |POST|  TODO | - Returns the User, user tags, and num of donations and fulfilled requests.
+| /users/create |POST|  | - Returns the User, user tags, and num of donations and fulfilled requests.
 | /users/login |GET|  username : {username} <br> password : {password} | - verifies a users credentials and logs a user into a session.
 | /users |GET| None | - Returns a list of all users
 | /users/delete |DELETE| TODO | TODO |
@@ -43,11 +43,19 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 \* indicates an optional header.
 
-###### JSON Formats
+###### JSON Response Formats
 | Model | JSON |
 |-------|------|
 |Request|{"tagId1":5, <br>"image":"img", <br>"amount":20, <br>"thankYou":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE Thank You* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"duid":1, <br>"tagId2":8, <br>"description":"des", <br>"ruid":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE User* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
 |User | <br>{"uid":0, <br>"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"username":"usrnme"  <br>}|
+|Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
+|Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
+
+###### JSON Parameter Formats
+| Model | JSON |
+|-------|------|
+|Create Request|{"tagId1":5, <br>"image":"img", <br>"amount":20, <br>"thankYou":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE Thank You* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"duid":1, <br>"tagId2":8, <br>"description":"des", <br>"ruid":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE User* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
+|Create User | <br>{"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"email":"e@email.co", <br>"password":"pwd", <br>"orgId":"", <br>"username":"usrnme", <br>"tags": [ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "nme", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "1" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "otr", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "2" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;]<br>}|
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 |Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 

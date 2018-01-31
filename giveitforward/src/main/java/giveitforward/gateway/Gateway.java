@@ -52,15 +52,27 @@ public class Gateway {
 	public Response newUser(String userJSon)//(String userJson)
 	{
 		User newUser = new User();
-		newUser.populateSignupUserFromJSON(new JSONObject(userJSon));
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateSignupUserFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
 		User userResult = manager.signupUser(newUser);
 
+
+
 		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
 		if (!confirmed){
-			manager.deleteUser(userResult);
-			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+			//TODO: When we want to release this we will uncomment.
+			//manager.deleteUser(userResult);
+			//return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+		}
+
+		//Add tags to user
+		for (Object obj : userJSON.getJSONArray("tags")) {
+			UserTag tag = new UserTag();
+			JSONObject ob = (JSONObject)obj;
+			tag.setUsertagName(ob.getString("tagname"));
+			new ManageUserTag().AddTagToUser(tag, userResult);
 		}
 
 		String err = "Unable to create user.";

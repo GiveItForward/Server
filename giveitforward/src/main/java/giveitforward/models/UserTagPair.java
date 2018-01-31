@@ -21,8 +21,14 @@ public class UserTagPair extends Model {
 	private Integer verifiedBy;
 
 	public UserTagPair() {
+
 		id = new UidTid();
 	}
+
+	public UserTagPair(Integer uid, UserTag tag) {
+		this.setId(uid, tag);
+	}
+
 
 	public UidTid getId() {
 		return id;
@@ -74,17 +80,14 @@ public class UserTagPair extends Model {
 			object.put("verifiedBy", this.verifiedBy);
 		}
 
-		if (this.time == null) {
-			object.put("timeLimit", "");
-		}
-		else {
-			object.put("timeLimit", this.time);
-		}
-
 		return object;
 	}
 
 	public boolean populateFromJSON(JSONObject obj) {
+		this.verifiedBy = obj.getInt("verifiedBy");
+		UserTag t = new UserTag();
+		t.setUsertagName(obj.getString("tagname"));
+		this.id.tag = t;
 		return false;
 	}
 
