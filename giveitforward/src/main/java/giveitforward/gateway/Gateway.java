@@ -70,8 +70,7 @@ public class Gateway {
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
 			UserTag tag = new UserTag();
-			JSONObject ob = (JSONObject)obj;
-			tag.setUsertagName(ob.getString("tagname"));
+			tag.setUsertagName((String)obj);
 			new ManageUserTag().AddTagToUser(tag, userResult);
 		}
 
