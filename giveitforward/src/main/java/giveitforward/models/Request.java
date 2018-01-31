@@ -175,7 +175,6 @@ public class Request extends Model {
             user.populateFromJSON(userJSON);
             this.rUser = user;
 
-
         } catch(JSONException e){
             e.printStackTrace();
             return false;

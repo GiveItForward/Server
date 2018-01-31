@@ -1,12 +1,12 @@
 package giveitforward.managers;
 
 
+import giveitforward.models.Request;
 import giveitforward.models.RequestTag;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import giveitforward.models.User;
+import org.hibernate.*;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
@@ -16,10 +16,41 @@ public class ManageRequestTag {
     public static void main(String[] args) {
 
         ManageRequestTag mt = new ManageRequestTag();
+        //List<RequestTag> l = mt.getAllRequestTags();
+        //RequestTag requestTag = mt.getRequestTagByTID(5);
+        //System.out.println(requestTag.getRequestTagname());
     }
 
     public ManageRequestTag(){
 
+    }
+
+    /**
+     *
+     * @param tid
+     * @return
+     */
+    public RequestTag getRequestTagByTID(int tid) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        RequestTag r = null;
+        try {
+            t = session.beginTransaction();
+            Criteria criteria = session.createCriteria(RequestTag.class);
+            criteria.add(Restrictions.eq("tid", tid));
+
+            r = (RequestTag) criteria.uniqueResult();
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally {
+            session.close();
+            return r;
+        }
     }
 
     /**
@@ -134,7 +165,7 @@ public class ManageRequestTag {
         {
             t = session.beginTransaction();
 
-            String s = "from RequestTag";
+            String s = "from RequestTag order by tagname ASC";
             r = (List<RequestTag>) session.createQuery(s).list();
 
             t.commit();

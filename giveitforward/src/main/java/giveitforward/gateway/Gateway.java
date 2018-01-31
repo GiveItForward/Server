@@ -225,6 +225,18 @@ public class Gateway {
 		return manageObjectResonse(err, requestResult);
 	}
 
+	@GET
+	@Path("/requests/tags")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestTags(@Context HttpHeaders headers) {
+		ManageRequestTag manager = new ManageRequestTag();
+		List<RequestTag> tags = manager.getAllRequestTags();
+
+		String err = "unable to fetch tags";
+
+		return manageCollectionResponse(err, tags);
+	}
+
 
 	/*********************************** Tag PATHS *****************************************/
 
