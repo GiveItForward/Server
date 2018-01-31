@@ -215,6 +215,45 @@ public class User extends Model {
         return "name: " + username + "\nemail: " + email;
     }
 
+    public JSONObject asRequestJSON(){
+        JSONObject object = new JSONObject();
+
+        if(this.uid == null){
+            object.put("uid", "");
+        }
+        else {
+            object.put("uid", this.uid);
+        }
+
+        if(this.username == null) {
+            object.put("username", "");
+        }
+        else {
+            object.put("username", this.username);
+        }
+
+        if (this.image == null) {
+            object.put("image", "");
+        }
+        else {
+            object.put("image", this.image);
+        }
+
+        JSONArray arr = new JSONArray();
+
+        if(tags.isEmpty()){
+            arr.put(new UserTagPair().asJSON());
+        }
+        else {
+            for (UserTagPair tag : tags) {
+                arr.put(tag.asJSON());
+            }
+        }
+
+        object.put("tags", arr);
+        return object;
+    }
+
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();
 
@@ -239,10 +278,7 @@ public class User extends Model {
 			object.put("username", this.username);
 		}
 
-		object.put("isAdmin", this.isAdmin);
-
         object.put("isAdmin", this.isAdmin);
-
 
 		if(this.orgId == null) {
         	object.put("orgId", "");

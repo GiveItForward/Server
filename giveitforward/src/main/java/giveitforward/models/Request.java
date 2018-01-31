@@ -147,7 +147,7 @@ public class Request extends Model {
 			object.put("rUser", new User().asJSON());
 		}
 		else {
-			object.put("rUser", this.rUser.asJSON());
+			object.put("rUser", this.rUser.asRequestJSON());
 		}
 
 		object.put("requestTime", getDisplayDate(this.requesttime));
