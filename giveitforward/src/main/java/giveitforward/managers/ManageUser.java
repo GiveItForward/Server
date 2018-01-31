@@ -360,6 +360,7 @@ public class ManageUser {
      * @return - the user with that uid
      */
     public User getUserfromUID(int uid) {
+
         return makeQuery("from User where uid = " + uid).get(0);
     }
 }

@@ -28,7 +28,8 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /users |GET| None | - Returns a list of all users
 | /users/delete |DELETE| TODO | TODO |
 | /users/update |PUT| TODO | TODO |
-| /users/getdonateamount/ | GET | uid:{id} | -returns Json response of the following format for the specified user. <br> {"donateAmount":30.50}|
+| /users/getdonateamount/ | GET | uid:{uid} | -returns Json response of the following format for the specified user. <br> {"donateAmount":30.50}|
+| /users/byuid | GET | uid:{uid} | -Returns the user with the given uid.|
 
 \* indicates an optional header.
 

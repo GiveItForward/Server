@@ -142,8 +142,10 @@ public class Gateway {
 
 		String err = "unable to get user with uid " + uid;
 
-		return manageObjectResonse(err, user);
+//		return manageObjectResonse(err, user);
+		return manageUserResponse(err, user);
 	}
+
 
 	@GET
 	@Path("/users/getdonateamount")
