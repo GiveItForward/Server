@@ -181,7 +181,7 @@ public class ManageUser {
             t = session.beginTransaction();
 
             u = new User(newUser.getEmail(), newUser.getUsername(), newUser.getPassword(), newUser.getIsAdmin(),
-                    newUser.getOrgId(), newUser.getPhoto(), newUser.getBio(), new Timestamp(System.currentTimeMillis()));
+                    newUser.getOrgId(), newUser.getPhoto(), newUser.getBio(), null);
             session.save(u);
             session.flush();
             t.commit();
