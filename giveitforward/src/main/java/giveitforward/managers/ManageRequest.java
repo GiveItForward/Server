@@ -182,6 +182,14 @@ public class ManageRequest {
      */
     public List<Request> getAllRequests() {
 
+        return makeQuery("select r from Request r");
+    }
+
+    /**
+     * @return returns all pending requests in the DB.
+     */
+    public List<Request> getOpenRequests() {
+
         return makeQuery("select r from Request r where r.duid is null");
     }
 

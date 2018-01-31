@@ -30,6 +30,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /users/update |PUT| TODO | TODO |
 | /users/getdonateamount/ | GET | uid:{uid} | -returns Json response of the following format for the specified user. <br> {"donateAmount":30.50}|
 | /users/byuid | GET | uid:{uid} | -Returns the user with the given uid.|
+|/confirm/{id} | GET | NONE | -Confirms a users email and sets signup date in the user. <br> - Returns response that's the same as login.|
 
 \* indicates an optional header.
 
@@ -56,40 +57,13 @@ Each API call is defined by a path which may or may not consist of multiple head
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 |Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 
-{
-       "uid": 1300,
-       "image": "/img/longhair_profile_pic.png",
-       "bio": "whats up",
-       "isAdmin": false,
-       "email": "single_mama@email.com",
-       "orgId": 1,
-       "username": "single_mama",
-       "tags": [
-           {
-               "tagname": "singleParent",
-               "verifiedBy": 1,
-               "tid": 2
-           },
-           {
-               "tagname": "student",
-               "verifiedBy": "",
-               "tid": 1
-           },
-           {
-               "tagname": "disabledFamily",
-               "verifiedBy": 1,
-               "tid": 8
-           }
-       ]
-   },
-
 ###### JSON Parameter Formats
 | Model | JSON |
 |-------|------|
 |Create Request|{"image":"img", <br>"tag1":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":&nbsp;"Request Tag1"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":&nbsp;1<br>},<br>"amount":20, <br>"description":"des", <br>"tag2":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":&nbsp;"Request Tag2"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":&nbsp;2<br>}, <br>"rUser":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid":&nbsp;1 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
 |Create User | <br>{"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"email":"e@email.co", <br>"password":"pwd", <br>"orgId":"", <br>"username":"usrnme", <br>"tags": [ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "nme", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "1" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "otr", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "2" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;]<br>}|
-|Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
-|Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
+| Create Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
+| Create Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 
 ### Security:
 

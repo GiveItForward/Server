@@ -142,7 +142,6 @@ public class Gateway {
 
 		String err = "unable to get user with uid " + uid;
 
-//		return manageObjectResonse(err, user);
 		return manageUserResponse(err, user);
 	}
 
@@ -191,6 +190,18 @@ public class Gateway {
 	@Path("/requests")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getRequestFeed(@Context HttpHeaders headers) {
+		ManageRequest manager = new ManageRequest();
+		List<Request> requests = manager.getOpenRequests();
+
+		String err = "unable to fetch requests";
+
+		return manageCollectionResponse(err, requests);
+	}
+
+	@GET
+	@Path("/requests/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestFeedAll(@Context HttpHeaders headers) {
 		ManageRequest manager = new ManageRequest();
 		List<Request> requests = manager.getAllRequests();
 
