@@ -125,6 +125,16 @@ public class ManageOrganization
         return makeQuery("from Organization where approveddate is not null");
     }
 
+    public Organization getOrgByOrgId(int oid){
+        String query = "select o from Organization o where oid = " + oid;
+        List<Organization> org = makeQuery(query);
+
+        if(org.size() != 1){
+            return null;
+        }
+        return org.get(0);
+    }
+
 
     /********************************** Queries *********************************/
 

@@ -60,9 +60,9 @@ public class Gateway {
 
 
 
-		//boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-		//if (!confirmed){
-			//TODO: When we want to release this we will uncomment.
+//		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+//		if (!confirmed){
+//			TODO: When we want to release this we will uncomment.
 			//manager.deleteUser(userResult);
 			//return GIFResponse.getFailueResponse("Failed to send confirmation email.");
 		//}
@@ -70,7 +70,8 @@ public class Gateway {
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
 			UserTag tag = new UserTag();
-			tag.setUsertagName((String)obj);
+			JSONObject ob = (JSONObject)obj;
+			tag.setUsertagName(ob.getString("tagname"));
 			new ManageUserTag().AddTagToUser(tag, userResult);
 		}
 
@@ -129,6 +130,40 @@ public class Gateway {
 		String err = "Unable to get all users";
 
 		return manageCollectionResponse(err, users);
+	}
+
+	@GET
+	@Path("/users/byuid")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserByUid(@Context HttpHeaders headers) {
+		Integer uid = new Integer(headers.getRequestHeader("uid").get(0));
+		ManageUser manager = new ManageUser();
+		User user = manager.getUserfromUID(uid);
+
+		String err = "unable to get user with uid " + uid;
+
+		return manageObjectResonse(err, user);
+	}
+
+	@GET
+	@Path("/users/getdonateamount")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDonateAmount(@Context HttpHeaders headers) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageRequest manager = new ManageRequest();
+		List<Request> requests = manager.getRequestsFilterByDonateUid(uid);
+		String err = "unable to get donations";
+		if(requests == null)
+		{
+			return GIFResponse.getFailueResponse(err);
+		}
+
+		Double donations = getDonateAmmount(requests);
+		JSONObject jsonOb = new JSONObject();
+		jsonOb.put("donateAmount", donations);
+
+		return GIFResponse.getSuccessObjectResponse(jsonOb.toString());
 	}
 
 

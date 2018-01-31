@@ -1,5 +1,6 @@
 package giveitforward.models;
 
+import giveitforward.managers.ManageOrganization;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -77,9 +78,14 @@ public class UserTagPair extends Model {
 			object.put("verifiedBy", "");
 		}
 		else {
-			object.put("verifiedBy", this.verifiedBy);
+			Organization org = new ManageOrganization().getOrgByOrgId(this.verifiedBy);
+			if(org == null){
+				object.put("verifiedBy", "");
+			}
+			else {
+				object.put("verifiedBy", org.getName());
+			}
 		}
-
 		return object;
 	}
 

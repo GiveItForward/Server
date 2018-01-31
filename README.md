@@ -16,6 +16,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /requests/requestuid | GET | uid : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
 | /requests/donateuid |  GET |uid : {donor_uid} | - Returns all fulfilled requests fulfilled by the user (aka donor) with the given uid. |
 | /requests/create | POST | See CREATE REQUEST in json parameters below. | -Creates a new request.|
+|/requests/tags|GET|None|-Returns a list of all request tags.|
 \* indicates an optional header.
 
 ###### Users
@@ -27,6 +28,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /users |GET| None | - Returns a list of all users
 | /users/delete |DELETE| TODO | TODO |
 | /users/update |PUT| TODO | TODO |
+| /users/getdonateamount/ | GET | uid:{id} | -returns Json response of the following format for the specified user. <br> {"donateAmount":30.50}|
 
 \* indicates an optional header.
 
@@ -49,9 +51,36 @@ Each API call is defined by a path which may or may not consist of multiple head
 | Model | JSON |
 |-------|------|
 |Request|{"tagId1":5, <br>"image":"img", <br>"amount":20, <br>"thankYou":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE Thank You* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"duid":1, <br>"tagId2":8, <br>"description":"des", <br>"ruid":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*SEE User* <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
-|User | <br>{"uid":0, <br>"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"username":"usrnme"  <br>}|
+|User | <br>{"uid":0, <br>"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"orgId":0, <br>"username":"usrnme", <br>"tags": [<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"tagname":"name", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"verifiedBy": 0, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid:" 0}, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>]<br>}|
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 |Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
+
+{
+       "uid": 1300,
+       "image": "/img/longhair_profile_pic.png",
+       "bio": "whats up",
+       "isAdmin": false,
+       "email": "single_mama@email.com",
+       "orgId": 1,
+       "username": "single_mama",
+       "tags": [
+           {
+               "tagname": "singleParent",
+               "verifiedBy": 1,
+               "tid": 2
+           },
+           {
+               "tagname": "student",
+               "verifiedBy": "",
+               "tid": 1
+           },
+           {
+               "tagname": "disabledFamily",
+               "verifiedBy": 1,
+               "tid": 8
+           }
+       ]
+   },
 
 ###### JSON Parameter Formats
 | Model | JSON |
