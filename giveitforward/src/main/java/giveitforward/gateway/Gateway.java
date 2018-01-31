@@ -95,29 +95,55 @@ public class Gateway {
 	// TODO - this is to update a user
 	@PUT
 	@Path("/users/update")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response putNewUser()//(@Context HttpHeaders headers)
+	public Response putNewUser(String userJSon)//(@Context HttpHeaders headers)
 	{
-		return Response.ok()
-				.entity("HI".toString())
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-				.build();
+		User newUser = new User();
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateSignupUserFromJSON(userJSON);
+
+		ManageUser manager = new ManageUser();
+		User userResult = manager.updateUser(newUser);
+
+		//Add tags to user
+		for (Object obj : userJSON.getJSONArray("tags")) {
+			UserTag tag = new UserTag();
+			JSONObject ob = (JSONObject)obj;
+			tag.setUsertagName(ob.getString("tagname"));
+			new ManageUserTag().AddTagToUser(tag, userResult);
+		}
+
+		String err = "Unable to update user.";
+
+		return manageUserResponse(err, userResult);
 	}
 
 	// TODO - this is to deactivate a users account (put an inactive date and remove them from system visibility)
 	@DELETE
 	@Path("/users/delete")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteUser()//(@Context HttpHeaders headers)
+	public Response deleteUser(String userJSon)//(@Context HttpHeaders headers)
 	{
-		return Response.ok()
-				.entity("HI".toString())
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-				.build();
+		User newUser = new User();
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateSignupUserFromJSON(userJSON);
+
+		ManageUser manager = new ManageUser();
+		User userResult = manager.deactivateUser(newUser);
+
+		//Add tags to user
+		for (Object obj : userJSON.getJSONArray("tags")) {
+			UserTag tag = new UserTag();
+			JSONObject ob = (JSONObject)obj;
+			tag.setUsertagName(ob.getString("tagname"));
+			new ManageUserTag().AddTagToUser(tag, userResult);
+		}
+
+		String err = "Unable to update user.";
+
+		return manageUserResponse(err, userResult);
 	}
 
 	@GET

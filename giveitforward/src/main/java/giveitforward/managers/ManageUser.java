@@ -217,24 +217,18 @@ public class ManageUser {
         }
 
         u.setSignupdate(new Timestamp(System.currentTimeMillis()));
-        return updateQuery(u);
+        return updateUser(u);
     }
 
     /**
      *  Sets the user's deactivation time to the current time - signifying that this user is deactivated
-     * @param email user's email to be deactivated
+     * @param user user's email to be deactivated
      * @return  the updated user object
      */
-    public User deactivateUser(String email)
+    public User deactivateUser(User user)
     {
-        User u = getUserFromEmail(email);
-
-        if(u == null){
-            return null;
-        }
-
-        u.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
-        return updateQuery(u);
+        user.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
+        return updateUser(user);
 
     }
 
@@ -286,7 +280,12 @@ public class ManageUser {
     }
 
 
-    private User updateQuery(User updatedUser) {
+	/**
+	 * Saves the updated user in the db.
+	 * @param updatedUser
+	 * @return
+	 */
+    public User updateUser(User updatedUser) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -325,34 +324,14 @@ public class ManageUser {
          * @param user - the updated user
          * @return - true if the user was successfully updated
          */
-        public boolean updateUser(User user) {
-            Session session = SessionFactorySingleton.getFactory().openSession();
-            Transaction t = null;
-
-            try
-            {
-                t = session.beginTransaction();
-
-                session.update(user);
-                session.flush();
-                t.commit();
-            } catch (Exception e)
-            {
-                if (t != null)
-                {
-                    t.rollback();
-                }
-                System.out.println("ROLLBACK");
-                e.printStackTrace();
-                return false;
-            } finally
-            {
-                session.close();
-            }
-
-            System.out.println("successfully updated user");
-            return true;
-        }
+//        public boolean updateUser(User user) {
+//            if (updateQuery(user) == null) {
+//				return false;
+//			}
+//			else {
+//            	return true;
+//			}
+//        }
 
     /**
      * Get a user object from DB matching on UID

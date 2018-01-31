@@ -27,8 +27,8 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /users/create |POST|  | - Returns the User, user tags, and num of donations and fulfilled requests.
 | /users/login |GET|  username : {username} <br> password : {password} | - verifies a users credentials and logs a user into a session.
 | /users |GET| None | - Returns a list of all users
-| /users/delete |DELETE| TODO | TODO |
-| /users/update |PUT| TODO | TODO |
+| /users/delete |DELETE| See Users Json Parameters. | -Sets the user as inactive in the database. |
+| /users/update |PUT| See Users Json Parameters. | -Updates the user. |
 | /users/getdonateamount/ | GET | uid:{uid} | -returns Json response of the following format for the specified user. <br> {"donateAmount":30.50}|
 | /users/byuid | GET | uid:{uid} | -Returns the user with the given uid.|
 |/confirm/{id} | GET | NONE | -Confirms a users email and sets signup date in the user. <br> - Returns response that's the same as login.|
@@ -58,15 +58,43 @@ Each API call is defined by a path which may or may not consist of multiple head
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 |Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 
-###### JSON Parameter Formats
-| Model | JSON |
-|-------|------|
-|Create Request|{"image":"img", <br>"tag1":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":&nbsp;"Request Tag1"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":&nbsp;1<br>},<br>"amount":20, <br>"description":"des", <br>"tag2":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":&nbsp;"Request Tag2"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":&nbsp;2<br>}, <br>"rUser":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid":&nbsp;1 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
-|Create User | <br>{"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"email":"e@email.co", <br>"password":"pwd", <br>"orgId":"", <br>"username":"usrnme", <br>"tags": [ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "nme", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "1" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "otr", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "2" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;]<br>}|
-| Create Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
-| Create Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
+###### JSON Parameters Format
+| Model |Uses| JSON |
+|-------|----|------|
+|Request|Create Request|{"image":"img", <br>"tag1":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":&nbsp;"Request Tag1"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":&nbsp;1<br>},<br>"amount":20, <br>"description":"des", <br>"tag2":{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":&nbsp;"Request Tag2"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":&nbsp;2<br>}, <br>"rUser":{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid":&nbsp;1 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <br>"rid":0<br>}|
+|User| Create User <br> Update User <br> Delete User| <br>{"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"email":"e@email.co", <br>"password":"pwd", <br>"orgId":"", <br>"username":"usrnme", <br>"tags": [ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "nme", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "1" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "otr", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "2" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;]<br>}|
+| Thank You | Create Thank You|{"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
+| Organization | Create Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 
 ### Security:
 
 
 ### Database:
+
+
+### Alpha:
+Login:
+* Password hashed. sha256
+* error message for wrong password/username.
+* donate count and receive count.
+
+Signup:
+* image profiles
+* test
+
+Requests/create:
+* for child image
+* no #other tag
+
+
+Request Feed:
+* Paypal
+* refresh after new requests
+* fix empty Tags
+
+myRequests:
+
+myDonations:
+
+
+### Beta:
