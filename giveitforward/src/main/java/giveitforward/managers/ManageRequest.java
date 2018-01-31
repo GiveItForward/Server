@@ -1,7 +1,9 @@
 package giveitforward.managers;
 
 import giveitforward.models.Request;
+import giveitforward.models.RequestTag;
 import giveitforward.models.User;
+import giveitforward.models.UserTag;
 import org.hibernate.*;
 
 import java.sql.Timestamp;
@@ -66,11 +68,25 @@ public class ManageRequest {
         Transaction t = null;
         ManageUser m = new ManageUser();
 
+
         try {
 
             t = session.beginTransaction();
             User ruser = m.getUserfromUID(req.getRequestor().getUid());
             req.setRequestor(ruser);
+            req.setRequesttime(new Timestamp(System.currentTimeMillis()));
+            RequestTag tag1 = req.getTag1();
+            if(tag1 != null){
+				RequestTag tag1_1 = new ManageRequestTag().getTagByTagname(tag1.getRequestTagname());
+            	req.setTag1(tag1_1);
+			}
+
+			RequestTag tag2 = req.getTag2();
+			if(tag2 != null){
+				RequestTag tag2_2 = new ManageRequestTag().getTagByTagname(tag2.getRequestTagname());
+				req.setTag1(tag2_2);
+			}
+
 
             session.save(req);
             session.flush();

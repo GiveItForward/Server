@@ -149,25 +149,34 @@ public class Request extends Model {
 //            this.rUser = new User();
 //            JSONObject o = new JSONObject()
 //            this.rUser.populateFromJSON(obj.getJSONObject("rUser"));
-
-            JSONObject tag1JSON = obj.getJSONObject("tag1");
-            if(tag1JSON == null){
+            try {
+                JSONObject tag1JSON = obj.getJSONObject("tag1");
+                if (tag1JSON == null) {
+                    this.tag1 = null;
+                }
+                else {
+                    RequestTag tag1 = new RequestTag();
+                    tag1.populateFromJSON(tag1JSON);
+                    this.tag1 = tag1;
+                }
+            }
+            catch(JSONException e) {
                 this.tag1 = null;
             }
-            else {
-                RequestTag tag1 = new RequestTag();
-                tag1.populateFromJSON(tag1JSON);
-                this.tag1 = tag1;
-            }
 
-            JSONObject tag2JSON = obj.getJSONObject("tag2");
-            if(tag2JSON == null){
-                this.tag2 = null;
+            try{
+                JSONObject tag2JSON = obj.getJSONObject("tag2");
+                if(tag2JSON == null){
+                    this.tag2 = null;
+                }
+                else {
+                    RequestTag tag2 = new RequestTag();
+                    tag2.populateFromJSON(tag2JSON);
+                    this.tag2 = tag2;
+                }
             }
-            else {
-                RequestTag tag2 = new RequestTag();
-                tag2.populateFromJSON(tag2JSON);
-                this.tag2 = tag2;
+            catch(JSONException e){
+                this.tag2 = null;
             }
 
             JSONObject userJSON = obj.getJSONObject("rUser");

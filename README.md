@@ -1,3 +1,5 @@
+
+
 # Server
 
 
@@ -7,13 +9,13 @@ Each API call is defined by a path which may or may not consist of multiple head
 ### External API:
 ###### Requests
 
-| Path          | Headers   |Properties |
-| ------------- |-----------|
-| /requests     |  None     | - Returns all open requests as a JSONArray of requests. |
-| /requests/requestuid/open | uid : {requester_uid} | - Returns all open requests made by the user (aka requester) with the given uid. |
-| /requests/requestuid | uid : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
-| /requests/donateuid | uid : {donor_uid} | - Returns all fulfilled requests fulfilled by the user (aka donor) with the given uid. |
-
+| Path          | HTTP Method | Headers   |Properties |
+| ------------- |-----------|-----------|
+| /requests     | GET |  None     | - Returns all open requests as a JSONArray of requests. |
+| /requests/requestuid/open |  GET | uid : {requester_uid} | - Returns all open requests made by the user (aka requester) with the given uid. |
+| /requests/requestuid | GET | uid : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
+| /requests/donateuid |  GET |uid : {donor_uid} | - Returns all fulfilled requests fulfilled by the user (aka donor) with the given uid. |
+| /requests/create | POST | See CREATE REQUEST in json parameters below. | -Creates a new request.|
 \* indicates an optional header.
 
 ###### Users

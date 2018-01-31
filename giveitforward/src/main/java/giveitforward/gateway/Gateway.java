@@ -60,12 +60,12 @@ public class Gateway {
 
 
 
-		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-		if (!confirmed){
+		//boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+		//if (!confirmed){
 			//TODO: When we want to release this we will uncomment.
 			//manager.deleteUser(userResult);
 			//return GIFResponse.getFailueResponse("Failed to send confirmation email.");
-		}
+		//}
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {

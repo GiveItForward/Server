@@ -55,7 +55,6 @@ public class RequestTag extends Model{
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        this.tid = obj.getInt("tid");
         this.tagname = obj.getString("tagname");
         return true;
         //TODO: If something goes wrong, return false!
