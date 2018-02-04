@@ -131,7 +131,7 @@ public class ManageUser {
 			session.close();
 		}
 
-		System.out.println("successfully added user");
+		System.out.println("successfully deleted user");
 		return true;
 	}
 

@@ -26,7 +26,7 @@ public class ManageRequest {
         List<Request> req = mr.getAllRequests();
         System.out.println(req.size());
 
-        for(Request r : req){
+        for (Request r : req) {
 
             System.out.println(r.asString());
         }
@@ -58,11 +58,12 @@ public class ManageRequest {
 
     }
 
-    public ManageRequest(){
+    public ManageRequest() {
     }
 
     /**
      * Creates a new request.
+     *
      * @return
      */
     public Request createRequest(Request req) {
@@ -78,31 +79,29 @@ public class ManageRequest {
             req.setRequestor(ruser);
             req.setRequesttime(new Timestamp(System.currentTimeMillis()));
             RequestTag tag1 = req.getTag1();
-            if(tag1 != null){
-				RequestTag tag1_1 = new ManageRequestTag().getTagByTagname(tag1.getRequestTagname());
-            	req.setTag1(tag1_1);
-			}
+            if (tag1 != null) {
+                RequestTag tag1_1 = new ManageRequestTag().getTagByTagname(tag1.getRequestTagname());
+                req.setTag1(tag1_1);
+            }
 
-			RequestTag tag2 = req.getTag2();
-			if(tag2 != null){
-				RequestTag tag2_2 = new ManageRequestTag().getTagByTagname(tag2.getRequestTagname());
-				req.setTag1(tag2_2);
-			}
+            RequestTag tag2 = req.getTag2();
+            if (tag2 != null) {
+                RequestTag tag2_2 = new ManageRequestTag().getTagByTagname(tag2.getRequestTagname());
+                req.setTag1(tag2_2);
+            }
 
 
             session.save(req);
             session.flush();
             t.commit();
         } catch (Exception e) {
-            if (t != null)
-            {
+            if (t != null) {
                 t.rollback();
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
             return req;
-        } finally
-        {
+        } finally {
             session.close();
         }
         System.out.println("successfully added request");
@@ -111,6 +110,7 @@ public class ManageRequest {
 
     /**
      * Marks a request as fulfilled.
+     *
      * @return true if the transaction was successfully completed.
      */
     public boolean fulfillRequest(int rid, int duid) {
@@ -133,16 +133,36 @@ public class ManageRequest {
 
     /**
      * Updates the request with the new information provided.
-     * @param rid
-     * @return
+     *
+     * @param req - the request to update with its changed values.
+     * @return -- the updated request or null on failure
      */
-    public Request updateRequest(int rid) {
-        //TODO: Implement
-        return null;
+    public Request updateRequest(Request req) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try {
+            t = session.beginTransaction();
+            session.update(req);
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            session.close();
+            return null;
+        } finally {
+            session.close();
+        }
+        System.out.println("successfully updated request");
+        return req;
     }
 
     /**
      * Deletes the request
+     *
      * @return true if the request was successfully removed.
      */
     public boolean deleteRequest(int rid) {
@@ -153,6 +173,7 @@ public class ManageRequest {
 
     /**
      * Gets the count of all donations of a given user
+     *
      * @param uid - uid of user
      * @return count of donations made, -1 if error is thrown.
      */
@@ -165,6 +186,7 @@ public class ManageRequest {
 
     /**
      * Gets the count of all requests made by a given user
+     *
      * @param uid - uid of user
      * @return count of requests made, -1 if error is thrown.
      */
@@ -197,16 +219,18 @@ public class ManageRequest {
 
     /**
      * Queries the DB for requests fulfilled by the user with the given uid.
+     *
      * @param dUid uid
      * @return a list of requests fulfilled by the user with the given uid.
      */
     public List<Request> getRequestsFilterByDonateUid(String dUid) {
         return makeQuery("select r from Request r where " +
-            "r.duid = " + dUid + " order by r.requesttime desc");
+                "r.duid = " + dUid + " order by r.requesttime desc");
     }
 
     /**
      * Queries the DB for open and fulfilled requests created by a user with the given uid.
+     *
      * @param rUid
      * @return a list of open and closed requests created by a user with the given uid.
      */
@@ -217,6 +241,7 @@ public class ManageRequest {
 
     /**
      * Queries the DB for open requests created by a user with the given uid.
+     *
      * @param rUid
      * @return a list of open requests created by a user with the given uid.
      */
@@ -236,21 +261,17 @@ public class ManageRequest {
         Transaction t = null;
         List<Request> r = null;
 
-        try
-        {
+        try {
             t = session.beginTransaction();
             r = (List<Request>) session.createQuery(query).list();
             t.commit();
-        } catch (Exception e)
-        {
-            if (t != null)
-            {
+        } catch (Exception e) {
+            if (t != null) {
                 t.rollback();
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-        } finally
-        {
+        } finally {
             session.close();
 //            factory.close();
             return r;
@@ -258,8 +279,7 @@ public class ManageRequest {
     }
 
     /**
-     *
-     * @param queryString hql query to be performed.
+     * @param queryString    hql query to be performed.
      * @param parameterType
      * @param parameterValue
      * @return
@@ -277,12 +297,10 @@ public class ManageRequest {
             t = session.beginTransaction();
             Object result = query.uniqueResult();
             t.commit();
-            count = ((Long)result).intValue();
+            count = ((Long) result).intValue();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally
-        {
+        } finally {
             session.close();
             return count;
         }

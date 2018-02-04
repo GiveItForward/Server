@@ -6,6 +6,7 @@ import giveitforward.models.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ManageOrganization
@@ -17,15 +18,15 @@ public class ManageOrganization
     public static void main(String[] args)
     {
         ManageOrganization manager = new ManageOrganization();
-
+        //manager.approveOrganization(1);
 
         //Approved orgs
-        List<Organization> orgs = manager.getAllOrgs();
-        for(Organization o : orgs){
-
-            System.out.println(o.asString());
-            System.out.println(o.asJSON());
-        }
+//        List<Organization> orgs = manager.getAllOrgs();
+//        for(Organization o : orgs){
+//
+//            System.out.println(o.asString());
+//            System.out.println(o.asJSON());
+//        }
 
         //Pending orgs
 //        List<Organization> orgs2 = manager.getAllPendingOrgs();
@@ -80,10 +81,32 @@ public class ManageOrganization
         return org;
     }
 
-    public Organization updateOrganization(int oid)
+    /**
+     * Update organization with changed values in Org Obj.
+     * @param org - the org to be chaanged with its updated values
+     * @return -- the updated org obj - or null for failure.
+     */
+    public Organization updateOrganization(Organization org)
     {
-        //TODO: implement
-        return null;
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try {
+            t = session.beginTransaction();
+            session.update(org);
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return null;
+        } finally {
+            session.close();
+        }
+        System.out.println("successfully updated organization");
+        return org;
     }
 
     /**
@@ -93,18 +116,52 @@ public class ManageOrganization
      */
     public Organization approveOrganization(int oid)
     {
-        //TODO: implement.
-        return null;
+        Session s = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        Organization org = null;
+        try {
+            t = s.beginTransaction();
+            org = (Organization) s.get(Organization.class, oid);
+            org.setApproveddate(new Timestamp(System.currentTimeMillis()));
+            s.update(org);
+            s.flush();
+            t.commit();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            s.close();
+        }
+        return org;
     }
 
     /**
      * Removes an organization from the organization table.
      * @return true if the organization was successfully removed.
      */
-    public boolean deleterganization(int oid)
+    public boolean deleterganization(Organization org)
     {
-        //TODO: implement.
-        return false;
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try {
+            t = session.beginTransaction();
+            session.delete(org);
+            session.flush();
+            t.commit();
+        } catch (Exception e) {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            return false;
+        } finally {
+            session.close();
+        }
+
+        System.out.println("successfully deleted org");
+        return true;
     }
 
     /**
@@ -112,7 +169,6 @@ public class ManageOrganization
      */
     public List<Organization> getAllPendingOrgs()
     {
-
         return makeQuery("from Organization where approveddate is null");
     }
 

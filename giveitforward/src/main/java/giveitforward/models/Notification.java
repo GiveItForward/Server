@@ -25,6 +25,16 @@ public class Notification extends Model {
     @Column(name = "uid")
     private int uid;
 
+    @Column(name = "opened")
+    private boolean opened;
+
+    public Notification(String _message, int _uid) {
+        message = _message;
+        uid = _uid;
+        date = new Timestamp(System.currentTimeMillis());
+        opened = false;
+    }
+
     public int getNid() {
         return nid;
     }
@@ -55,6 +65,14 @@ public class Notification extends Model {
 
     public void setUid(int uid) {
         this.uid = uid;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
+    }
+
+    public boolean isOpened() {
+        return opened;
     }
 
     public String asString() {
