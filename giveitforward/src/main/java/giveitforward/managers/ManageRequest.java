@@ -18,18 +18,20 @@ public class ManageRequest {
     public static void main(String[] args) {
 
         ManageRequest mr = new ManageRequest();
-        //mr.fulfillRequest(3, 4);
-        //Request r = mr.createRequest("NEW REQUEST", 20.00, "image", 1);
+//        mr.fulfillRequest(3, 4);
+//        Request r = mr.createRequest("NEW REQUEST", 20.00, "image", 1);
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
-//
-//        List<Request> req = mr.getAllRequests();
-//        for(Request r : req){
-//
-//            System.out.println(r.asJSON());
-//        }
 
-//        for(Model r : mr.getRequestsFilterByRequestUid("1")){
+        List<Request> req = mr.getAllRequests();
+        System.out.println(req.size());
+
+        for(Request r : req){
+
+            System.out.println(r.asString());
+        }
+
+//        for(Request r : mr.getRequestsFilterByRequestUid("1")){
 //            System.out.println(r.asString());
 //            /* returns
 //                rid: 1, amount: 20.0.
@@ -37,17 +39,17 @@ public class ManageRequest {
 //             */
 //         }
 //
-//        for(Model r : mr.getRequestsFilterByDonateUid("4")){
+//        for(Request r : mr.getRequestsFilterByDonateUid("4")){
 ////            System.out.println(r.asString());
 //            System.out.println(r.asJSON());
 //            /* returns
 //                rid: 2, amount: 35.0, thankYou: true
 //             */
 //        }
-
+//
 //
 //        for(Request r : mr.getRequestsFilterByRequestUidOpen("1")){
-//            System.out.println(r.asString());
+//            System.out.println(r.asJSON());
 //            /* returns
 //                rid: 1, amount: 20.0
 //             */
@@ -182,7 +184,7 @@ public class ManageRequest {
      */
     public List<Request> getAllRequests() {
 
-        return makeQuery("select r from Request r");
+        return makeQuery("select r from Request r order by r.requesttime desc");
     }
 
     /**
@@ -190,7 +192,7 @@ public class ManageRequest {
      */
     public List<Request> getOpenRequests() {
 
-        return makeQuery("select r from Request r where r.duid is null");
+        return makeQuery("select r from Request r where r.duid is null order by r.requesttime desc");
     }
 
     /**
@@ -200,7 +202,7 @@ public class ManageRequest {
      */
     public List<Request> getRequestsFilterByDonateUid(String dUid) {
         return makeQuery("select r from Request r where " +
-            "r.duid = " + dUid);
+            "r.duid = " + dUid + " order by r.requesttime desc");
     }
 
     /**
@@ -210,7 +212,7 @@ public class ManageRequest {
      */
     public List<Request> getRequestsFilterByRequestUid(String rUid) {
 
-        return makeQuery("select r from Request r where r.rUser.uid = " + rUid);
+        return makeQuery("select r from Request r where r.rUser.uid = " + rUid + " order by r.requesttime desc");
     }
 
     /**
@@ -219,7 +221,7 @@ public class ManageRequest {
      * @return a list of open requests created by a user with the given uid.
      */
     public List<Request> getRequestsFilterByRequestUidOpen(String rUid) {
-        return makeQuery("select r from Request r where r.rUser.uid = " + rUid + " and r.duid is null");
+        return makeQuery("select r from Request r where r.rUser.uid = " + rUid + " and r.duid is null order by r.requesttime desc");
     }
 
 
