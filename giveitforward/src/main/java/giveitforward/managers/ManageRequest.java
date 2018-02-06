@@ -109,7 +109,7 @@ public class ManageRequest {
     }
 
     /**
-     * Marks a request as fulfilled.
+     * Fulfills a request
      *
      * @return true if the transaction was successfully completed.
      */
@@ -207,6 +207,12 @@ public class ManageRequest {
     public List<Request> getAllRequests() {
 
         return makeQuery("select r from Request r order by r.requesttime desc");
+    }
+
+
+    public List<Request> getRequestByRid(String rid) {
+        return makeQuery("select r from Request r where " +
+                "r.rid = " + rid);
     }
 
     /**

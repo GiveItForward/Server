@@ -311,6 +311,45 @@ public class Gateway {
 	}
 
 
+	@GET
+	@Path("/requests/rid")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRequestByRid(@Context HttpHeaders headers) {
+        String rid = headers.getRequestHeader("rid").get(0);
+
+        ManageRequest manager = new ManageRequest();
+        List<Request> requests = manager.getRequestByRid(rid);
+
+        String err = "unable to fetch request with the rid " + rid;
+
+        return manageCollectionResponse(err, requests);
+	}
+
+    @GET
+    @Path("/requests/fulfill")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response fullfillRequest(@Context HttpHeaders headers) {
+        String rid = headers.getRequestHeader("rid").get(0);
+        String duid = headers.getRequestHeader("duid").get(0);
+
+        ManageRequest manager = new ManageRequest();
+        boolean fulfilledRequest = manager.fulfillRequest(Integer.parseInt(rid), Integer.parseInt(duid));
+
+        if (fulfilledRequest){
+            System.out.println("Request has been fulfilled *****************************" +
+                    "***************************************************************************************" +
+                    "***************************************************************************************" +
+                    "***************************************************************************************");
+        }
+
+        String err = "unable to fulfill request with the rid " + rid + "and duid + " + duid;
+
+        List<Request> fulfilledRequestModel = manager.getRequestByRid(rid);
+
+        return manageCollectionResponse(err, fulfilledRequestModel);
+    }
+
+
 	/*********************************** Tag PATHS *****************************************/
 
 	@GET
