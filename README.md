@@ -11,8 +11,9 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 | Path          | HTTP Method | Headers   |Properties |
 | ------------- |-----------|-----------|
-| /requests     | GET |  None     | - Returns all open requests as a JSONArray of requests. |
-| /requests/requestuid/open |  GET | uid : {requester_uid} | - Returns all open requests made by the user (aka requester) with the given uid. |
+| /requests     | GET |  None  | - Returns all open requests as a JSONArray of requests. |
+
+| /requests/requestuid/open | GET | uid : {requester_uid} | - Returns all open requests made by the user (aka requester) with the given uid. |
 |/requests/all| GET | None | -Returns all requests as a JSONArray of requests.|
 | /requests/requestuid | GET | uid : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
 | /requests/donateuid |  GET |uid : {donor_uid} | - Returns all fulfilled requests fulfilled by the user (aka donor) with the given uid. |
