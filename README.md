@@ -9,10 +9,9 @@ Each API call is defined by a path which may or may not consist of multiple head
 ### External API:
 ###### Requests
 
-| Path          | HTTP Method | Headers   |Properties |
-| ------------- |-----------|-----------|
+| Path          | HTTP Method | Headers |Properties |
+| ------------- |-----------|-----------|-----------|
 | /requests     | GET |  None  | - Returns all open requests as a JSONArray of requests. |
-
 | /requests/requestuid/open | GET | uid : {requester_uid} | - Returns all open requests made by the user (aka requester) with the given uid. |
 |/requests/all| GET | None | -Returns all requests as a JSONArray of requests.|
 | /requests/requestuid | GET | uid : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
