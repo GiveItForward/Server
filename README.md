@@ -18,6 +18,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /requests/donateuid |  GET |uid : {donor_uid} | - Returns all fulfilled requests fulfilled by the user (aka donor) with the given uid. |
 | /requests/create | POST | See CREATE REQUEST in json parameters below. | -Creates a new request.|
 |/requests/tags|GET|None|-Returns a list of all request tags.|
+
 \* indicates an optional header.
 
 ###### Users
