@@ -295,7 +295,39 @@ public class Gateway {
 
 		String err = "Unable to create request";
 
-		return manageObjectResonse(err, requestResult);
+		return manageObjectResponse(err, requestResult);
+	}
+
+	@PUT
+	@Path("/requests/update")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateRequest(String requestJSON) {
+		Request updateRequest = new Request();
+		updateRequest.populateFromJSON(new JSONObject(requestJSON));
+
+		ManageRequest manager = new ManageRequest();
+		Request requestResult = manager.updateRequest(updateRequest);
+
+		String err = "Unable to update request";
+
+		return manageObjectResponse(err, requestResult);
+	}
+
+	@DELETE
+	@Path("/requests/delete")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteRequest(String requestJSON) {
+		Request deleteRequest = new Request();
+		deleteRequest.populateFromJSON(new JSONObject(requestJSON));
+
+		ManageRequest manager = new ManageRequest();
+		Request requestResult = manager.deleteRequest(deleteRequest);
+
+		String err = "Unable to delete request";
+
+		return manageObjectResponse(err, requestResult);
 	}
 
 	@GET
@@ -309,7 +341,6 @@ public class Gateway {
 
 		return manageCollectionResponse(err, tags);
 	}
-
 
 	@GET
 	@Path("/requests/rid")
@@ -364,6 +395,64 @@ public class Gateway {
 		return manageCollectionResponse(err, tags);
 	}
 
+	/*********************************** ThankYou PATHS *****************************************/
+
+	@GET
+	@Path("/thankyou")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllThankYous() {
+		ManageThankYou manager = new ManageThankYou();
+		List<ThankYou> thankYous = manager.getAllThankYous();
+
+		String err = "unable to fetch ThankYous";
+
+		return manageCollectionResponse(err, thankYous);
+	}
+
+	@POST
+	@Path("/thankyou/create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createThankYou(String thankYouJSON) {
+		ManageThankYou manager = new ManageThankYou();
+		ThankYou thankYou = new ThankYou();
+		thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+		thankYou = manager.createThankYou(thankYou);
+
+		String err = "unable to create ThankYous";
+
+		return manageObjectResponse(err, thankYou);
+	}
+
+	@PUT
+	@Path("/thankyou/update")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateThankYou(String thankYouJSON) {
+		ManageThankYou manager = new ManageThankYou();
+		ThankYou thankYou = new ThankYou();
+		thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+		thankYou = manager.updateThankYou(thankYou);
+
+		String err = "unable to update ThankYous";
+
+		return manageObjectResponse(err, thankYou);
+	}
+
+	@DELETE
+	@Path("/thankyou/delete")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteThankYou(String thankYouJSON) {
+		ManageThankYou manager = new ManageThankYou();
+		ThankYou thankYou = new ThankYou();
+		thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+		thankYou = manager.deleteThankYou(thankYou);
+
+		String err = "unable to delete ThankYous";
+
+		return manageObjectResponse(err, thankYou);
+	}
 
 	/*********************************************** Helpers *************************************/
 
@@ -402,7 +491,7 @@ public class Gateway {
 		}
 	}
 
-	private Response manageObjectResonse(String err, Model object) {
+	private Response manageObjectResponse(String err, Model object) {
 		if (object != null) {
 			String objJSON = object.asJSON().toString();
 			return GIFResponse.getSuccessObjectResponse(objJSON);

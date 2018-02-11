@@ -23,13 +23,13 @@ public class ManageRequest {
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
 
-        List<Request> req = mr.getAllRequests();
-        System.out.println(req.size());
-
-        for (Request r : req) {
-
-            System.out.println(r.asString());
-        }
+//        List<Request> req = mr.getAllRequests();
+//        System.out.println(req.size());
+//
+//        for (Request r : req) {
+//
+//            System.out.println(r.asString());
+//        }
 
 //        for(Request r : mr.getRequestsFilterByRequestUid("1")){
 //            System.out.println(r.asString());
@@ -55,6 +55,9 @@ public class ManageRequest {
 //             */
 //        }
 
+		Request request = new Request();
+		request.setRid(73);
+		mr.deleteRequest(request);
 
     }
 
@@ -120,6 +123,7 @@ public class ManageRequest {
             t = s.beginTransaction();
             Request r = (Request) s.get(Request.class, rid);
             r.setDuid(duid);
+            r.setDonateTime(new Timestamp(System.currentTimeMillis()));
             s.update(r);
             s.flush();
             t.commit();
@@ -163,12 +167,31 @@ public class ManageRequest {
     /**
      * Deletes the request
      *
-     * @return true if the request was successfully removed.
+     * @return the deleted request if it was successfully removed.
      */
-    public boolean deleteRequest(int rid) {
-        //TODO: Implement
-        //TODO: did we decide not to do this?
-        return false;
+    public Request deleteRequest(Request req) {
+
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+		Request newReq = new Request();
+		newReq.setRid(req.getRid());
+        try {
+            t = session.beginTransaction();
+            session.delete(newReq);
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+            session.close();
+            return null;
+        } finally {
+            session.close();
+        }
+        System.out.println("successfully updated request");
+        return req;
     }
 
     /**

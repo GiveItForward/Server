@@ -9,6 +9,8 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 
 import java.sql.Timestamp;
+import java.util.List;
+
 
 public class ManageThankYou {
 
@@ -16,7 +18,6 @@ public class ManageThankYou {
     public static void main(String[] args) {
 
         ManageThankYou mty = new ManageThankYou();
-        mty.deleteThankYou(1);
     }
 
     public ManageThankYou(){
@@ -25,19 +26,17 @@ public class ManageThankYou {
 
     /**
      * Creates a new ThankYou.
-     * @return
+     * @return the created thankYou or null if an error occurred.
      */
-    public ThankYou createThankYou(int rid, String note, String image) {
+    public ThankYou createThankYou(ThankYou thankyou) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
-        ThankYou ty = null;
 
         try {
             t = session.beginTransaction();
 
-            ty = new ThankYou(rid, note, image);
-            ty.setDate(new Timestamp(System.currentTimeMillis()));
-            session.save(ty);
+			thankyou.setDate(new Timestamp(System.currentTimeMillis()));
+            session.save(thankyou);
             session.flush();
             t.commit();
         }
@@ -47,33 +46,69 @@ public class ManageThankYou {
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
+            return null;
 
         } finally {
             session.close();
         }
-        return ty;
+        return thankyou;
     }
 
     /**
      * Updates the ThankYou with the new information provided.
-     * @param rid
+     * @param thankyou
      * @return
      */
-    public ThankYou updateThankYou(int rid) {
-        //TODO: Do we need this?
-        return null;
+    public ThankYou updateThankYou(ThankYou thankyou) {
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+
+		try {
+			t = session.beginTransaction();
+			session.update(thankyou);
+			session.flush();
+			t.commit();
+		}
+		catch (Exception e) {
+			if (t != null) {
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+
+		} finally {
+			session.close();
+		}
+		return thankyou;
     }
 
     /**
      * Deletes the ThankYou (sets the removed timestamp doesn't actually delete?)
      * @return true if the ThankYou was successfully removed.
      */
-    public boolean deleteThankYou(int rid) {
-        Session session = SessionFactorySingleton.getFactory().openSession();
-        Query query = session.createQuery("delete ThankYou where rid = :id");
-        query.setParameter("id", rid);
+    public ThankYou deleteThankYou(ThankYou thankyou) {
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
 
-        return makeQuery(session, query);
+		try {
+			t = session.beginTransaction();
+			session.delete(thankyou);
+			session.flush();
+			t.commit();
+		}
+		catch (Exception e) {
+			if (t != null) {
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+
+		} finally {
+			session.close();
+		}
+		return thankyou;
     }
 
     /**
@@ -101,6 +136,30 @@ public class ManageThankYou {
         finally
         {
             session.close();
+        }
+    }
+
+    public List<ThankYou> getAllThankYous() {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        String query = "select t from ThankYou t order by t.date desc";
+
+        Transaction t = null;
+        List<ThankYou> thankYous = null;
+
+        try {
+            t = session.beginTransaction();
+            thankYous = (List<ThankYou>) session.createQuery(query).list();
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally {
+            session.close();
+            //            factory.close();
+            return thankYous;
         }
     }
 }

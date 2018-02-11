@@ -157,6 +157,12 @@ public class Request extends Model {
 
 	public boolean populateFromJSON(JSONObject obj) {
 		try {
+			try{
+				this.rid = Integer.parseInt(obj.getString("rid"));
+			}
+			catch(JSONException e){
+				//do nothing...
+			}
 			this.image = obj.getString("image");
 			this.amount = obj.getDouble("amount");
 			this.description = obj.getString("description");
