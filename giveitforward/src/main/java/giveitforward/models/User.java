@@ -6,9 +6,8 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 
 @Entity
 //@Table(name = "user", schema = "postgres")
@@ -32,7 +31,7 @@ public class User extends Model {
     private String password;
 
     @Column(name = "isadmin")
-    private boolean isAdmin;
+    private Boolean isAdmin;
 
     @Column(name = "oid")
     private Integer orgId;
@@ -116,7 +115,7 @@ public class User extends Model {
         this.tags = tags;
     }
 
-    public boolean isAdmin() {
+    public Boolean isAdmin() {
         return isAdmin;
     }
 
@@ -318,27 +317,38 @@ public class User extends Model {
 
     public boolean populateFromJSON(JSONObject object) {
         try{
-            this.uid = object.getInt("uid");
+        	try {
+				this.uid = object.getInt("uid");
+			}
+			catch(JSONException e){
+        		//leave empty in case of creation.
+			}
             this.email = object.getString("email");
             this.username = object.getString("username");
-//            this.password = object.getString("password");
-//            this.image = object.getString("image");
-            this.bio = object.getString("bio");
-        } catch(JSONException e){
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public boolean populateSignupUserFromJSON(JSONObject object){
-        try{
-            this.email = object.getString("email");
-            this.username = object.getString("username");
-            this.password = object.getString("password");
-//            this.orgId = object.getInt("orgId");
+            try {
+				this.password = object.getString("password");
+			}
+			catch(JSONException e)
+			{
+				//When updating, we will need to check for this value and fetch it from the DB.
+				this.password = null;
+			}
             this.image = object.getString("image");
             this.bio = object.getString("bio");
+            try {
+				this.orgId = object.getInt("orgId");
+			}
+			catch(JSONException e){
+				//When updating, we will need to check for this value and fetch it from the DB.
+            	this.orgId = null;
+			}
+			try {
+            	this.isAdmin = object.getBoolean("isAdmin");
+			}
+			catch(JSONException e){
+            	//When updating, we will need to check for this value and fetch it from the DB.
+            	this.isAdmin = null;
+			}
         } catch(JSONException e){
             e.printStackTrace();
             return false;
@@ -346,4 +356,25 @@ public class User extends Model {
         return true;
     }
 
+//    public boolean populateSignupUserFromJSON(JSONObject object){
+//        try{
+//            this.email = object.getString("email");
+//            this.username = object.getString("username");
+//            this.password = object.getString("password");
+////            this.orgId = object.getInt("orgId");
+//            this.image = object.getString("image");
+//            this.bio = object.getString("bio");
+//        } catch(JSONException e){
+//            e.printStackTrace();
+//            return false;
+//        }
+//        return true;
+//    }
+
+    public void addTag(UserTagPair newTag) {
+        if(this.tags == null){
+            this.tags = new HashSet<UserTagPair>();
+        }
+        this.tags.add(newTag);
+    }
 }

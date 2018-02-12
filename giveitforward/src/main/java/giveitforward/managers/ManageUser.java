@@ -193,7 +193,7 @@ public class ManageUser {
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-            return u;
+            return null;
         } finally
         {
             session.close();
@@ -286,6 +286,24 @@ public class ManageUser {
 	 * @return
 	 */
     public User updateUser(User updatedUser) {
+    	//Get all data from the current user that may not have come across in the json.
+        User currentUser = getUserfromUID(updatedUser.getUid());
+        if(currentUser == null){
+        	return null;
+		}
+		else{
+        	updatedUser.setSignupdate(currentUser.getSignupdate());
+        	if(updatedUser.isAdmin() == null){
+        		updatedUser.setAdmin(currentUser.isAdmin());
+			}
+			if(updatedUser.getOrgId() == null){
+        		updatedUser.setOrgId(currentUser.getOrgId());
+			}
+			if(updatedUser.getPassword() == null){
+        		updatedUser.setPassword(currentUser.getPassword());
+			}
+		}
+
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 

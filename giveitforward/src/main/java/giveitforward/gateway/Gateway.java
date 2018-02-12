@@ -3,6 +3,7 @@ package giveitforward.gateway;
 import giveitforward.managers.*;
 import giveitforward.models.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
@@ -51,15 +52,20 @@ public class Gateway {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response newUser(String userJSon)//(String userJson)
 	{
+		String err = "Unable to create user.";
+
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateSignupUserFromJSON(userJSON);
+		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
 		User userResult = manager.signupUser(newUser);
 
 
-
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
+		}
 //		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
 //		if (!confirmed){
 //			TODO: When we want to release this we will uncomment.
@@ -72,11 +78,14 @@ public class Gateway {
 			UserTag tag = new UserTag();
 			JSONObject ob = (JSONObject)obj;
 			tag.setUsertagName(ob.getString("tagname"));
-			new ManageUserTag().AddTagToUser(tag, userResult);
+			UserTagPair newTag = new ManageUserTag().AddTagToUser(tag, userResult);
+			if(newTag == null){
+				//error
+			}
+			else{
+				userResult.addTag(newTag);
+			}
 		}
-
-		String err = "Unable to create user.";
-
 		return manageUserResponse(err, userResult);
 	}
 
@@ -97,24 +106,42 @@ public class Gateway {
 	@Path("/users/update")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response putNewUser(String userJSon)//(@Context HttpHeaders headers)
+	public Response updateUser(String userJSon)//(@Context HttpHeaders headers)
 	{
+		String err = "Unable to update user.";
+
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateSignupUserFromJSON(userJSON);
+		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
-		User userResult = manager.updateUser(newUser);
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
 			UserTag tag = new UserTag();
-			JSONObject ob = (JSONObject)obj;
+			JSONObject ob = (JSONObject) obj;
 			tag.setUsertagName(ob.getString("tagname"));
-			new ManageUserTag().AddTagToUser(tag, userResult);
+			try {
+				tag.setUserTid(ob.getInt("tid"));
+			}
+			catch(JSONException e){
+				tag = new ManageUserTag().getTagByTagname(tag.getUsertagName());
+			}
+			UserTagPair newTag = new ManageUserTag().getUserTagPair(newUser.getUid(), tag.getUserTid() );
+			if (newTag == null) {
+				//error
+			}
+			else {
+				newUser.addTag(newTag);
+			}
 		}
 
-		String err = "Unable to update user.";
+		User userResult = manager.updateUser(newUser);
+
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
+		}
 
 		return manageUserResponse(err, userResult);
 	}
@@ -126,22 +153,19 @@ public class Gateway {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteUser(String userJSon)//(@Context HttpHeaders headers)
 	{
+		String err = "Unable to delete user.";
+
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateSignupUserFromJSON(userJSON);
+		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
 		User userResult = manager.deactivateUser(newUser);
 
-		//Add tags to user
-		for (Object obj : userJSON.getJSONArray("tags")) {
-			UserTag tag = new UserTag();
-			JSONObject ob = (JSONObject)obj;
-			tag.setUsertagName(ob.getString("tagname"));
-			new ManageUserTag().AddTagToUser(tag, userResult);
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
 		}
-
-		String err = "Unable to update user.";
 
 		return manageUserResponse(err, userResult);
 	}

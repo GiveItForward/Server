@@ -16,18 +16,25 @@ public class ManageUserTag {
     public static void main(String[] args) {
 
         ManageUserTag mt = new ManageUserTag();
-        List<UserTag> u = mt.getAllTags();
-        List<String> l = mt.getAllTagsByUID(2);
+//        List<UserTag> u = mt.getAllTags();
+//        List<String> l = mt.getAllTagsByUID(2);
 
-        User user = new ManageUser().getUserfromUID(1);
-        mt.AddTagToUser(u.get(0), user);
+        UserTagPair utp = mt.getUserTagPair(1300,2);
+        System.out.println(utp.asJSON());
+
+        User u = new ManageUser().getUserfromUID(4101);
+        UserTag t = mt.getTagByTagname("lgbt");
+//        mt.UpdateTagToUser(t, u);
+
+//        User user = new ManageUser().getUserfromUID(1);
+//        mt.AddTagToUser(u.get(0), user);
     }
 
     public ManageUserTag(){
 
     }
 
-    public boolean AddTagToUser(UserTag tag, User user){
+    public UserTagPair AddTagToUser(UserTag tag, User user){
 		UserTag realTag = getTagByTagname(tag.getUsertagName());
     	UserTagPair utp = new UserTagPair(user.getUid(), realTag);
 
@@ -49,15 +56,75 @@ public class ManageUserTag {
 			}
 			System.out.println("ROLLBACK");
 			e.printStackTrace();
-			return false;
+			return null;
 		} finally
 		{
 			session.close();
 		}
 
 		System.out.println("successfully added tag");
-		return true;
+		return utp;
 	}
+
+	public UserTagPair getUserTagPair(int uid, int tid){
+    	String query = "select t from UserTagPair t where userid = " + uid + "and tagid = " + tid;
+
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+		List<UserTagPair> utp = null;
+
+		try
+		{
+			t = session.beginTransaction();
+			utp = (List<UserTagPair>) session.createQuery(query).list();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+		} finally
+		{
+			session.close();
+			return utp.get(0);
+		}
+	}
+
+//	public UserTagPair UpdateTagToUser(UserTag tag, User user){
+//		UserTag realTag = getTagByTagname(tag.getUsertagName());
+//		UserTagPair utp = getUserTagPair(user.getUid(), realTag.getUserTid());
+//
+//		Session session = SessionFactorySingleton.getFactory().openSession();
+//		Transaction t = null;
+//
+//		try
+//		{
+//			t = session.beginTransaction();
+//
+//			session.update(utp);
+//			session.flush();
+//			t.commit();
+//		} catch (Exception e)
+//		{
+//			if (t != null)
+//			{
+//				t.rollback();
+//			}
+//			System.out.println("ROLLBACK");
+//			e.printStackTrace();
+//			return null;
+//		} finally
+//		{
+//			session.close();
+//		}
+//
+//		System.out.println("successfully added tag");
+//		return utp;
+//	}
 
     /**
      * Creates a new tag.
@@ -167,7 +234,7 @@ public class ManageUserTag {
     }
 
     /**
-     * Gets all tags associated with a certain user
+     * Gets all tagnames associated with a certain user
      * @param uid the uid of the specific user
      * @return a list of tags
      */
