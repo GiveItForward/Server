@@ -60,6 +60,9 @@ public class ManageThankYou {
      * @return
      */
     public ThankYou updateThankYou(ThankYou thankyou) {
+		ThankYou currentThankYou = getThankYouByRid(thankyou.getRid());
+		thankyou.setDate(currentThankYou.getDate());
+
 		Session session = SessionFactorySingleton.getFactory().openSession();
 		Transaction t = null;
 
@@ -140,26 +143,39 @@ public class ManageThankYou {
     }
 
     public List<ThankYou> getAllThankYous() {
-        Session session = SessionFactorySingleton.getFactory().openSession();
-        String query = "select t from ThankYou t order by t.date desc";
-
-        Transaction t = null;
-        List<ThankYou> thankYous = null;
-
-        try {
-            t = session.beginTransaction();
-            thankYous = (List<ThankYou>) session.createQuery(query).list();
-            t.commit();
-        } catch (Exception e) {
-            if (t != null) {
-                t.rollback();
-            }
-            System.out.println("ROLLBACK");
-            e.printStackTrace();
-        } finally {
-            session.close();
-            //            factory.close();
-            return thankYous;
-        }
+		String query = "select t from ThankYou t order by t.date desc";
+		return makeListQuery(query);
     }
+
+    public ThankYou getThankYouByRid(int rid){
+    	String query = "select t from ThankYou t where rid = " + rid;
+    	List<ThankYou> result = makeListQuery(query);
+    	if (result.size() != 1){
+    		return null;
+		}
+		return result.get(0);
+	}
+
+    List<ThankYou> makeListQuery(String query){
+		Session session = SessionFactorySingleton.getFactory().openSession();
+
+		Transaction t = null;
+		List<ThankYou> thankYous = null;
+
+		try {
+			t = session.beginTransaction();
+			thankYous = (List<ThankYou>) session.createQuery(query).list();
+			t.commit();
+		} catch (Exception e) {
+			if (t != null) {
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+		} finally {
+			session.close();
+			//            factory.close();
+			return thankYous;
+		}
+	}
 }

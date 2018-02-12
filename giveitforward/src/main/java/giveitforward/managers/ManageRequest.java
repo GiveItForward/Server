@@ -142,11 +142,22 @@ public class ManageRequest {
      * @return -- the updated request or null on failure
      */
     public Request updateRequest(Request req) {
+
+    	List<Request> request = getRequestByRid(req.getRid() + "");
+    	if (request.size() != 1){
+    		return null;
+		}
+		else{
+    		req.setRequesttime(request.get(0).getRequesttime());
+    		req.setRequestor(request.get(0).getRequestor());
+		}
+
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
         try {
             t = session.beginTransaction();
+
             session.update(req);
             t.commit();
         } catch (Exception e) {

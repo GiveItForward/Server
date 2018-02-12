@@ -1,5 +1,8 @@
 package giveitforward.models;
 
+import giveitforward.managers.ManageRequest;
+import giveitforward.managers.ManageRequestTag;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -55,6 +58,13 @@ public class RequestTag extends Model{
     }
 
     public boolean populateFromJSON(JSONObject obj) {
+        this.tagname = obj.getString("tagname");
+        try{
+            this.tid = obj.getInt("tid");
+        }
+        catch(JSONException e){
+            this.tid = new ManageRequestTag().getTagByTagname(this.tagname).getRequestTid();
+        }
         this.tagname = obj.getString("tagname");
         return true;
         //TODO: If something goes wrong, return false!

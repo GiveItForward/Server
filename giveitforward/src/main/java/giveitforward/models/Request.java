@@ -158,7 +158,7 @@ public class Request extends Model {
 	public boolean populateFromJSON(JSONObject obj) {
 		try {
 			try{
-				this.rid = Integer.parseInt(obj.getString("rid"));
+				this.rid= obj.getInt("rid");
 			}
 			catch(JSONException e){
 				//do nothing...

@@ -1,5 +1,6 @@
 package giveitforward.models;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,6 +80,25 @@ public class ThankYou extends Model{
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        return false;
+        try {
+            try{
+                this.rid= obj.getInt("rid");
+            }
+            catch(JSONException e){
+                // We can't do anything if we dont have the rid.
+               return false;
+            }
+            try {
+                this.note = obj.getString("note");
+            }
+            catch (JSONException e) {
+                this.note = "";
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
