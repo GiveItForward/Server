@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -195,6 +196,39 @@ public class Gateway {
 		return manageUserResponse(err, user);
 	}
 
+	/**
+	 * Get users private information, aka ignore information that we don't want other users to see.
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/users/byuid/private")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPrivateUserByUid(@Context HttpHeaders headers) {
+
+		Integer uid = new Integer(headers.getRequestHeader("uid").get(0));
+		String err = "unable to get user with uid " + uid;
+
+		ManageUser manager = new ManageUser();
+		User user = manager.getUserfromUID(uid);
+
+		if (user != null) {
+
+			JSONObject privateUser = user.asRequestJSON();
+
+			ManageRequest reqManager = new ManageRequest();
+			int numOfDonations = reqManager.getCountDonationsByUID(user.getUid());
+			int numOfFulfilledRequests = reqManager.getCountRequestsByUID(user.getUid());
+
+			privateUser.put("donateCount", numOfDonations);
+			privateUser.put("receiveCount", numOfFulfilledRequests);
+
+			return GIFResponse.getSuccessObjectResponse(privateUser.toString());
+		}
+		else {
+			return GIFResponse.getFailueResponse(err);
+		}
+	}
 
 	@GET
 	@Path("/users/getdonateamount")
@@ -216,6 +250,8 @@ public class Gateway {
 
 		return GIFResponse.getSuccessObjectResponse(jsonOb.toString());
 	}
+
+	
 
 
 	/********************************* ORG PATHS *******************************************/
