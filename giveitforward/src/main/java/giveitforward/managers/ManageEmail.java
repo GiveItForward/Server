@@ -27,19 +27,40 @@ public class ManageEmail {
 //        confirmEmail("11111111111111111111111111111111");
     }
 
+    public static EmailCode getHash(User u, Character type) {
+
+        //Create a row in EmailCode for the user.
+        String hash = getRandomHash();
+
+        EmailCode ec = new EmailCode(u.getUid(), hash, type);
+
+        //Save the row.
+        boolean successful = ManageEmail.save(ec);
+
+        if(successful){
+            return ec;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public static boolean deleteHash(EmailCode ec) {
+        return delete(ec);
+    }
+
     public static boolean sendConfirmEmail(User u) {
     	if(u == null){
     		return false;
 		}
 
-        //Create a row in EmailCode for the user.
-        String hash = getRandomHash();
-        Character type = 'c';
-        EmailCode ec = new EmailCode(u.getUid(), hash, type);
+		Character type = 'c';
+		EmailCode ec = getHash(u, type);
+    	if (ec == null) {
+    	    return false;
+        }
 
-        //Save the row.
-        boolean status = save(ec);
-
+        String hash = ec.getUhash();
 
         //Send the email.
         String from = "no-reply@giveitforward.us";  // Replace with your "From" address. This address must be verified.

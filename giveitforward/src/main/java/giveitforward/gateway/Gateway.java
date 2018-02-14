@@ -102,7 +102,6 @@ public class Gateway {
 		return manageUserResponse(err, userResult);
 	}
 
-	// TODO - this is to update a user
 	@PUT
 	@Path("/users/update")
 	@Consumes({MediaType.APPLICATION_JSON})
@@ -251,7 +250,133 @@ public class Gateway {
 		return GIFResponse.getSuccessObjectResponse(jsonOb.toString());
 	}
 
-	
+	// UGH... this is not the right thing to be doing... What if the user makes the payment but doesn't return to the site?
+	// PayPal has to have something for this. There must be a way for us to tell paypal we want to be notified when a user
+	// cancels or completes a payment.
+	@GET
+	@Path("/users/gethash")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUsersHash(@Context HttpHeaders headers) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageUser manager = new ManageUser();
+		User user = manager.getUserfromUID(Integer.parseInt(uid));
+		EmailCode ec = ManageEmail.getHash(user, 'D');
+
+		String err = "unable to get hash.";
+
+		if(ec == null)
+		{
+			return GIFResponse.getFailueResponse(err);
+		}
+		return GIFResponse.getSuccessObjectResponse(ec.asJSON().toString());
+	}
+
+	@PUT
+	@Path("/users/promote/org")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response promoteUserOrg(String userJSon)//(@Context HttpHeaders headers)
+	{
+		String err = "Unable to promote user to an organization user.";
+
+		User newUser = new User();
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateFromJSON(userJSON);
+
+		ManageUser manager = new ManageUser();
+
+		User userResult = manager.promoteUserOrg(newUser);
+
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
+		}
+
+		addTagsToUser(userJSON, userResult);
+
+		return manageUserResponse(err, userResult);
+	}
+
+	@PUT
+	@Path("/users/promote/admin")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response promoteUserAdmin(String userJSon)//(@Context HttpHeaders headers)
+	{
+		String err = "Unable to promote user to an organization user.";
+
+		User newUser = new User();
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateFromJSON(userJSON);
+
+		ManageUser manager = new ManageUser();
+
+		User userResult = manager.promoteUserAdmin(newUser);
+
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
+		}
+
+		addTagsToUser(userJSON, userResult);
+
+		return manageUserResponse(err, userResult);
+	}
+
+	@PUT
+	@Path("/users/demote/org")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response demoteUserOrg(String userJSon)//(@Context HttpHeaders headers)
+	{
+		String err = "Unable to promote user to an organization user.";
+
+		User newUser = new User();
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateFromJSON(userJSON);
+
+		ManageUser manager = new ManageUser();
+
+		User userResult = manager.demoteUserOrg(newUser);
+
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
+		}
+
+		addTagsToUser(userJSON, userResult);
+
+		return manageUserResponse(err, userResult);
+	}
+
+	@PUT
+	@Path("/users/demote/admin")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response demoteUserAdmin(String userJSon)//(@Context HttpHeaders headers)
+	{
+		String err = "Unable to promote user to an organization user.";
+
+		User newUser = new User();
+		JSONObject userJSON = new JSONObject(userJSon);
+		newUser.populateFromJSON(userJSON);
+
+		ManageUser manager = new ManageUser();
+
+		User userResult = manager.demoteUserAdmin(newUser);
+
+		if(userResult == null){
+			//error
+			return manageUserResponse(err, userResult);
+		}
+
+		addTagsToUser(userJSON, userResult);
+
+		return manageUserResponse(err, userResult);
+	}
+
+
 
 
 	/********************************* ORG PATHS *******************************************/
@@ -573,5 +698,27 @@ public class Gateway {
 			}
 		}
 		return donate_amount;
+	}
+
+	private void addTagsToUser(JSONObject userJSON, User newUser){
+		//Add tags to user
+		for (Object obj : userJSON.getJSONArray("tags")) {
+			UserTag tag = new UserTag();
+			JSONObject ob = (JSONObject) obj;
+			tag.setUsertagName(ob.getString("tagname"));
+			try {
+				tag.setUserTid(ob.getInt("tid"));
+			}
+			catch(JSONException e){
+				tag = new ManageUserTag().getTagByTagname(tag.getUsertagName());
+			}
+			UserTagPair newTag = new ManageUserTag().getUserTagPair(newUser.getUid(), tag.getUserTid() );
+			if (newTag == null) {
+				//error
+			}
+			else {
+				newUser.addTag(newTag);
+			}
+		}
 	}
 }
