@@ -44,7 +44,7 @@ public class ManageNotification {
      * @param nid -- the id for the notification that has now been seen
      * @return true if the transaction was successfully completed.
      */
-    public boolean seenNotification(int nid) {
+    public Notification seenNotification(int nid) {
         Notification n;
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
@@ -57,10 +57,10 @@ public class ManageNotification {
             t.commit();
         } catch (Exception e) {
             session.close();
-            return false;
+            return null;
         }
         session.close();
-        return true;
+        return n;
     }
 
     /**
@@ -68,21 +68,25 @@ public class ManageNotification {
      * @param uid -- the user who has seen all notifications
      * @return -- true for success/false for failure
      */
-    public boolean seenAllNotifications(int uid) {
+    public List<Notification> seenAllNotifications(int uid) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
+        List<Notification> n;
 
         try {
             t = session.beginTransaction();
             String query = "update Notification set opened = true where uid = " + uid;
             session.createQuery(query);
             t.commit();
+            query = "from Notification where opened = false and uid = " + uid;
+            n = (List<Notification>) session.createQuery(query).list();
+            t.commit();
         } catch (Exception e) {
             session.close();
-            return false;
+            return null;
         }
         session.close();
-        return true;
+        return n;
     }
 
     /**

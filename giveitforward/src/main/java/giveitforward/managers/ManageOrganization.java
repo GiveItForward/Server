@@ -49,16 +49,14 @@ public class ManageOrganization
      * @param phone_number
      * @return organization which was added to the organization table.
      */
-    public Organization createOrganization(String name, String email, String website, String phone_number)
+    public Organization createOrganization(Organization org)
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
-        Organization org = null;
 
         try
         {
             t = session.beginTransaction();
-            org = new Organization(name, email, website, phone_number);
             session.save(org);
             session.flush();
             t.commit();
@@ -135,17 +133,18 @@ public class ManageOrganization
     }
 
     /**
-     * Removes an organization from the organization table.
+     * Removes an organization from the organization table by setting its inactivedate
      * @return true if the organization was successfully removed.
      */
-    public boolean deleterganization(Organization org)
+    public Organization deleteOrganization(Organization org)
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
         try {
             t = session.beginTransaction();
-            session.delete(org);
+            org.setInactivedate(new Timestamp(System.currentTimeMillis()));
+            session.update(org);
             session.flush();
             t.commit();
         } catch (Exception e) {
@@ -155,13 +154,13 @@ public class ManageOrganization
             }
             System.out.println("ROLLBACK");
             e.printStackTrace();
-            return false;
+            return null;
         } finally {
             session.close();
         }
 
-        System.out.println("successfully deleted org");
-        return true;
+        System.out.println("successfully deactivated org");
+        return org;
     }
 
     /**
@@ -169,7 +168,7 @@ public class ManageOrganization
      */
     public List<Organization> getAllPendingOrgs()
     {
-        return makeQuery("from Organization where approveddate is null");
+        return makeQuery("from Organization where approveddate is null and inactivedate is null");
     }
 
     /**
@@ -178,7 +177,7 @@ public class ManageOrganization
     public List<Organization> getAllOrgs()
     {
 
-        return makeQuery("from Organization where approveddate is not null");
+        return makeQuery("from Organization where approveddate is not null and inactivedate is null");
     }
 
     public Organization getOrgByOrgId(int oid){

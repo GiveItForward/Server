@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -234,6 +235,93 @@ public class Gateway {
 		return manageCollectionResponse(err, orgs);
 	}
 
+	/**
+	 * Returns a list of all organizations pending approval.
+	 */
+	@GET
+	@Path("/organizations/pending")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPendingOrganizations() {
+		ManageOrganization manager = new ManageOrganization();
+		List<Organization> orgs = manager.getAllPendingOrgs();
+
+		String err = "unable to fetch pending orgs";
+
+		return manageCollectionResponse(err, orgs);
+	}
+
+	/**
+	 * Creates and adds a new org to the DB
+	 */
+	@POST
+	@Path("/organizations/create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response newOrganization(String orgJson) {
+		String err = "Unable to create organization.";
+
+		Organization newOrg = new Organization();
+		JSONObject orgJSON = new JSONObject(orgJson);
+		newOrg.populateFromJSON(orgJSON);
+
+		ManageOrganization manager = new ManageOrganization();
+		Organization orgResult = manager.createOrganization(newOrg);
+
+		return manageObjectResponse(err, orgResult);
+	}
+
+	/**
+	 *	Updates an existing org in the DB
+	 */
+	@PUT
+	@Path("/organizations/update")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateOrganization(String orgJson)
+	{
+		String err = "Unable to update organization.";
+
+		Organization newOrg = new Organization();
+		JSONObject orgJSON = new JSONObject(orgJson);
+		newOrg.populateFromJSON(orgJSON);
+
+		ManageOrganization manager = new ManageOrganization();
+
+		Organization orgResult = manager.updateOrganization(newOrg);
+
+		if(orgResult == null){
+			//error
+			return manageObjectResponse(err, orgResult);
+		}
+
+		return manageObjectResponse(err, orgResult);
+	}
+
+	/**
+	 * Sets the inactive date of an existing org to remove visibility
+	 */
+	@DELETE
+	@Path("/organizations/delete")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteOrganization(String orgJson)
+	{
+		String err = "Unable to delete org.";
+
+		Organization newOrg = new Organization();
+		JSONObject orgJSON = new JSONObject(orgJson);
+		newOrg.populateFromJSON(orgJSON);
+
+		ManageOrganization manager = new ManageOrganization();
+		Organization orgResult = manager.deleteOrganization(newOrg);
+
+		if(orgResult == null){
+			//error
+			return manageObjectResponse(err, orgResult);
+		}
+
+		return manageObjectResponse(err, orgResult);
+	}
 
 	/******************************* REQUEST PATHS *****************************************/
 	@GET
@@ -476,6 +564,48 @@ public class Gateway {
 		String err = "unable to delete ThankYous";
 
 		return manageObjectResponse(err, thankYou);
+	}
+
+	/*********************************** Notification PATHS **************************************/
+	@GET
+	@Path("/notifications")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNotifications(@Context HttpHeaders headers) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageNotification manager = new ManageNotification();
+		List<Notification> notifications = manager.getAllUnreadNotifications(Integer.parseInt(uid));
+
+		String err = "unable to fetch notifications for the user: " + uid;
+
+		return manageCollectionResponse(err, notifications);
+	}
+
+	@PUT
+	@Path("/notifications/seen/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response seenOneNotification(@PathParam("id") String nid) {
+
+		ManageNotification manager = new ManageNotification();
+		Notification note = manager.seenNotification(Integer.parseInt(nid));
+
+		String err = "could not set nid: " + nid + " to seen.";
+
+		return manageObjectResponse(err, note);
+	}
+
+	@PUT
+	@Path("/notifications/seen/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response seenAllNotifications(@Context HttpHeaders headers) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageNotification manager = new ManageNotification();
+		List<Notification> notes = manager.seenAllNotifications(Integer.parseInt(uid));
+
+		String err = "could not set 1 or more notifications for: " + uid + " to seen.";
+
+		return manageCollectionResponse(err, notes);
 	}
 
 	/*********************************************** Helpers *************************************/

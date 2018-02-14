@@ -150,7 +150,7 @@ public class ManageUser {
             System.out.println("USER DOESN'T EXIST");
             return null;
         }
-        else if (u.getInactivedatedate() != null)
+        else if (u.getInactivedate() != null)
         {
             System.out.println("USER HAS BEEN DEACTIVATED");
             return null;
@@ -181,7 +181,7 @@ public class ManageUser {
             t = session.beginTransaction();
 
             u = new User(newUser.getEmail(), newUser.getUsername(), newUser.getPassword(), newUser.getIsAdmin(),
-                    newUser.getOrgId(), newUser.getPhoto(), newUser.getBio(), null);
+                    newUser.getOrgId(), newUser.getPhoto(), newUser.getBio(), null, newUser.getFirstname(), newUser.getLastname());
             session.save(u);
             session.flush();
             t.commit();
@@ -227,7 +227,7 @@ public class ManageUser {
      */
     public User deactivateUser(User user)
     {
-        user.setInactivedatedate(new Timestamp(System.currentTimeMillis()));
+        user.setInactivedate(new Timestamp(System.currentTimeMillis()));
         return updateUser(user);
 
     }

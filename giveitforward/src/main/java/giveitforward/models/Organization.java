@@ -1,5 +1,6 @@
 package giveitforward.models;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -137,6 +138,18 @@ public class Organization extends Model {
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        return false;
+        try {
+            this.oid = obj.getInt("oid");
+            this.name = obj.getString("name");
+            this.email = obj.getString("email");
+            this.website = obj.getString("website");
+            this.phone_number = obj.getString("phoneNumber");
+            this.description = obj.getString("description");
+            this.address = obj.getString("address");
+        } catch(JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

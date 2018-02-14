@@ -11,6 +11,10 @@ import java.util.List;
 @Table(name = "notification")
 public class Notification extends Model {
 
+    // Default messages for notifications - need to be accessed when creating a new Notification
+    String thankYou = "You have a new Thank You!";
+    String fulfilled = "Your request has been fulfilled!";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nid", unique = true, nullable = false)

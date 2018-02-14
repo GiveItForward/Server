@@ -48,6 +48,11 @@ public class User extends Model {
     @Column(name = "inactivedate")
     private Timestamp inactivedate;
 
+    @Column(name="firstname")
+    private String firstname;
+
+    @Column(name="lastname")
+    private String lastname;
 
 //    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 //    @JoinTable(
@@ -77,7 +82,7 @@ public class User extends Model {
         this.signupdate = new Timestamp(System.currentTimeMillis());
     }
 
-    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, Timestamp signupdate) {
+    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, Timestamp signupdate, String firstname, String lastname) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -85,8 +90,9 @@ public class User extends Model {
         this.orgId = orgId;
         this.image = photo;
         this.bio = bio;
-        this.signupdate = signupdate;
         this.signupdate = new Timestamp(System.currentTimeMillis());
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 
     public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
@@ -195,12 +201,28 @@ public class User extends Model {
         this.signupdate = signupdate;
     }
 
-    public Timestamp getInactivedatedate() {
+    public Timestamp getInactivedate() {
         return inactivedate;
     }
 
-    public void setInactivedatedate(Timestamp inactivedate) {
+    public void setInactivedate(Timestamp inactivedate) {
         this.inactivedate = inactivedate;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String asString() {
@@ -300,6 +322,20 @@ public class User extends Model {
 			object.put("bio", this.bio);
 		}
 
+		if(this.firstname == null) {
+		    object.put("firstname", "");
+        }
+        else {
+		    object.put("firstname", this.firstname);
+        }
+
+        if(this.lastname == null) {
+		    object.put("lastname", "");
+        }
+        else {
+		    object.put("lastname", this.lastname);
+        }
+
         JSONArray arr = new JSONArray();
 
         if(tags.isEmpty()){
@@ -349,6 +385,8 @@ public class User extends Model {
             	//When updating, we will need to check for this value and fetch it from the DB.
             	this.isAdmin = null;
 			}
+			this.firstname = object.getString("firstname");
+            this.lastname = object.getString("lastname");
         } catch(JSONException e){
             e.printStackTrace();
             return false;
