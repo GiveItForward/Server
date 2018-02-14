@@ -1,5 +1,6 @@
 package giveitforward.managers;
 
+import giveitforward.models.EmailCode;
 import giveitforward.models.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -304,6 +305,7 @@ public class ManageUser {
 			}
 		}
 
+		//Now try to freaking update. :(
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -360,4 +362,23 @@ public class ManageUser {
 
         return makeQuery("from User where uid = " + uid).get(0);
     }
+
+	public User promoteUserOrg(User newUser) {
+    	//TODO: implement
+		return null;
+	}
+
+	public User promoteUserAdmin(User newUser) {
+		return null;
+	}
+
+	public User demoteUserOrg(User newUser) {
+		//TODO: implement
+		return null;
+	}
+
+	public User demoteUserAdmin(User newUser) {
+		//TODO: implement
+		return null;
+	}
 }

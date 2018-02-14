@@ -16,6 +16,7 @@ public class EmailCode extends Model {
     @Column(name = "uhash", unique = true, columnDefinition="bpchar")
     private String uHash; //sha256
 
+	//Defines what the has was created for. "C" for email confirmation. "F" for forgot password. "D" for donation.
     @Column(name = "type")
     private Character type;
 
@@ -54,12 +55,12 @@ public class EmailCode extends Model {
     }
 
     public JSONObject asJSON() {
-        return null;
+        JSONObject obj = new JSONObject();
+        obj.put("hash", this.uHash);
+    	return obj;
     }
 
-    public boolean populateFromJSON(JSONObject obj) {
-        return false;
-    }
+    public boolean populateFromJSON(JSONObject obj) { return false; }
 
 }
 
