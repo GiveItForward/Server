@@ -55,12 +55,14 @@ Each API call is defined by a path which may or may not consist of multiple head
 | ------------- |-----------|-----------|
 | /tags | None | - Returns a JSONArray of all tags. |
 
+\* indicates an optional header.
+
 ###### Notifications
 | Path          | HTTP<br>Method | Headers   | Properties |
-| ------------- |------||-----------|-----------|
+| ------------- |------|-----------|-----------|
 | /notifications | GET | uid:{uid} | - Returns a JSONArray of notification for the given uid. |
-| /notifications/seen | PUT | nid:{nid} | - Sets the notification with the given nid to 'opened' in the db. <br> - Returns the opened notification. |
-| /notifications/seenall | PUT | uid:{uid} | - Sets all notifications for the given uid to 'opened' in the db. <br> - Returns the list of unopened notifications for the given user <br>(will almost always be empty except in rare cases of notifications being created between the two queries to update and then get). |
+| /notifications/seen | PUT | nid:{nid} | - Sets the notification with the given nid to opened in the db. <br> - Returns the opened notification. |
+| /notifications/seenall | PUT | uid:{uid} | - Sets all notifications for the given uid to opened in the db. <br> - Returns the list of unopened notifications for the given user <br>(will almost always be empty except in rare cases of notifications being created between the two queries to update and then get). |
 
 
 \* indicates an optional header.
