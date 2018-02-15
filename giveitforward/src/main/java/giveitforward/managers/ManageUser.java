@@ -32,10 +32,14 @@ public class ManageUser {
         //mu.loginUser("boo@email.com", "pswd");
 //        mu.deactivateUser("boo@email.com");
 //
-        for(User u : mu.getAllUsers()){
-            System.err.println(u.asJSON());
-        }
+//        for(User u : mu.getAllUsers()){
+//            System.err.println(u.asJSON());
+//        }
 
+        User u = mu.getUserfromUID(3350);
+        u.setOrgId(1);
+        mu.promoteUserOrg(u);
+        System.err.println(u.asJSON());
     }
 
     public ManageUser() {
@@ -364,6 +368,7 @@ public class ManageUser {
     }
 
 	public User promoteUserOrg(User newUser) {
+    	String query = "update User set orgId = " + newUser.getOrgId() + " where uid = " + newUser.getUid();
     	//TODO: implement
 		return null;
 	}
