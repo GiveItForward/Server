@@ -14,13 +14,15 @@ import java.util.List;
 public class ManageUser {
 
     public static void main(String[] args) {
-        String email = "single_mama@email.com";
-        String username = "single_mama";
-        String password = "kids_name";
+        String email = "DELETE ME";
+        String username = "DELETE";
+        String password = "DELETE";
         boolean isAdmin = false;
         Integer orgId = null;
         String photo = null;
-        String bio = "whats up";
+        String bio = "DELETE";
+        String first = "DELETE";
+        String last = "DELETE";
 
         ManageUser mu = new ManageUser();
 //        User u = mu.getUserfromUID(1);
@@ -28,13 +30,13 @@ public class ManageUser {
 //        mu.updateUser(new User(1,"boo@email.com", "boo", "b7fb0394c7183fd5cac17fb41961c826212a185070e4c1d2f4920e51c1dee35f",
 //                false, null, "/img/glasses_profile_pic.png", "updated bio"));
 
-        //mu.signupUser(email, username, password, isAdmin, orgId, photo, bio);
-        //mu.loginUser("boo@email.com", "pswd");
+        mu.signupUser(new User(email, username, password, isAdmin, orgId, photo, bio, first, last));
+        //mu.loginUser("boo@email.com", "b7fb0394c7183fd5cac17fb41961c826212a185070e4c1d2f4920e51c1dee35f");
 //        mu.deactivateUser("boo@email.com");
 //
-        for(User u : mu.getAllUsers()){
-            System.err.println(u.asJSON());
-        }
+//        for(User u : mu.getAllUsers()){
+//            System.err.println(u.asJSON());
+//        }
 
     }
 
@@ -315,7 +317,6 @@ public class ManageUser {
 
             session.update(updatedUser);
 
-            session.flush();
             t.commit();
         } catch (Exception e)
         {
@@ -381,4 +382,37 @@ public class ManageUser {
 		//TODO: implement
 		return null;
 	}
+
+	public User addOrgToUser(int uid, int oid) {
+        User updatedUser = getUserfromUID(uid);
+        updatedUser.setOrgId(oid);
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+
+        try
+        {
+            t = session.beginTransaction();
+
+            session.update(updatedUser);
+
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+
+            return null;
+
+        } finally
+        {
+            session.close();
+        }
+
+        System.out.println("successfully promoted user to org user");
+        return updatedUser;
+    }
 }

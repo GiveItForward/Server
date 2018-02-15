@@ -2,16 +2,21 @@ package giveitforward.managers;
 
 import giveitforward.models.Notification;
 import giveitforward.models.Request;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
 public class ManageNotification {
 
-
+    public static void main(String[] args) {
+        ManageNotification manager = new ManageNotification();
+        List<Notification> list = manager.seenAllNotifications(1);
+    }
 
     public ManageNotification(){
     }
@@ -71,14 +76,23 @@ public class ManageNotification {
     public List<Notification> seenAllNotifications(int uid) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
-        List<Notification> n;
+        List<Notification> n = getAllUnreadNotifications(uid);
+        if (n.isEmpty()) {
+            return null;
+        }
 
         try {
+            //String query = "update Notification set opened = true where uid = " + uid;
+            for (int i = 0; i < n.size(); i++) {
+                t = session.beginTransaction();
+                Notification note = n.get(i);
+                note.setOpened(true);
+                session.update(note);
+                t.commit();
+            }
+            //session.createQuery(query);
             t = session.beginTransaction();
-            String query = "update Notification set opened = true where uid = " + uid;
-            session.createQuery(query);
-            t.commit();
-            query = "from Notification where opened = false and uid = " + uid;
+            String query = "from Notification where opened = false and uid = " + uid;
             n = (List<Notification>) session.createQuery(query).list();
             t.commit();
         } catch (Exception e) {

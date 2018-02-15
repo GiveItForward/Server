@@ -285,7 +285,6 @@ public class Gateway {
 		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
-
 		User userResult = manager.promoteUserOrg(newUser);
 
 		if(userResult == null){
@@ -376,9 +375,6 @@ public class Gateway {
 		return manageUserResponse(err, userResult);
 	}
 
-
-
-
 	/********************************* ORG PATHS *******************************************/
 	/**
 	 * Returns a list of all approved organizations.
@@ -386,7 +382,7 @@ public class Gateway {
 	@GET
 	@Path("/organizations")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOrganizations(@Context HttpHeaders headers) {
+	public Response getOrganizations() {
 		ManageOrganization manager = new ManageOrganization();
 		List<Organization> orgs = manager.getAllOrgs();
 
@@ -417,15 +413,17 @@ public class Gateway {
 	@Path("/organizations/create")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response newOrganization(String orgJson) {
+	public Response newOrganization(String orgJson, @Context HttpHeaders headers) {
 		String err = "Unable to create organization.";
+
+		Integer uid = new Integer(headers.getRequestHeader("uid").get(0));
 
 		Organization newOrg = new Organization();
 		JSONObject orgJSON = new JSONObject(orgJson);
 		newOrg.populateFromJSON(orgJSON);
 
 		ManageOrganization manager = new ManageOrganization();
-		Organization orgResult = manager.createOrganization(newOrg);
+		Organization orgResult = manager.createOrganization(newOrg, uid);
 
 		return manageObjectResponse(err, orgResult);
 	}
@@ -449,11 +447,6 @@ public class Gateway {
 
 		Organization orgResult = manager.updateOrganization(newOrg);
 
-		if(orgResult == null){
-			//error
-			return manageObjectResponse(err, orgResult);
-		}
-
 		return manageObjectResponse(err, orgResult);
 	}
 
@@ -475,13 +468,44 @@ public class Gateway {
 		ManageOrganization manager = new ManageOrganization();
 		Organization orgResult = manager.deleteOrganization(newOrg);
 
-		if(orgResult == null){
-			//error
-			return manageObjectResponse(err, orgResult);
-		}
-
 		return manageObjectResponse(err, orgResult);
 	}
+
+    /**
+     * Approve an organization
+     */
+	@PUT
+    @Path("organizations/approve")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response approveOrganization(String orgJson) {
+	    String err = "Unable to approve org.";
+
+	    Organization newOrg = new Organization();
+	    JSONObject orgJSON = new JSONObject(orgJson);
+	    newOrg.populateFromJSON(orgJSON);
+
+	    ManageOrganization manager = new ManageOrganization();
+	    Organization orgResult = manager.approveOrganization(newOrg);
+
+	    return manageObjectResponse(err, orgResult);
+    }
+
+    /**
+     * Get a singular org by oid
+     */
+    @GET
+    @Path("/organizations/byoid")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrgbyOID(@Context HttpHeaders headers) {
+        Integer oid = new Integer(headers.getRequestHeader("oid").get(0));
+        ManageOrganization manager = new ManageOrganization();
+        Organization org = manager.getOrgByOrgId(oid);
+
+        String err = "unable to get user with uid " + oid;
+
+        return manageObjectResponse(err, org);
+    }
 
 	/******************************* REQUEST PATHS *****************************************/
 	@GET
@@ -742,10 +766,10 @@ public class Gateway {
 	}
 
 	@PUT
-	@Path("/notifications/seen/{id}")
+	@Path("/notifications/seen")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response seenOneNotification(@PathParam("id") String nid) {
-
+	public Response seenOneNotification(@Context HttpHeaders headers) {
+        String nid = headers.getRequestHeader("nid").get(0);
 		ManageNotification manager = new ManageNotification();
 		Notification note = manager.seenNotification(Integer.parseInt(nid));
 
@@ -755,7 +779,7 @@ public class Gateway {
 	}
 
 	@PUT
-	@Path("/notifications/seen/")
+	@Path("/notifications/seenall")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response seenAllNotifications(@Context HttpHeaders headers) {
 		String uid = headers.getRequestHeader("uid").get(0);

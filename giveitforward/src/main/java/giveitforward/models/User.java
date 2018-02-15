@@ -70,7 +70,7 @@ public class User extends Model {
 
     }
 
-    public User(Integer uid, String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
+    public User(Integer uid, String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, String first, String last) {
         this.uid = uid;
         this.email = email;
         this.username = username;
@@ -80,6 +80,8 @@ public class User extends Model {
         this.image = photo;
         this.bio = bio;
         this.signupdate = new Timestamp(System.currentTimeMillis());
+        this.firstname = first;
+        this.lastname = last;
     }
 
     public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, Timestamp signupdate, String firstname, String lastname) {
@@ -95,7 +97,7 @@ public class User extends Model {
         this.lastname = lastname;
     }
 
-    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio) {
+    public User(String email, String username, String password, boolean isAdmin, Integer orgId, String photo, String bio, String first, String last) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -103,6 +105,8 @@ public class User extends Model {
         this.image = photo;
         this.bio = bio;
         this.signupdate = new Timestamp(System.currentTimeMillis());
+        this.firstname = first;
+        this.lastname = last;
     }
 
 //    public Set<UserTag> getTags() {
@@ -385,8 +389,14 @@ public class User extends Model {
             	//When updating, we will need to check for this value and fetch it from the DB.
             	this.isAdmin = null;
 			}
-			this.firstname = object.getString("firstname");
-            this.lastname = object.getString("lastname");
+			try {
+                this.firstname = object.getString("firstname");
+                this.lastname = object.getString("lastname");
+            }
+            catch (JSONException e) {
+                this.firstname = "";
+                this.lastname = "";
+            }
         } catch(JSONException e){
             e.printStackTrace();
             return false;

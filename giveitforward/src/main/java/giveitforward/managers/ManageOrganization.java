@@ -19,7 +19,9 @@ public class ManageOrganization
     {
         ManageOrganization manager = new ManageOrganization();
         //manager.approveOrganization(1);
-
+        Organization org = manager.createOrganization(new Organization("F", "F", "F", "F", "F", "F", "F"), 2);
+        //Organization org = manager.approveOrganization(7);
+        //System.out.println(org.asJSON().toString());
         //Approved orgs
 //        List<Organization> orgs = manager.getAllOrgs();
 //        for(Organization o : orgs){
@@ -49,7 +51,7 @@ public class ManageOrganization
      * @param phone_number
      * @return organization which was added to the organization table.
      */
-    public Organization createOrganization(Organization org)
+    public Organization createOrganization(Organization org, int uid)
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
@@ -60,7 +62,10 @@ public class ManageOrganization
             session.save(org);
             session.flush();
             t.commit();
-
+            t = session.beginTransaction();
+            ManageUser mu = new ManageUser();
+            mu.addOrgToUser(uid, org.getOid());
+            t.commit();
         } catch (Exception e)
         {
             if (t != null)
@@ -88,7 +93,9 @@ public class ManageOrganization
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
-
+        Organization oldOrg = getOrgByOrgId(org.getOid());
+        org.setApproveddate(oldOrg.getApproveddate());
+        org.setInactivedate(oldOrg.getInactivedate());
         try {
             t = session.beginTransaction();
             session.update(org);
@@ -112,17 +119,16 @@ public class ManageOrganization
      * @param oid
      * @return the org that has been approved.
      */
-    public Organization approveOrganization(int oid)
+    public Organization approveOrganization(Organization org)
     {
+        Organization oldOrg = getOrgByOrgId(org.getOid());
+        org.setInactivedate(oldOrg.getInactivedate());
         Session s = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
-        Organization org = null;
         try {
             t = s.beginTransaction();
-            org = (Organization) s.get(Organization.class, oid);
             org.setApproveddate(new Timestamp(System.currentTimeMillis()));
             s.update(org);
-            s.flush();
             t.commit();
         } catch (Exception e) {
             return null;
@@ -138,6 +144,8 @@ public class ManageOrganization
      */
     public Organization deleteOrganization(Organization org)
     {
+        Organization oldOrg = getOrgByOrgId(org.getOid());
+        org.setApproveddate(oldOrg.getApproveddate());
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 

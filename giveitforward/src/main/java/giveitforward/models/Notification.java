@@ -11,10 +11,6 @@ import java.util.List;
 @Table(name = "notification")
 public class Notification extends Model {
 
-    // Default messages for notifications - need to be accessed when creating a new Notification
-    String thankYou = "You have a new Thank You!";
-    String fulfilled = "Your request has been fulfilled!";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nid", unique = true, nullable = false)
@@ -31,6 +27,8 @@ public class Notification extends Model {
 
     @Column(name = "opened")
     private boolean opened;
+
+    public Notification() {}
 
     public Notification(String _message, int _uid) {
         message = _message;
@@ -89,10 +87,20 @@ public class Notification extends Model {
         object.put("date", getDisplayDate(this.date));
         object.put("message", this.message);
         object.put("uid", this.message);
+        object.put("opened", this.opened);
         return object;
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        return false;
+        try {
+            this.nid = obj.getInt("nid");
+            this.message = obj.getString("message");
+            this.uid = obj.getInt("uid");
+            this.opened = obj.getBoolean("opened");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
