@@ -387,15 +387,15 @@ public class User extends Model {
 			}
 			catch(JSONException e){
             	//When updating, we will need to check for this value and fetch it from the DB.
-            	this.isAdmin = null;
+            	this.isAdmin = false;
 			}
 			try {
                 this.firstname = object.getString("firstname");
                 this.lastname = object.getString("lastname");
             }
             catch (JSONException e) {
-                this.firstname = "";
-                this.lastname = "";
+                this.firstname = "John";
+                this.lastname = "Doe";
             }
         } catch(JSONException e){
             e.printStackTrace();

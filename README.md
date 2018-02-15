@@ -37,9 +37,15 @@ Each API call is defined by a path which may or may not consist of multiple head
 \* indicates an optional header.
 
 ###### Organizations
-| Path          | Headers   | Properties |
-| ------------- |-----------|-----------|
-| /organizations | None | - Returns a JSONArray of all approved organizations. |
+| Path          | HTTP<br>Method | Headers   | Properties |
+| ------------- |------|-----------|-----------|
+| /organizations | GET | None | - Returns a JSONArray of all approved organizations. |
+| /organizations/pending | GET | None | - Returns a JSONArray of all pending organizations. |
+| /organizations/create | POST | uid:{uid} &nbsp;&nbsp;&nbsp;&nbsp; &<br> See Org Json Parameters. | - Returns the newly created org|
+| /organizations/update | PUT | See Org Json Parameters. | - Returns the updated org |
+| /organizations/delete | DELETE | See Org Json Parameters. | - Deactivates org by setting inactive date <br>- Returns the deactivated org |
+| /organizations/approve | PUT | See Org Json Parameters. | - Set approved date in DB<br>- Returns approved org |
+| /organizations/oid | GET | oid:{oid} | - Gets the org for the given oid |
 
 \* indicates an optional header.
 
@@ -48,6 +54,14 @@ Each API call is defined by a path which may or may not consist of multiple head
 | Path          | Headers   | Properties |
 | ------------- |-----------|-----------|
 | /tags | None | - Returns a JSONArray of all tags. |
+
+###### Notifications
+| Path          | HTTP<br>Method | Headers   | Properties |
+| ------------- |------||-----------|-----------|
+| /notifications | GET | uid:{uid} | - Returns a JSONArray of notification for the given uid. |
+| /notifications/seen | PUT | nid:{nid} | - Sets the notification with the given nid to 'opened' in the db. <br> - Returns the opened notification. |
+| /notifications/seenall | PUT | uid:{uid} | - Sets all notifications for the given uid to 'opened' in the db. <br> - Returns the list of unopened notifications for the given user <br>(will almost always be empty except in rare cases of notifications being created between the two queries to update and then get). |
+
 
 \* indicates an optional header.
 
@@ -58,6 +72,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 |User | <br>{"uid":0, <br>"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"isAdmin":false, <br>"email":"e@email.co", <br>"orgId":0, <br>"username":"usrnme", <br>"tags": [<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"tagname":"name", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"verifiedBy": 0, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid:" 0}, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>]<br>}|
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 |Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
+| Notification | {"nid":2, <br>"message":"New Thank You Received!", <br>"uid":1, <br>"date":"year-mo-day hr:min:sec.ms", <br>"opened":false<br>} |
 
 ###### JSON Parameters Format
 | Model |Uses| JSON |
