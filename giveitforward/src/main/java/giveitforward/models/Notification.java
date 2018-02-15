@@ -28,6 +28,8 @@ public class Notification extends Model {
     @Column(name = "opened")
     private boolean opened;
 
+    public Notification() {}
+
     public Notification(String _message, int _uid) {
         message = _message;
         uid = _uid;
@@ -85,10 +87,20 @@ public class Notification extends Model {
         object.put("date", getDisplayDate(this.date));
         object.put("message", this.message);
         object.put("uid", this.message);
+        object.put("opened", this.opened);
         return object;
     }
 
     public boolean populateFromJSON(JSONObject obj) {
-        return false;
+        try {
+            this.nid = obj.getInt("nid");
+            this.message = obj.getString("message");
+            this.uid = obj.getInt("uid");
+            this.opened = obj.getBoolean("opened");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

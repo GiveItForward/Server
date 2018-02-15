@@ -2,16 +2,21 @@ package giveitforward.managers;
 
 import giveitforward.models.Notification;
 import giveitforward.models.Request;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
 public class ManageNotification {
 
-
+    public static void main(String[] args) {
+        ManageNotification manager = new ManageNotification();
+        List<Notification> list = manager.seenAllNotifications(1);
+    }
 
     public ManageNotification(){
     }
@@ -44,7 +49,7 @@ public class ManageNotification {
      * @param nid -- the id for the notification that has now been seen
      * @return true if the transaction was successfully completed.
      */
-    public boolean seenNotification(int nid) {
+    public Notification seenNotification(int nid) {
         Notification n;
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
@@ -57,10 +62,10 @@ public class ManageNotification {
             t.commit();
         } catch (Exception e) {
             session.close();
-            return false;
+            return null;
         }
         session.close();
-        return true;
+        return n;
     }
 
     /**
@@ -68,21 +73,34 @@ public class ManageNotification {
      * @param uid -- the user who has seen all notifications
      * @return -- true for success/false for failure
      */
-    public boolean seenAllNotifications(int uid) {
+    public List<Notification> seenAllNotifications(int uid) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
+        List<Notification> n = getAllUnreadNotifications(uid);
+        if (n.isEmpty()) {
+            return null;
+        }
 
         try {
+            //String query = "update Notification set opened = true where uid = " + uid;
+            for (int i = 0; i < n.size(); i++) {
+                t = session.beginTransaction();
+                Notification note = n.get(i);
+                note.setOpened(true);
+                session.update(note);
+                t.commit();
+            }
+            //session.createQuery(query);
             t = session.beginTransaction();
-            String query = "update Notification set opened = true where uid = " + uid;
-            session.createQuery(query);
+            String query = "from Notification where opened = false and uid = " + uid;
+            n = (List<Notification>) session.createQuery(query).list();
             t.commit();
         } catch (Exception e) {
             session.close();
-            return false;
+            return null;
         }
         session.close();
-        return true;
+        return n;
     }
 
     /**

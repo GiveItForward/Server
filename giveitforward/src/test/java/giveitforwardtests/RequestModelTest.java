@@ -18,7 +18,7 @@ public class RequestModelTest {
          Double amount = 20.0;
          String image = "img";
 //         Timestamp requesttime = null;
-         User ruid = new User("email@email.com", "username", "password", false, null, "photo", "bio");
+         User ruid = new User("email@email.com", "username", "password", false, null, "photo", "bio", "first", "last");
          ThankYou thankYou = new ThankYou(rid, "note", "image");
          Integer duid = 1;
          Integer tag1 = 5;

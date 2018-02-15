@@ -285,7 +285,6 @@ public class Gateway {
 		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
-
 		User userResult = manager.promoteUserOrg(newUser);
 
 		if(userResult == null){
@@ -376,9 +375,6 @@ public class Gateway {
 		return manageUserResponse(err, userResult);
 	}
 
-
-
-
 	/********************************* ORG PATHS *******************************************/
 	/**
 	 * Returns a list of all approved organizations.
@@ -386,7 +382,7 @@ public class Gateway {
 	@GET
 	@Path("/organizations")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getOrganizations(@Context HttpHeaders headers) {
+	public Response getOrganizations() {
 		ManageOrganization manager = new ManageOrganization();
 		List<Organization> orgs = manager.getAllOrgs();
 
@@ -395,6 +391,121 @@ public class Gateway {
 		return manageCollectionResponse(err, orgs);
 	}
 
+	/**
+	 * Returns a list of all organizations pending approval.
+	 */
+	@GET
+	@Path("/organizations/pending")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPendingOrganizations() {
+		ManageOrganization manager = new ManageOrganization();
+		List<Organization> orgs = manager.getAllPendingOrgs();
+
+		String err = "unable to fetch pending orgs";
+
+		return manageCollectionResponse(err, orgs);
+	}
+
+	/**
+	 * Creates and adds a new org to the DB
+	 */
+	@POST
+	@Path("/organizations/create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response newOrganization(String orgJson, @Context HttpHeaders headers) {
+		String err = "Unable to create organization.";
+
+		Integer uid = new Integer(headers.getRequestHeader("uid").get(0));
+
+		Organization newOrg = new Organization();
+		JSONObject orgJSON = new JSONObject(orgJson);
+		newOrg.populateFromJSON(orgJSON);
+
+		ManageOrganization manager = new ManageOrganization();
+		Organization orgResult = manager.createOrganization(newOrg, uid);
+
+		return manageObjectResponse(err, orgResult);
+	}
+
+	/**
+	 *	Updates an existing org in the DB
+	 */
+	@PUT
+	@Path("/organizations/update")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateOrganization(String orgJson)
+	{
+		String err = "Unable to update organization.";
+
+		Organization newOrg = new Organization();
+		JSONObject orgJSON = new JSONObject(orgJson);
+		newOrg.populateFromJSON(orgJSON);
+
+		ManageOrganization manager = new ManageOrganization();
+
+		Organization orgResult = manager.updateOrganization(newOrg);
+
+		return manageObjectResponse(err, orgResult);
+	}
+
+	/**
+	 * Sets the inactive date of an existing org to remove visibility
+	 */
+	@DELETE
+	@Path("/organizations/delete")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteOrganization(String orgJson)
+	{
+		String err = "Unable to delete org.";
+
+		Organization newOrg = new Organization();
+		JSONObject orgJSON = new JSONObject(orgJson);
+		newOrg.populateFromJSON(orgJSON);
+
+		ManageOrganization manager = new ManageOrganization();
+		Organization orgResult = manager.deleteOrganization(newOrg);
+
+		return manageObjectResponse(err, orgResult);
+	}
+
+    /**
+     * Approve an organization
+     */
+	@PUT
+    @Path("organizations/approve")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response approveOrganization(String orgJson) {
+	    String err = "Unable to approve org.";
+
+	    Organization newOrg = new Organization();
+	    JSONObject orgJSON = new JSONObject(orgJson);
+	    newOrg.populateFromJSON(orgJSON);
+
+	    ManageOrganization manager = new ManageOrganization();
+	    Organization orgResult = manager.approveOrganization(newOrg);
+
+	    return manageObjectResponse(err, orgResult);
+    }
+
+    /**
+     * Get a singular org by oid
+     */
+    @GET
+    @Path("/organizations/byoid")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrgbyOID(@Context HttpHeaders headers) {
+        Integer oid = new Integer(headers.getRequestHeader("oid").get(0));
+        ManageOrganization manager = new ManageOrganization();
+        Organization org = manager.getOrgByOrgId(oid);
+
+        String err = "unable to get user with uid " + oid;
+
+        return manageObjectResponse(err, org);
+    }
 
 	/******************************* REQUEST PATHS *****************************************/
 	@GET
@@ -637,6 +748,48 @@ public class Gateway {
 		String err = "unable to delete ThankYous";
 
 		return manageObjectResponse(err, thankYou);
+	}
+
+	/*********************************** Notification PATHS **************************************/
+	@GET
+	@Path("/notifications")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNotifications(@Context HttpHeaders headers) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageNotification manager = new ManageNotification();
+		List<Notification> notifications = manager.getAllUnreadNotifications(Integer.parseInt(uid));
+
+		String err = "unable to fetch notifications for the user: " + uid;
+
+		return manageCollectionResponse(err, notifications);
+	}
+
+	@PUT
+	@Path("/notifications/seen")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response seenOneNotification(@Context HttpHeaders headers) {
+        String nid = headers.getRequestHeader("nid").get(0);
+		ManageNotification manager = new ManageNotification();
+		Notification note = manager.seenNotification(Integer.parseInt(nid));
+
+		String err = "could not set nid: " + nid + " to seen.";
+
+		return manageObjectResponse(err, note);
+	}
+
+	@PUT
+	@Path("/notifications/seenall")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response seenAllNotifications(@Context HttpHeaders headers) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageNotification manager = new ManageNotification();
+		List<Notification> notes = manager.seenAllNotifications(Integer.parseInt(uid));
+
+		String err = "could not set 1 or more notifications for: " + uid + " to seen.";
+
+		return manageCollectionResponse(err, notes);
 	}
 
 	/*********************************************** Helpers *************************************/
