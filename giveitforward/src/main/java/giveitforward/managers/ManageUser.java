@@ -2,6 +2,7 @@ package giveitforward.managers;
 
 import giveitforward.models.EmailCode;
 import giveitforward.models.User;
+import giveitforward.models.UserTagPair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -9,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.SessionFactory;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageUser {
@@ -38,10 +40,14 @@ public class ManageUser {
 //            System.err.println(u.asJSON());
 //        }
 
-        User u = mu.getUserfromUID(3350);
-        u.setOrgId(1);
-        mu.promoteUserOrg(u);
-        System.err.println(u.asJSON());
+//        User u = mu.getUserfromUID(3350);
+//        u.setOrgId(1);
+//        mu.promoteUserOrg(u);
+//        System.err.println(u.asJSON());
+
+        User ur = mu.getUserfromUID(4101);
+        mu.deactivateUser(ur);
+
     }
 
     public ManageUser() {
@@ -234,8 +240,40 @@ public class ManageUser {
      */
     public User deactivateUser(User user)
     {
-        user.setInactivedate(new Timestamp(System.currentTimeMillis()));
-        return updateUser(user);
+		user.setInactivedate(new Timestamp(System.currentTimeMillis()));
+
+		String hqlUpdate = "update User u set u.inactivedate = current_timestamp() where u.uid = " + user.getUid();
+
+
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+		User u = null;
+
+		try
+		{
+			t = session.beginTransaction();
+
+
+			int updatedEntities = session.createQuery( hqlUpdate ).executeUpdate();
+			session.flush();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+		} finally
+		{
+			session.close();
+		}
+
+		System.out.println("successfully added user");
+		return u;
+//        return updateUser(user);
 
     }
 
@@ -286,6 +324,40 @@ public class ManageUser {
         }
     }
 
+    private User updateTags(User currentUser, User updatedUser){
+		boolean match = false;
+		ArrayList<UserTagPair> toBeRemoved = new ArrayList();
+		ArrayList<UserTagPair> toBeAdded = new ArrayList();
+
+		//tags to be added
+		for (UserTagPair utp : updatedUser.getTags()) {
+
+			if (!currentUser.getTags().contains(utp)) {
+				toBeAdded.add(utp);
+			}
+		}
+
+		//tags to be removed
+		for (UserTagPair utp : currentUser.getTags()) {
+
+			if (!updatedUser.getTags().contains(utp)) {
+				toBeRemoved.add(utp);
+			}
+		}
+
+		ManageUserTag mut = new ManageUserTag();
+		//remove the tags.
+		for (UserTagPair utp : toBeRemoved) {
+			mut.ModifyUserTagPair('D', utp);
+		}
+
+		//add the tags.
+		for(UserTagPair utp : toBeAdded) {
+			mut.ModifyUserTagPair('A', utp);
+		}
+
+		return getUserfromUID(currentUser.getUid());
+	}
 
 	/**
 	 * Saves the updated user in the db.
@@ -293,22 +365,27 @@ public class ManageUser {
 	 * @return
 	 */
     public User updateUser(User updatedUser) {
-    	//Get all data from the current user that may not have come across in the json.
-        User currentUser = getUserfromUID(updatedUser.getUid());
-        if(currentUser == null){
-        	return null;
+		//Get all data from the current user that may not have come across in the json.
+		User currentUser = getUserfromUID(updatedUser.getUid());
+		if (currentUser == null) {
+			return null;
 		}
-		else{
-        	updatedUser.setSignupdate(currentUser.getSignupdate());
-        	if(updatedUser.isAdmin() == null){
-        		updatedUser.setAdmin(currentUser.isAdmin());
+		else {
+			updatedUser.setSignupdate(currentUser.getSignupdate());
+			if (updatedUser.isAdmin() == null) {
+				updatedUser.setAdmin(currentUser.isAdmin());
 			}
-			if(updatedUser.getOrgId() == null){
-        		updatedUser.setOrgId(currentUser.getOrgId());
+			if (updatedUser.getOrgId() == null) {
+				updatedUser.setOrgId(currentUser.getOrgId());
 			}
-			if(updatedUser.getPassword() == null){
-        		updatedUser.setPassword(currentUser.getPassword());
+			if (updatedUser.getPassword() == null) {
+				updatedUser.setPassword(currentUser.getPassword());
 			}
+			// Update tags.
+			if (!currentUser.getTags().equals(updatedUser.getTags())) {
+				currentUser = updateTags(currentUser, updatedUser);
+			}
+			updatedUser.setTags(currentUser.getTags());
 		}
 
 		//Now try to freaking update. :(

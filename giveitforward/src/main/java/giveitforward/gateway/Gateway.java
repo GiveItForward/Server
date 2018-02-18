@@ -130,10 +130,10 @@ public class Gateway {
 			UserTagPair newTag = new ManageUserTag().getUserTagPair(newUser.getUid(), tag.getUserTid() );
 			if (newTag == null) {
 				//error
+				//create a new tag.
+				newTag = new UserTagPair(newUser.getUid(), tag);
 			}
-			else {
-				newUser.addTag(newTag);
-			}
+			newUser.addTag(newTag);
 		}
 
 		User userResult = manager.updateUser(newUser);
@@ -160,7 +160,10 @@ public class Gateway {
 		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
-		User userResult = manager.deactivateUser(newUser);
+		User currentUser = manager.getUserfromUID(newUser.getUid());
+		currentUser.setInactivedate(new Timestamp(System.currentTimeMillis()));
+
+		User userResult = manager.updateUser(currentUser);
 
 		if(userResult == null){
 			//error

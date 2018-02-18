@@ -89,6 +89,18 @@ public class UserTagPair extends Model {
 		return object;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		UserTagPair utp = (UserTagPair)o;
+		return this.getTid() == utp.getTid();
+	}
+
+	@Override
+	public int hashCode(){
+		Integer tid = this.getTid();
+		return tid.hashCode();
+	}
+
 	public boolean populateFromJSON(JSONObject obj) {
 		this.verifiedBy = obj.getInt("verifiedBy");
 		UserTag t = new UserTag();
@@ -123,5 +135,9 @@ public class UserTagPair extends Model {
 		public void setTag(UserTag tag) {
 			this.tag = tag;
 		}
+	}
+
+	public int getTid(){
+		return this.id.tag.getUserTid();
 	}
 }

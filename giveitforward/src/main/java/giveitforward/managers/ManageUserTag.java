@@ -90,8 +90,49 @@ public class ManageUserTag {
 		} finally
 		{
 			session.close();
-			return utp.get(0);
+			if(utp.size() == 1) {
+				return utp.get(0);
+			}
+			else {
+				return null;
+			}
 		}
+	}
+
+	public UserTagPair ModifyUserTagPair(char action, UserTagPair tag){
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+
+		try
+		{
+			t = session.beginTransaction();
+			if(action == 'D') {
+				session.delete(tag);
+			}
+			else if(action == 'A') {
+				session.save(tag);
+			}
+			else {
+				return null;
+			}
+			session.flush();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+		} finally
+		{
+			session.close();
+		}
+
+		System.out.println("successfully added tag");
+		return tag;
 	}
 
 //	public UserTagPair UpdateTagToUser(UserTag tag, User user){
