@@ -724,6 +724,14 @@ public class Gateway {
 	}
 
 	@PUT
+	@Path("/thankyou/create")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createThankYou2(String thankYouJSON) {
+		return createThankYou(thankYouJSON);
+	}
+
+	@PUT
 	@Path("/thankyou/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
