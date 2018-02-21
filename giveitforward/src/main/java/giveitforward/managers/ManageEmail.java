@@ -46,6 +46,7 @@ public class ManageEmail {
     }
 
     public static boolean deleteHash(EmailCode ec) {
+
         return delete(ec);
     }
 
@@ -127,16 +128,21 @@ public class ManageEmail {
         return true;
     }
 
+	public static EmailCode confirmHash(String hash){
+		//Match the has to a uid in the email_codes table.
+		String query = "select e from EmailCode e where e.uHash = '" + hash + "'";
+		EmailCode ec = makeQuery(query);
+
+		if(ec == null){
+			System.err.println("Failled to match hash in email_codes table");
+			return null;
+		}
+		return ec;
+	}
+
     public static User confirmEmail(String hash){
 
-        //Match the has to a uid in the email_codes table.
-        String query = "select e from EmailCode e where e.uHash = '" + hash + "'";
-        EmailCode ec = makeQuery(query);
-
-        if(ec == null){
-            System.err.println("Failled to match hash in email_codes table");
-            return null;
-        }
+        EmailCode ec = confirmHash(hash);
 
         //set the signup date in the user table.
         User u = new ManageUser().confirmEmail(ec.getUid());

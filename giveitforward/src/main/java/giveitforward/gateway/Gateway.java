@@ -275,6 +275,53 @@ public class Gateway {
 		return GIFResponse.getSuccessObjectResponse(ec.asJSON().toString());
 	}
 
+	@GET
+	@Path("/users/verifyhash")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response verifyUsersHash(@Context HttpHeaders headers) {
+		String hash = headers.getRequestHeader("hash").get(0);
+
+		ManageUser manager = new ManageUser();
+		EmailCode ec = ManageEmail.confirmHash(hash);
+
+		String err = "unable to confirm hash.";
+
+		if(ec == null)
+		{
+			return GIFResponse.getFailueResponse(err);
+		}
+		User user = manager.getUserfromUID(ec.getUid());
+
+		return manageUserResponse(err, user);
+	}
+
+	@GET
+	@Path("/users/deletehash")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteUsersHash(@Context HttpHeaders headers) {
+		String hash = headers.getRequestHeader("hash").get(0);
+
+		ManageUser manager = new ManageUser();
+		EmailCode ec = ManageEmail.confirmHash(hash);
+
+		String err = "unable to delete hash.";
+
+		if(ec == null)
+		{
+			return GIFResponse.getFailueResponse(err);
+		}
+
+		boolean status = ManageEmail.deleteHash(ec);
+
+		if(status == false)
+		{
+			return GIFResponse.getFailueResponse(err);
+		}
+
+		User user = manager.getUserfromUID(ec.getUid());
+		return manageUserResponse(err, user);
+	}
+
 	@PUT
 	@Path("/users/promote/org")
 	@Consumes({MediaType.APPLICATION_JSON})
