@@ -151,7 +151,14 @@ public class Request extends Model {
 		}
 
 		object.put("requestTime", getDisplayDate(this.requesttime));
-		object.put("donateTime", getDisplayDate(this.donateTime));
+		
+		if(this.donateTime != null) {
+			object.put("donateTime", getDisplayDate(this.donateTime));
+		}
+		else {
+			object.put("donateTime", "");
+		}
+
 		return object;
 	}
 
