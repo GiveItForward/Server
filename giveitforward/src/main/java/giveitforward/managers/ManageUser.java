@@ -32,7 +32,7 @@ public class ManageUser {
 //        mu.updateUser(new User(1,"boo@email.com", "boo", "b7fb0394c7183fd5cac17fb41961c826212a185070e4c1d2f4920e51c1dee35f",
 //                false, null, "/img/glasses_profile_pic.png", "updated bio"));
 
-        mu.signupUser(new User(email, username, password, isAdmin, orgId, photo, bio, first, last));
+        //mu.signupUser(new User(email, username, password, isAdmin, orgId, photo, bio, first, last));
         //mu.loginUser("boo@email.com", "b7fb0394c7183fd5cac17fb41961c826212a185070e4c1d2f4920e51c1dee35f");
 //        mu.deactivateUser("boo@email.com");
 //
@@ -45,8 +45,11 @@ public class ManageUser {
 //        mu.promoteUserOrg(u);
 //        System.err.println(u.asJSON());
 
-        User ur = mu.getUserfromUID(4101);
-        mu.deactivateUser(ur);
+        User ur = mu.getUserfromUID(4350);
+//        ur.setOrgId(1);
+//        mu.promoteUserOrg(ur);
+		mu.demoteUserOrg(ur);
+//        mu.deactivateUser(ur);
 
     }
 
@@ -324,6 +327,36 @@ public class ManageUser {
         }
     }
 
+
+	/**
+	 * @param query HQL query to be performed.
+	 * @return a list of Users which results from the given query.
+	 */
+	private boolean makeSQLQuery(String query) {
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+
+		try
+		{
+			t = session.beginTransaction();
+			session.createSQLQuery(query).executeUpdate();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return false;
+		} finally
+		{
+			session.close();
+			return true;
+		}
+	}
+
     private User updateTags(User currentUser, User updatedUser){
 		boolean match = false;
 		ArrayList<UserTagPair> toBeRemoved = new ArrayList();
@@ -445,24 +478,24 @@ public class ManageUser {
         return makeQuery("from User where uid = " + uid).get(0);
     }
 
-	public User promoteUserOrg(User newUser) {
-    	String query = "update User set orgId = " + newUser.getOrgId() + " where uid = " + newUser.getUid();
-    	//TODO: implement
-		return null;
+	public boolean promoteUserOrg(User newUser) {
+    	String query = "update users set oid=" + newUser.getOrgId() + " where uid=" + newUser.getUid();
+		return makeSQLQuery(query);
 	}
 
-	public User promoteUserAdmin(User newUser) {
-		return null;
+	public boolean promoteUserAdmin(User newUser) {
+		String query = "update users set isAdmin=true where uid=" + newUser.getUid();
+		return makeSQLQuery(query);
 	}
 
-	public User demoteUserOrg(User newUser) {
-		//TODO: implement
-		return null;
+	public boolean demoteUserOrg(User newUser) {
+		String query = "update users set oid=NULL where uid=" + newUser.getUid();
+		return makeSQLQuery(query);
 	}
 
-	public User demoteUserAdmin(User newUser) {
-		//TODO: implement
-		return null;
+	public boolean demoteUserAdmin(User newUser) {
+		String query = "update users set isAdmin=false where uid=" + newUser.getUid();
+		return makeSQLQuery(query);
 	}
 
 	public User addOrgToUser(int uid, int oid) {

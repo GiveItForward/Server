@@ -288,16 +288,16 @@ public class Gateway {
 		newUser.populateFromJSON(userJSON);
 
 		ManageUser manager = new ManageUser();
-		User userResult = manager.promoteUserOrg(newUser);
+		Boolean status = manager.promoteUserOrg(newUser);
 
-		if(userResult == null){
+		if(status == false){
 			//error
-			return manageUserResponse(err, userResult);
+			return manageUserResponse(err, newUser);
 		}
 
-		addTagsToUser(userJSON, userResult);
+		addTagsToUser(userJSON, newUser);
 
-		return manageUserResponse(err, userResult);
+		return manageUserResponse(err, newUser);
 	}
 
 	@PUT
@@ -314,16 +314,16 @@ public class Gateway {
 
 		ManageUser manager = new ManageUser();
 
-		User userResult = manager.promoteUserAdmin(newUser);
+		boolean status = manager.promoteUserAdmin(newUser);
 
-		if(userResult == null){
+		if(status == false){
 			//error
-			return manageUserResponse(err, userResult);
+			return manageUserResponse(err, newUser);
 		}
+		newUser.setAdmin(true);
+		addTagsToUser(userJSON, newUser);
 
-		addTagsToUser(userJSON, userResult);
-
-		return manageUserResponse(err, userResult);
+		return manageUserResponse(err, newUser);
 	}
 
 	@PUT
@@ -340,16 +340,16 @@ public class Gateway {
 
 		ManageUser manager = new ManageUser();
 
-		User userResult = manager.demoteUserOrg(newUser);
+		boolean status = manager.demoteUserOrg(newUser);
 
-		if(userResult == null){
+		if(status == false){
 			//error
-			return manageUserResponse(err, userResult);
+			return manageUserResponse(err, newUser);
 		}
 
-		addTagsToUser(userJSON, userResult);
+		addTagsToUser(userJSON, newUser);
 
-		return manageUserResponse(err, userResult);
+		return manageUserResponse(err, newUser);
 	}
 
 	@PUT
@@ -366,16 +366,16 @@ public class Gateway {
 
 		ManageUser manager = new ManageUser();
 
-		User userResult = manager.demoteUserAdmin(newUser);
+		boolean status = manager.demoteUserAdmin(newUser);
 
-		if(userResult == null){
+		if(status == false){
 			//error
-			return manageUserResponse(err, userResult);
+			return manageUserResponse(err, newUser);
 		}
+		newUser.setAdmin(false);
+		addTagsToUser(userJSON, newUser);
 
-		addTagsToUser(userJSON, userResult);
-
-		return manageUserResponse(err, userResult);
+		return manageUserResponse(err, newUser);
 	}
 
 	/********************************* ORG PATHS *******************************************/
