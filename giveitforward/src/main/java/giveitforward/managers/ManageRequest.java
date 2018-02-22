@@ -1,12 +1,10 @@
 package giveitforward.managers;
 
-import giveitforward.models.Request;
-import giveitforward.models.RequestTag;
-import giveitforward.models.User;
-import giveitforward.models.UserTag;
+import giveitforward.models.*;
 import org.hibernate.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageRequest {
@@ -55,10 +53,35 @@ public class ManageRequest {
 //             */
 //        }
 
-		Request request = new Request();
-		request.setRid(73);
-		mr.deleteRequest(request);
+//		Request request = new Request();
+//		request.setRid(73);
+//		mr.deleteRequest(request);
 
+        List<RequestTag> requestTags = new ArrayList<RequestTag>();
+        RequestTag r1 = new RequestTag();
+        r1.setRequestTid(1);
+        requestTags.add(r1);
+        RequestTag r2 = new RequestTag();
+        r2.setRequestTid(6);
+        requestTags.add(r2);
+        RequestTag r3 = new RequestTag();
+        r3.setRequestTid(3);
+        requestTags.add(r3);
+
+        List<UserTag> userTags = new ArrayList<UserTag>();
+        UserTag t1 = new UserTag();
+        t1.setUserTid(2);
+        userTags.add(t1);
+        UserTag t2 = new UserTag();
+        t2.setUserTid(10);
+        userTags.add(t2);
+        UserTag t3 = new UserTag();
+        t3.setUserTid(3);
+        userTags.add(t3);
+        List<Request> list = mr.getRequestsFilterByTags(requestTags, userTags, "old", "low");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i).getRid());
+        }
     }
 
     public ManageRequest() {
@@ -289,6 +312,68 @@ public class ManageRequest {
         return makeQuery("select r from Request r where r.rUser.uid = " + rUid + " and r.duid is null order by r.requesttime desc");
     }
 
+    /**
+     *
+     * @param requestTags
+     * @param userTags
+     * @return
+     */
+    public List<Request> getRequestsFilterByTags(List<RequestTag> requestTags, List<UserTag> userTags, String age, String price) {
+        String query = "select r from Request r";
+
+        // Request tags
+        if (requestTags != null && !requestTags.isEmpty()) {
+            int firstTag = requestTags.get(0).getRequestTid();
+            query += " where r.tag1 = " + firstTag + " or r.tag2 = " + firstTag;
+
+            // Iteratively add all request tags
+            for (int i = 1; i < requestTags.size(); i++) {
+                int currTag = requestTags.get(i).getRequestTid();
+                query += " or r.tag1 = " + currTag + " or r.tag2 = " + currTag;
+            }
+        }
+
+        // User tags
+        if (userTags != null && !userTags.isEmpty()) {
+            // First get all uids attached to those tags
+            ManageUserTag mu = new ManageUserTag();
+            List<UserTagPair> uids = mu.getUsersByTags(userTags);
+
+            // Check if we got any uids to attach to the query
+            if (uids == null || uids.isEmpty()) {
+                return makeQuery(query);
+            }
+
+            // If we didn't add request tags, we need to set up this query
+            int uidIndex = 0;
+            if (requestTags == null || requestTags.isEmpty()) {
+                query += " where r.rUser = " + uids.get(uidIndex++).getUid();
+            }
+            // Iteratively add all user tags
+            for (int i = uidIndex; i < uids.size(); i++) {
+                query += " or r.rUser = " + uids.get(i).getUid();
+            }
+        }
+
+        if (price.equals("low"))
+            query += "order by r.amount asc";
+        else if (price.equals("high"))
+            query += " order by r.amount desc";
+
+        if (!price.isEmpty()) {
+            if (age.equals("old"))
+                query += ", r.requesttime asc";
+            else
+                query += ", r.requesttime desc";
+        } else {
+            if (age.equals("old"))
+                query += " order by r.requesttime asc";
+            else
+                query += " order by r.requesttime desc";
+        }
+
+        return makeQuery(query);
+    }
 
     /********************************** Queries *******************************/
 

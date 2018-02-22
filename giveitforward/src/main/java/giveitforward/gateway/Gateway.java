@@ -13,6 +13,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -726,6 +727,44 @@ public class Gateway {
         return manageCollectionResponse(err, fulfilledRequestModel);
     }
 
+    @GET
+	@Path("/requests/filter")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response filterRequest(String reqJson) {
+		String err = "unable to fetch filtered requests";
+
+//		JSONObject reqJSON = new JSONObject(headers.getRequestHeader("rtags"));
+		JSONObject reqJSON = new JSONObject(reqJson);
+
+		ManageRequest manager = new ManageRequest();
+		List<RequestTag> reqTags = new ArrayList<RequestTag>();
+		List<UserTag> userTags = new ArrayList<UserTag>();
+
+//		String age = headers.getRequestHeader("age").get(0);
+//		String price = headers.getRequestHeader("price").get(0);
+
+		String age = reqJSON.getString("age");
+		String price = reqJSON.getString("price");
+
+		for (Object obj : reqJSON.getJSONArray("rtags")) {
+			RequestTag tag = new RequestTag();
+			JSONObject ob = (JSONObject)obj;
+			tag.setRequestTagname(ob.getString("tagname"));
+			tag.setRequestTid(ob.getInt("tid"));
+			reqTags.add(tag);
+		}
+
+		for (Object obj : reqJSON.getJSONArray("utags")) {
+			UserTag tag = new UserTag();
+			JSONObject ob = (JSONObject) obj;
+			tag.setUsertagName(ob.getString("tagname"));
+			tag.setUserTid(ob.getInt("tid"));
+			userTags.add(tag);
+		}
+		List<Request> filterRequestModel = manager.getRequestsFilterByTags(reqTags, userTags, age, price);
+
+		return manageCollectionResponse(err,filterRequestModel);
+	}
 
 	/*********************************** Tag PATHS *****************************************/
 
