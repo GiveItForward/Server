@@ -19,15 +19,30 @@ public class ManageUserTag {
 //        List<UserTag> u = mt.getAllTags();
 //        List<String> l = mt.getAllTagsByUID(2);
 
-        UserTagPair utp = mt.getUserTagPair(1300,2);
-        System.out.println(utp.asJSON());
-
-        User u = new ManageUser().getUserfromUID(4101);
-        UserTag t = mt.getTagByTagname("lgbt");
+//        UserTagPair utp = mt.getUserTagPair(1300,2);
+//        System.out.println(utp.asJSON());
+//
+//        User u = new ManageUser().getUserfromUID(4101);
+//        UserTag t = mt.getTagByTagname("lgbt");
 //        mt.UpdateTagToUser(t, u);
 
 //        User user = new ManageUser().getUserfromUID(1);
 //        mt.AddTagToUser(u.get(0), user);
+
+        List<UserTag> userTags = new ArrayList<UserTag>();
+        UserTag t1 = new UserTag();
+        t1.setUserTid(2);
+        userTags.add(t1);
+        UserTag t2 = new UserTag();
+        t2.setUserTid(10);
+        userTags.add(t2);
+        UserTag t3 = new UserTag();
+        t3.setUserTid(3);
+        userTags.add(t3);
+        List<UserTagPair> list = mt.getUsersByTags(userTags);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i).getId());
+        }
     }
 
     public ManageUserTag(){
@@ -346,6 +361,40 @@ public class ManageUserTag {
         {
             session.close();
             return ut;
+        }
+    }
+
+    /**
+     *
+     * @param tags
+     * @return
+     */
+    public List<UserTagPair> getUsersByTags(List<UserTag> tags) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        List<UserTagPair> utp = null;
+        String query = "from UserTagPair where tagid = " + tags.get(0).getUserTid();
+        for (int i = 1; i < tags.size(); i++) {
+            query += " or tagid = " + tags.get(i).getUserTid();
+        }
+
+        try
+        {
+            t = session.beginTransaction();
+            utp = (List<UserTagPair>) session.createQuery(query).list();
+            t.commit();
+        } catch (Exception e)
+        {
+            if (t != null)
+            {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+        } finally
+        {
+            session.close();
+            return utp;
         }
     }
 }

@@ -41,6 +41,9 @@ public class UserTagPair extends Model {
 		id.setUid(uid);
 	}
 
+	public Integer getUid() {
+		return id.uid;
+	}
 
 	public Time getTime() {
 		return time;
