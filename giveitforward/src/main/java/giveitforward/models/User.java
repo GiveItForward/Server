@@ -373,7 +373,13 @@ public class User extends Model {
 				//When updating, we will need to check for this value and fetch it from the DB.
 				this.password = null;
 			}
-            this.image = object.getString("image");
+			try {
+				this.image = object.getString("image");
+			}
+			catch(JSONException e)
+			{
+				this.image = null;
+			}
             this.bio = object.getString("bio");
             try {
 				this.orgId = object.getInt("orgId");
@@ -387,7 +393,7 @@ public class User extends Model {
 			}
 			catch(JSONException e){
             	//When updating, we will need to check for this value and fetch it from the DB.
-            	this.isAdmin = false;
+            	this.isAdmin = null;
 			}
 			try {
                 this.firstname = object.getString("firstname");
