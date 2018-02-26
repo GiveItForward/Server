@@ -355,16 +355,24 @@ public class User extends Model {
         return object;
     }
 
-    public boolean populateFromJSON(JSONObject object) {
+    public String populateFromJSON(JSONObject object) {
+		String fieldName = "";
         try{
+        	fieldName = "uid";
         	try {
 				this.uid = object.getInt("uid");
 			}
 			catch(JSONException e){
         		//leave empty in case of creation.
 			}
+
+			fieldName = "email";
             this.email = object.getString("email");
+
+			fieldName = "username";
             this.username = object.getString("username");
+
+			fieldName = "password";
             try {
 				this.password = object.getString("password");
 			}
@@ -373,6 +381,8 @@ public class User extends Model {
 				//When updating, we will need to check for this value and fetch it from the DB.
 				this.password = null;
 			}
+
+			fieldName = "image";
 			try {
 				this.image = object.getString("image");
 			}
@@ -380,7 +390,11 @@ public class User extends Model {
 			{
 				this.image = null;
 			}
+
+			fieldName = "bio";
             this.bio = object.getString("bio");
+
+			fieldName = "orgId";
             try {
 				this.orgId = object.getInt("orgId");
 			}
@@ -388,6 +402,8 @@ public class User extends Model {
 				//When updating, we will need to check for this value and fetch it from the DB.
             	this.orgId = null;
 			}
+
+			fieldName = "isAdmin";
 			try {
             	this.isAdmin = object.getBoolean("isAdmin");
 			}
@@ -395,6 +411,8 @@ public class User extends Model {
             	//When updating, we will need to check for this value and fetch it from the DB.
             	this.isAdmin = null;
 			}
+
+			fieldName = "firstname/lastname";
 			try {
                 this.firstname = object.getString("firstname");
                 this.lastname = object.getString("lastname");
@@ -403,11 +421,13 @@ public class User extends Model {
                 this.firstname = "John";
                 this.lastname = "Doe";
             }
-        } catch(JSONException e){
-            e.printStackTrace();
-            return false;
+
         }
-        return true;
+        catch (JSONException e) {
+			e.printStackTrace();
+			return "Missing non-optional field in JSON Request " + fieldName + ".";
+		}
+		return null;
     }
 
 //    public boolean populateSignupUserFromJSON(JSONObject object){

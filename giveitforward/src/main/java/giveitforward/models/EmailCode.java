@@ -60,7 +60,7 @@ public class EmailCode extends Model {
     	return obj;
     }
 
-    public boolean populateFromJSON(JSONObject obj) { return false; }
+    public String populateFromJSON(JSONObject obj) { return null; }
 
 }
 

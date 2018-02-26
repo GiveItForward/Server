@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -91,16 +92,25 @@ public class Notification extends Model {
         return object;
     }
 
-    public boolean populateFromJSON(JSONObject obj) {
+    public String populateFromJSON(JSONObject obj) {
+		String fieldName = "";
         try {
+			fieldName = "nid";
             this.nid = obj.getInt("nid");
+
+			fieldName = "message";
             this.message = obj.getString("message");
+
+			fieldName = "uid";
             this.uid = obj.getInt("uid");
+
+			fieldName = "opened";
             this.opened = obj.getBoolean("opened");
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
         }
-        return true;
+        catch (JSONException e) {
+            e.printStackTrace();
+            return "Missing non-optional field in JSON Request " + fieldName + ".";
+        }
+        return null;
     }
 }

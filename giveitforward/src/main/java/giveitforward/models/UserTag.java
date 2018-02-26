@@ -66,7 +66,7 @@ public class UserTag extends Model {
 		return object;
 	}
 
-	public boolean populateFromJSON(JSONObject obj) {
-		return false;
+	public String populateFromJSON(JSONObject obj) {
+		return null;
 	}
 }

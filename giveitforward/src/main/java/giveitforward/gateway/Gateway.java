@@ -58,7 +58,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 		User userResult = manager.signupUser(newUser);
@@ -70,10 +75,10 @@ public class Gateway {
 		}
 //		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
 //		if (!confirmed){
-//			TODO: When we want to release this we will uncomment.
-			//manager.deleteUser(userResult);
-			//return GIFResponse.getFailueResponse("Failed to send confirmation email.");
-		//}
+			// //TODO: When we want to release this we will uncomment.
+//			manager.deleteUser(userResult);
+//			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+//		}
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
@@ -88,6 +93,7 @@ public class Gateway {
 				userResult.addTag(newTag);
 			}
 		}
+
 		return manageUserResponse(err, userResult);
 	}
 
@@ -113,7 +119,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 
@@ -158,7 +169,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 		User currentUser = manager.getUserfromUID(newUser.getUid());
@@ -333,7 +349,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 		Boolean status = manager.promoteUserOrg(newUser);
@@ -358,7 +379,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 
@@ -384,7 +410,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 
@@ -410,7 +441,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
-		newUser.populateFromJSON(userJSON);
+		String errorResult = newUser.populateFromJSON(userJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageUser manager = new ManageUser();
 
@@ -471,7 +507,12 @@ public class Gateway {
 
 		Organization newOrg = new Organization();
 		JSONObject orgJSON = new JSONObject(orgJson);
-		newOrg.populateFromJSON(orgJSON);
+		String errorResult = newOrg.populateFromJSON(orgJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageOrganization manager = new ManageOrganization();
 		Organization orgResult = manager.createOrganization(newOrg, uid);
@@ -492,7 +533,12 @@ public class Gateway {
 
 		Organization newOrg = new Organization();
 		JSONObject orgJSON = new JSONObject(orgJson);
-		newOrg.populateFromJSON(orgJSON);
+		String errorResult = newOrg.populateFromJSON(orgJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageOrganization manager = new ManageOrganization();
 
@@ -514,7 +560,12 @@ public class Gateway {
 
 		Organization newOrg = new Organization();
 		JSONObject orgJSON = new JSONObject(orgJson);
-		newOrg.populateFromJSON(orgJSON);
+		String errorResult = newOrg.populateFromJSON(orgJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageOrganization manager = new ManageOrganization();
 		Organization orgResult = manager.deleteOrganization(newOrg);
@@ -534,7 +585,12 @@ public class Gateway {
 
 	    Organization newOrg = new Organization();
 	    JSONObject orgJSON = new JSONObject(orgJson);
-	    newOrg.populateFromJSON(orgJSON);
+		String errorResult = newOrg.populateFromJSON(orgJSON);
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 	    ManageOrganization manager = new ManageOrganization();
 	    Organization orgResult = manager.approveOrganization(newOrg);
@@ -635,7 +691,12 @@ public class Gateway {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response newRequest(String requestJSON) {
 		Request newRequest = new Request();
-		newRequest.populateFromJSON(new JSONObject(requestJSON));
+		String errorResult = newRequest.populateFromJSON(new JSONObject(requestJSON));
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageRequest manager = new ManageRequest();
 		Request requestResult = manager.createRequest(newRequest);
@@ -651,7 +712,12 @@ public class Gateway {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateRequest(String requestJSON) {
 		Request updateRequest = new Request();
-		updateRequest.populateFromJSON(new JSONObject(requestJSON));
+		String errorResult = updateRequest.populateFromJSON(new JSONObject(requestJSON));
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageRequest manager = new ManageRequest();
 		Request requestResult = manager.updateRequest(updateRequest);
@@ -667,7 +733,12 @@ public class Gateway {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteRequest(String requestJSON) {
 		Request deleteRequest = new Request();
-		deleteRequest.populateFromJSON(new JSONObject(requestJSON));
+		String errorResult = deleteRequest.populateFromJSON(new JSONObject(requestJSON));
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
 
 		ManageRequest manager = new ManageRequest();
 		Request requestResult = manager.deleteRequest(deleteRequest);
@@ -801,7 +872,13 @@ public class Gateway {
 	public Response createThankYou(String thankYouJSON) {
 		ManageThankYou manager = new ManageThankYou();
 		ThankYou thankYou = new ThankYou();
-		thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+		String errorResult = thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
+
 		thankYou = manager.createThankYou(thankYou);
 
 		String err = "unable to create ThankYous";
@@ -824,7 +901,13 @@ public class Gateway {
 	public Response updateThankYou(String thankYouJSON) {
 		ManageThankYou manager = new ManageThankYou();
 		ThankYou thankYou = new ThankYou();
-		thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+		String errorResult = thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
+
 		thankYou = manager.updateThankYou(thankYou);
 
 		String err = "unable to update ThankYous";
@@ -839,7 +922,13 @@ public class Gateway {
 	public Response deleteThankYou(String thankYouJSON) {
 		ManageThankYou manager = new ManageThankYou();
 		ThankYou thankYou = new ThankYou();
-		thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+		String errorResult = thankYou.populateFromJSON(new JSONObject(thankYouJSON));
+
+		//Trouble creating from JSON
+		if(errorResult != null) {
+			return manageErrorResponse(errorResult);
+		}
+
 		thankYou = manager.deleteThankYou(thankYou);
 
 		String err = "unable to delete ThankYous";
@@ -895,6 +984,10 @@ public class Gateway {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date(t.getTime()));
 		return cal.get(Calendar.YEAR);
+	}
+
+	private Response manageErrorResponse(String err){
+		return GIFResponse.getFailueResponse(err);
 	}
 
 	private Response manageCollectionResponse(String err, List objs) {

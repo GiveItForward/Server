@@ -20,9 +20,9 @@ public abstract class Model {
 
     /**
      * Populates the calling model object with the properties from the passed JSONObject.
-     * @return False if there is an issue, true otherwise.
+     * @return returns an error message if something went wrong, null otherwise.
      */
-    public abstract boolean populateFromJSON(JSONObject obj);
+    public abstract String populateFromJSON(JSONObject obj);
 
     /**
     * Returns a JSON array consisting of many object to turn into a JSONArray

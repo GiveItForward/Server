@@ -57,16 +57,21 @@ public class RequestTag extends Model{
         return object;
     }
 
-    public boolean populateFromJSON(JSONObject obj) {
-        this.tagname = obj.getString("tagname");
-        try{
-            this.tid = obj.getInt("tid");
+    public String populateFromJSON(JSONObject obj) {
+		String fieldName = "";
+       try{
+           this.tagname = obj.getString("tagname");
+            try {
+                this.tid = obj.getInt("tid");
+            }
+            catch (JSONException e) {
+                this.tid = new ManageRequestTag().getTagByTagname(this.tagname).getRequestTid();
+            }
+            this.tagname = obj.getString("tagname");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Missing non-optional field in JSON Request " + fieldName + ".";
         }
-        catch(JSONException e){
-            this.tid = new ManageRequestTag().getTagByTagname(this.tagname).getRequestTid();
-        }
-        this.tagname = obj.getString("tagname");
-        return true;
-        //TODO: If something goes wrong, return false!
+        return null;
     }
 }

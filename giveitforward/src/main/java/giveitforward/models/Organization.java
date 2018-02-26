@@ -139,7 +139,8 @@ public class Organization extends Model {
         return object;
     }
 
-    public boolean populateFromJSON(JSONObject obj) {
+    public String populateFromJSON(JSONObject obj) {
+		String fieldName = "";
         try {
             try {
                 this.oid = obj.getInt("oid");
@@ -157,10 +158,11 @@ public class Organization extends Model {
             } catch (JSONException e) {
                 // empty for approval
             }
-        } catch(JSONException e) {
-            e.printStackTrace();
-            return false;
         }
-        return true;
+        catch (JSONException e) {
+            e.printStackTrace();
+            return "Missing non-optional field in JSON Request " + fieldName + ".";
+        }
+        return null;
     }
 }
