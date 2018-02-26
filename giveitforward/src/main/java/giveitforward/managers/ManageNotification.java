@@ -1,13 +1,8 @@
 package giveitforward.managers;
 
 import giveitforward.models.Notification;
-import giveitforward.models.Request;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 

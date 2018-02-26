@@ -139,7 +139,9 @@ public class Gateway {
 			catch(JSONException e){
 				tag = new ManageUserTag().getTagByTagname(tag.getUsertagName());
 			}
-			UserTagPair newTag = new ManageUserTag().getUserTagPair(newUser.getUid(), tag.getUserTid() );
+			int uid = newUser.getUid();
+			int tid = tag.getUserTid();
+			UserTagPair newTag = new ManageUserTag().getUserTagPair(uid, tid);
 			if (newTag == null) {
 				//error
 				//create a new tag.
@@ -461,6 +463,31 @@ public class Gateway {
 
 		return manageUserResponse(err, newUser);
 	}
+
+	@PUT
+	@Path("/users/verifytag")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response verifyUserTag(@Context HttpHeaders headers)
+	{
+		Integer uid;
+		Integer oid;
+		Integer tid;
+		try {
+			uid = new Integer(headers.getRequestHeader("uid").get(0));
+			oid = new Integer(headers.getRequestHeader("oid").get(0));
+			tid = new Integer(headers.getRequestHeader("tid").get(0));
+		}
+		catch (Exception e){
+			return manageErrorResponse("Invalid/missing headers. Expecting uid, oid, tid.");
+		}
+
+		String err = "Unable to verify users tag.";
+
+		User newUser = new ManageUser().verifyTag(uid, oid, tid);
+
+		return manageUserResponse(err, newUser);
+	}
+
 
 	/********************************* ORG PATHS *******************************************/
 	/**

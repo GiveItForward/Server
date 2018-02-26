@@ -89,6 +89,12 @@ public class ManageUser {
         }
     }
 
+    public User verifyTag(int uid, int oid, int tid){
+    	String query = "update user_tag_pair set verified_by = " + oid + " where userid = " + uid +" and tagid = " + tid;
+    	makeSQLQuery(query);
+    	return getUserfromUID(uid);
+	}
+
     private User getUserFromUid(int uid)
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
@@ -191,6 +197,10 @@ public class ManageUser {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         User u = null;
+
+		if(newUser.getIsAdmin() == null){
+			newUser.setAdmin(false);
+		}
 
         try
         {

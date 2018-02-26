@@ -165,7 +165,7 @@ public class User extends Model {
         this.password = password;
     }
 
-    public boolean getIsAdmin() {
+    public Boolean getIsAdmin() {
         return isAdmin;
     }
 
