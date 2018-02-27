@@ -162,20 +162,26 @@ public class Request extends Model {
 		return object;
 	}
 
-	public boolean populateFromJSON(JSONObject obj) {
+	public String populateFromJSON(JSONObject obj) {
+		String fieldName = "";
 		try {
+			fieldName = "rid";
 			try{
 				this.rid= obj.getInt("rid");
 			}
 			catch(JSONException e){
-				//do nothing...
 			}
-			this.image = obj.getString("image");
+			fieldName = "image";
+			try {
+				this.image = obj.getString("image");
+			}
+			catch(JSONException e){
+			}
+			fieldName = "amount";
 			this.amount = obj.getDouble("amount");
+			fieldName = "description";
 			this.description = obj.getString("description");
-			//            this.rUser = new User();
-			//            JSONObject o = new JSONObject()
-			//            this.rUser.populateFromJSON(obj.getJSONObject("rUser"));
+			fieldName = "tag1";
 			try {
 				JSONObject tag1JSON = obj.getJSONObject("tag1");
 				if (tag1JSON == null) {
@@ -190,7 +196,7 @@ public class Request extends Model {
 			catch (JSONException e) {
 				this.tag1 = null;
 			}
-
+			fieldName = "tag2";
 			try {
 				JSONObject tag2JSON = obj.getJSONObject("tag2");
 				if (tag2JSON == null) {
@@ -205,7 +211,7 @@ public class Request extends Model {
 			catch (JSONException e) {
 				this.tag2 = null;
 			}
-
+			fieldName = "rUser";
 			JSONObject userJSON = obj.getJSONObject("rUser");
 			User user = new User();
 			user.populateFromJSON(userJSON);
@@ -213,9 +219,9 @@ public class Request extends Model {
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
-			return false;
+			return "Missing non-optional field in JSON Request " + fieldName + ".";
 		}
-		return true;
+		return null;
 	}
 
 	public int getDuid() {

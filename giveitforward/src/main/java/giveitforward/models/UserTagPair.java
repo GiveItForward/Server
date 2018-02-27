@@ -1,6 +1,7 @@
 package giveitforward.models;
 
 import giveitforward.managers.ManageOrganization;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -104,12 +105,22 @@ public class UserTagPair extends Model {
 		return tid.hashCode();
 	}
 
-	public boolean populateFromJSON(JSONObject obj) {
-		this.verifiedBy = obj.getInt("verifiedBy");
-		UserTag t = new UserTag();
-		t.setUsertagName(obj.getString("tagname"));
-		this.id.tag = t;
-		return false;
+	public String populateFromJSON(JSONObject obj) {
+		String fieldName = "";
+		try {
+			fieldName = "verifiedBy";
+			this.verifiedBy = obj.getInt("verifiedBy");
+
+			fieldName = "tagname";
+			UserTag t = new UserTag();
+			t.setUsertagName(obj.getString("tagname"));
+			this.id.tag = t;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return "Missing non-optional field in JSON Request " + fieldName + ".";
+		}
+		return null;
 	}
 
 	@Embeddable

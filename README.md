@@ -17,6 +17,9 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /requests/requestuid | GET | uid : {requester_uid} | - Returns all open and closed requests made by the user (aka requester) with the given uid. |
 | /requests/donateuid |  GET |uid : {donor_uid} | - Returns all fulfilled requests fulfilled by the user (aka donor) with the given uid. |
 | /requests/create | POST | See CREATE REQUEST in json parameters below. | -Creates a new request.|
+| /requests/fulfill | POST | See CREATE REQUEST in json parameters below. | -Fulfills a request.|
+| /requests/update | PUT | See CREATE REQUEST in json parameters below. | -Updates a request.|
+| /requests/delete | DELETE | See CREATE REQUEST in json parameters below. | -Deletes a request.|
 |/requests/tags|GET|None|-Returns a list of all request tags.|
 | /requests/filters | GET | See FILTER REQUEST in json parameters below. | -Returns a list of requests filtered based on json params. |
 
@@ -34,6 +37,15 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /users/getdonateamount/ | GET | uid:{uid} | -returns Json response of the following format for the specified user. <br> {"donateAmount":30.50}|
 | /users/byuid | GET | uid:{uid} | -Returns the user with the given uid.|
 |/confirm/{id} | GET | NONE | -Confirms a users email and sets signup date in the user. <br> - Returns response that's the same as login.|
+|/users/byuid/private | GET | NONE | ...|
+|/users/gethash | GET | NONE | ...|
+|/users/verifyhash | GET | NONE | ...|
+|/users/deletehash | GET | NONE | ...|
+|/users/promote/org | PUT | NONE | ...|
+|/users/demote/org | PUT | NONE | ...|
+|/users/promote/admin | PUT | NONE | ...|
+|/users/demote/admin | PUT | NONE | ...|
+|/users/verifytag | PUT | NONE | ...|
 
 \* indicates an optional header.
 
@@ -52,9 +64,20 @@ Each API call is defined by a path which may or may not consist of multiple head
 
 
 ###### Tags
-| Path          | Headers   | Properties |
-| ------------- |-----------|-----------|
-| /tags | None | - Returns a JSONArray of all tags. |
+| Path          | HTTP<br>Method | Headers   | Properties |
+| ------------- |------|-----------|-----------|
+| /tags | None | GET | - Returns a JSONArray of all tags. |
+
+\* indicates an optional header.
+
+
+###### ThankYous
+| Path          | HTTP<br>Method | Headers   | Properties |
+| ------------- |------|-----------|-----------|
+| /thankyou | None | GET | - Returns a JSONArray of all thankyous. |
+| /thankyou/create | See THANKYOU in json parameters below. | POST | - Creates a new ThankYou. |
+| /thankyou/update | See THANKYOU in json parameters below. | PUT | - Updates a ThankYou. |
+| /thankyou/delete | See THANKYOU in json parameters below. | DELETE | - Deletes a ThankYou. |
 
 \* indicates an optional header.
 

@@ -79,15 +79,13 @@ public class ThankYou extends Model{
         return object;
     }
 
-    public boolean populateFromJSON(JSONObject obj) {
+    public String populateFromJSON(JSONObject obj) {
+        String fieldName = "";
         try {
-            try{
-                this.rid= obj.getInt("rid");
-            }
-            catch(JSONException e){
-                // We can't do anything if we dont have the rid.
-               return false;
-            }
+			fieldName = "rid";
+            this.rid= obj.getInt("rid");
+
+			fieldName = "note";
             try {
                 this.note = obj.getString("note");
             }
@@ -97,8 +95,8 @@ public class ThankYou extends Model{
         }
         catch (JSONException e) {
             e.printStackTrace();
-            return false;
+            return "Missing non-optional field in JSON Request " + fieldName + ".";
         }
-        return true;
+        return null;
     }
 }
