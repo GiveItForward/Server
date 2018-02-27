@@ -831,15 +831,12 @@ public class Gateway {
 	public Response filterRequest(String reqJson) {
 		String err = "unable to fetch filtered requests";
 
-//		JSONObject reqJSON = new JSONObject(headers.getRequestHeader("rtags"));
 		JSONObject reqJSON = new JSONObject(reqJson);
 
 		ManageRequest manager = new ManageRequest();
 		List<RequestTag> reqTags = new ArrayList<RequestTag>();
 		List<UserTag> userTags = new ArrayList<UserTag>();
 
-//		String age = headers.getRequestHeader("age").get(0);
-//		String price = headers.getRequestHeader("price").get(0);
         String age = "", price = "";
         try {
             age = reqJSON.getString("age");
