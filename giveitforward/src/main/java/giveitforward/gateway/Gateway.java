@@ -742,14 +742,17 @@ public class Gateway {
 
 //		String age = headers.getRequestHeader("age").get(0);
 //		String price = headers.getRequestHeader("price").get(0);
-
-		String age = reqJSON.getString("age");
-		String price = reqJSON.getString("price");
+        String age = "", price = "";
+        try {
+            age = reqJSON.getString("age");
+        } catch(Exception e) {}
+        try {
+            price = reqJSON.getString("price");
+        } catch (Exception e) {}
 
 		for (Object obj : reqJSON.getJSONArray("rtags")) {
 			RequestTag tag = new RequestTag();
 			JSONObject ob = (JSONObject)obj;
-			tag.setRequestTagname(ob.getString("tagname"));
 			tag.setRequestTid(ob.getInt("tid"));
 			reqTags.add(tag);
 		}
@@ -757,7 +760,6 @@ public class Gateway {
 		for (Object obj : reqJSON.getJSONArray("utags")) {
 			UserTag tag = new UserTag();
 			JSONObject ob = (JSONObject) obj;
-			tag.setUsertagName(ob.getString("tagname"));
 			tag.setUserTid(ob.getInt("tid"));
 			userTags.add(tag);
 		}
