@@ -845,19 +845,19 @@ public class Gateway {
             price = reqJSON.getString("price");
         } catch (Exception e) {}
 
-		for (Object obj : reqJSON.getJSONArray("rtags")) {
+		JSONArray rtags = reqJSON.getJSONArray("rtags");
+		for (int i = 0; i < rtags.length(); i++) {
 			RequestTag tag = new RequestTag();
-			JSONObject ob = (JSONObject)obj;
-			tag.setRequestTid(ob.getInt("tid"));
+			tag.setRequestTid(rtags.getInt(i));
 			reqTags.add(tag);
 		}
-
-		for (Object obj : reqJSON.getJSONArray("utags")) {
+		JSONArray utags = reqJSON.getJSONArray("utags");
+		for (int i = 0; i < utags.length(); i++) {
 			UserTag tag = new UserTag();
-			JSONObject ob = (JSONObject) obj;
-			tag.setUserTid(ob.getInt("tid"));
+			tag.setUserTid(utags.getInt(i));
 			userTags.add(tag);
 		}
+		
 		List<Request> filterRequestModel = manager.getRequestsFilterByTags(reqTags, userTags, age, price);
 
 		return manageCollectionResponse(err,filterRequestModel);
