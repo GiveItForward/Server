@@ -60,6 +60,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /organizations/delete | DELETE | See Org Json Parameters. | - Deactivates org by setting inactive date <br>- Returns the deactivated org |
 | /organizations/approve | PUT | See Org Json Parameters. | - Set approved date in DB<br>- Returns approved org |
 | /organizations/oid | GET | oid:{oid} | - Gets the org for the given oid |
+| /organizations/search | GET | search:{searchString} | - Gets all orgs that match on the string in the headers |
 
 \* indicates an optional header.
 

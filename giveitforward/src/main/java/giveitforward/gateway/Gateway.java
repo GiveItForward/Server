@@ -654,6 +654,20 @@ public class Gateway {
         return manageObjectResponse(err, org);
     }
 
+	@GET
+	@Path("/organizations/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchOrgs(@Context HttpHeaders headers)
+	{
+		String match = headers.getRequestHeader("search").get(0);
+
+		String err = "Unable to search for orgs.";
+		ManageOrganization manager = new ManageOrganization();
+		List<Organization> orgs = manager.searchForOrg(match);
+
+		return manageCollectionResponse(err, orgs);
+	}
+
 	/******************************* REQUEST PATHS *****************************************/
 	@GET
 	@Path("/requests")
