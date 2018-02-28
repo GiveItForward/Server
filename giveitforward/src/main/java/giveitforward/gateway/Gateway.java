@@ -488,6 +488,19 @@ public class Gateway {
 		return manageUserResponse(err, newUser);
 	}
 
+	@GET
+	@Path("/users/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchUsers(@Context HttpHeaders headers)
+	{
+		String match = headers.getRequestHeader("search").get(0);
+
+		String err = "Unable to search for users.";
+		ManageUser manager = new ManageUser();
+		List<User> users = manager.searchForUser(match);
+
+		return manageCollectionResponse(err, users);
+	}
 
 	/********************************* ORG PATHS *******************************************/
 	/**
@@ -857,7 +870,7 @@ public class Gateway {
 			tag.setUserTid(utags.getInt(i));
 			userTags.add(tag);
 		}
-		
+
 		List<Request> filterRequestModel = manager.getRequestsFilterByTags(reqTags, userTags, age, price);
 
 		return manageCollectionResponse(err,filterRequestModel);

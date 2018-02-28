@@ -45,12 +45,13 @@ public class ManageUser {
 //        mu.promoteUserOrg(u);
 //        System.err.println(u.asJSON());
 
-        User ur = mu.getUserfromUID(4350);
+//        User ur = mu.getUserfromUID(4350);
 //        ur.setOrgId(1);
 //        mu.promoteUserOrg(ur);
-		mu.demoteUserOrg(ur);
+//		mu.demoteUserOrg(ur);
 //        mu.deactivateUser(ur);
 
+        List<User> u = mu.searchForUser("sara");
     }
 
     public ManageUser() {
@@ -539,5 +540,17 @@ public class ManageUser {
 
         System.out.println("successfully promoted user to org user");
         return updatedUser;
+    }
+
+    /**
+     * Fuzzy search for a user on a string to match with.
+     * Searches based on username, email, first name, and last name
+     * @param match - string to match on
+     * @return - list of users that match.
+     */
+    public List<User> searchForUser(String match) {
+        match = "'%" + match + "%'";
+        return makeQuery("from User where username like " + match + " or email like " + match +
+                         " or firstname like " + match + " or lastname like " + match);
     }
 }

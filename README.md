@@ -46,6 +46,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 |/users/promote/admin | PUT | NONE | ...|
 |/users/demote/admin | PUT | NONE | ...|
 |/users/verifytag | PUT | NONE | ...|
+| /users/search | GET | search:{searchString} | - Returns list of users matching the search string |
 
 \* indicates an optional header.
 
