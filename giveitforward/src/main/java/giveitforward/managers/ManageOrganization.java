@@ -37,7 +37,9 @@ public class ManageOrganization
 //            System.out.println(o.asString());
 //            System.out.println(o.asJSON());
 //        }
-        List<Organization> o = manager.searchForOrg("utah");
+        //List<Organization> o = manager.searchForOrg("utah");
+        Organization o = manager.getOrgByOrgId(6);
+        manager.approveOrganization(o);
     }
 
     public ManageOrganization()
@@ -136,6 +138,13 @@ public class ManageOrganization
         } finally {
             s.close();
         }
+
+        // Notification side effect:
+        ManageUser uManager = new ManageUser();
+        User u = uManager.makeQuery("from User where oid = " + org.getOid()).get(0);
+        ManageNotification noteManager = new ManageNotification();
+        noteManager.createNotification("Your organization, " + org.getName() + ", has been approved!", u.getUid());
+
         return org;
     }
 

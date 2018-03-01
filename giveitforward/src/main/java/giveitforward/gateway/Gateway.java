@@ -851,7 +851,6 @@ public class Gateway {
 	@Path("/requests/filter")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response filterRequest(@Context HttpHeaders headers) {
-		// TODO parse string into int array - split and trim.
 
 		String err = "unable to fetch filtered requests";
 

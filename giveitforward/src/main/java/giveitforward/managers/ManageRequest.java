@@ -57,31 +57,7 @@ public class ManageRequest {
 //		request.setRid(73);
 //		mr.deleteRequest(request);
 
-        List<RequestTag> requestTags = new ArrayList<RequestTag>();
-        RequestTag r1 = new RequestTag();
-        r1.setRequestTid(1);
-        requestTags.add(r1);
-        RequestTag r2 = new RequestTag();
-        r2.setRequestTid(6);
-        requestTags.add(r2);
-        RequestTag r3 = new RequestTag();
-        r3.setRequestTid(3);
-        requestTags.add(r3);
-
-        List<UserTag> userTags = new ArrayList<UserTag>();
-        UserTag t1 = new UserTag();
-        t1.setUserTid(2);
-        userTags.add(t1);
-        UserTag t2 = new UserTag();
-        t2.setUserTid(10);
-        userTags.add(t2);
-        UserTag t3 = new UserTag();
-        t3.setUserTid(3);
-        userTags.add(t3);
-        List<Request> list = mr.getRequestsFilterByTags(requestTags, userTags, "old", "low");
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getRid());
-        }
+        mr.fulfillRequest(54, 1);
     }
 
     public ManageRequest() {

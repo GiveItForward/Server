@@ -2,6 +2,7 @@ package giveitforward.managers;
 
 import giveitforward.models.Request;
 import giveitforward.models.ThankYou;
+import giveitforward.models.User;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,6 +19,7 @@ public class ManageThankYou {
     public static void main(String[] args) {
 
         ManageThankYou mty = new ManageThankYou();
+        mty.createThankYou(new ThankYou(54, "Thanks for helping out!", null));
     }
 
     public ManageThankYou(){
@@ -51,6 +53,14 @@ public class ManageThankYou {
         } finally {
             session.close();
         }
+
+        ManageRequest reqManager = new ManageRequest();
+		ManageUser userManager = new ManageUser();
+        Request r = reqManager.getRequestByRid("" + thankyou.getRid()).get(0);
+		User requestor = userManager.getUserfromUID(r.getRequestor().getUid());
+		ManageNotification noteManager = new ManageNotification();
+		noteManager.createNotification("You received a THANK YOU from " + requestor.getUsername(), r.getDuid());
+
         return thankyou;
     }
 
