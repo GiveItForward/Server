@@ -16,22 +16,20 @@ public class GIFResponse {
 	 * @return
 	 */
 	public static Response getSuccessObjectResponse(String json) {
+
+
 		return Response.ok()
 				.entity(json)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.build();
 	}
 
 	/**
-	 * Returns a server error response containting the given message.
+	 * Returns a server error response containing the given message.
 	 * @return
 	 */
 	public static Response getFailueResponse(String msg){
 		return Response.serverError()
 				.entity(msg)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.build();
 	}
 }
