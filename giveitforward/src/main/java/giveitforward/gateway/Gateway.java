@@ -2,21 +2,16 @@ package giveitforward.gateway;
 
 import giveitforward.managers.*;
 import giveitforward.models.*;
+import giveitforward.models.Request;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Path("/")
@@ -649,7 +644,7 @@ public class Gateway {
         ManageOrganization manager = new ManageOrganization();
         Organization org = manager.getOrgByOrgId(oid);
 
-        String err = "unable to get user with uid " + oid;
+        String err = "unable to get org with oid " + oid;
 
         return manageObjectResponse(err, org);
     }
@@ -855,10 +850,10 @@ public class Gateway {
     @GET
 	@Path("/requests/filter")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response filterRequest(String reqJson) {
-		String err = "unable to fetch filtered requests";
+	public Response filterRequest(@Context HttpHeaders headers) {
+		// TODO parse string into int array - split and trim.
 
-		JSONObject reqJSON = new JSONObject(reqJson);
+		String err = "unable to fetch filtered requests";
 
 		ManageRequest manager = new ManageRequest();
 		List<RequestTag> reqTags = new ArrayList<RequestTag>();
@@ -866,24 +861,34 @@ public class Gateway {
 
         String age = "", price = "";
         try {
-            age = reqJSON.getString("age");
+        	age = headers.getRequestHeader("age").get(0);
         } catch(Exception e) {}
         try {
-            price = reqJSON.getString("price");
+        	price = headers.getRequestHeader("price").get(0);
         } catch (Exception e) {}
 
-		JSONArray rtags = reqJSON.getJSONArray("rtags");
-		for (int i = 0; i < rtags.length(); i++) {
-			RequestTag tag = new RequestTag();
-			tag.setRequestTid(rtags.getInt(i));
-			reqTags.add(tag);
-		}
-		JSONArray utags = reqJSON.getJSONArray("utags");
-		for (int i = 0; i < utags.length(); i++) {
-			UserTag tag = new UserTag();
-			tag.setUserTid(utags.getInt(i));
-			userTags.add(tag);
-		}
+        String rtagString = "", utagString = "";
+        try {
+            rtagString = headers.getRequestHeader("rtags").get(0);
+            utagString = headers.getRequestHeader("utags").get(0);
+        } catch (Exception e) {}
+
+        if (!rtagString.isEmpty()) {
+            String[] rtags = rtagString.split(",");
+            for (int i = 0; i < rtags.length; i++) {
+                RequestTag tag = new RequestTag();
+                tag.setRequestTid(Integer.parseInt(rtags[i].trim()));
+                reqTags.add(tag);
+            }
+        }
+        if (!utagString.isEmpty()) {
+            String[] utags = rtagString.split(",");
+            for (int i = 0; i < utags.length; i++) {
+                UserTag tag = new UserTag();
+                tag.setUserTid(Integer.parseInt(utags[i].trim()));
+                userTags.add(tag);
+            }
+        }
 
 		List<Request> filterRequestModel = manager.getRequestsFilterByTags(reqTags, userTags, age, price);
 

@@ -142,9 +142,10 @@ public class ManageRequest {
     public boolean fulfillRequest(int rid, int duid) {
         Session s = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
+        Request r;
         try {
             t = s.beginTransaction();
-            Request r = (Request) s.get(Request.class, rid);
+            r = (Request) s.get(Request.class, rid);
             r.setDuid(duid);
             r.setDonateTime(new Timestamp(System.currentTimeMillis()));
             s.update(r);
@@ -155,6 +156,13 @@ public class ManageRequest {
         } finally {
             s.close();
         }
+
+        // Notification Side Effect:
+        ManageUser userManager = new ManageUser();
+        User donator = userManager.getUserfromUID(duid);
+        ManageNotification noteManager = new ManageNotification();
+        noteManager.createNotification("Your donation was FULFILLED by " + donator.getUsername(), r.getRequestor().getUid());
+
         return true;
     }
 
