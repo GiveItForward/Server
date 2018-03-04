@@ -18,8 +18,6 @@ public class GIFResponse {
 	public static Response getSuccessObjectResponse(String json) {
 		return Response.ok()
 				.entity(json)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.build();
 	}
 
@@ -30,8 +28,6 @@ public class GIFResponse {
 	public static Response getFailueResponse(String msg){
 		return Response.serverError()
 				.entity(msg)
-				.header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.build();
 	}
 }

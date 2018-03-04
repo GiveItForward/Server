@@ -756,18 +756,14 @@ public class Gateway {
 
 	@DELETE
 	@Path("/requests/delete")
-	@Consumes(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteRequest(String requestJSON) {
-		Request deleteRequest = new Request();
-		String errorResult = deleteRequest.populateFromJSON(new JSONObject(requestJSON));
+	public Response deleteRequest(@Context HttpHeaders headers) {
 
-		//Trouble creating from JSON
-		if(errorResult != null) {
-			return manageErrorResponse(errorResult);
-		}
+		String rid = headers.getRequestHeader("rid").get(0);
 
 		ManageRequest manager = new ManageRequest();
+		Request deleteRequest = manager.getRequestByRid(rid).get(0);
 		Request requestResult = manager.deleteRequest(deleteRequest);
 
 		String err = "Unable to delete request";

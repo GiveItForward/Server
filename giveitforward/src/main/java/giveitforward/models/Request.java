@@ -178,9 +178,19 @@ public class Request extends Model {
 			catch(JSONException e){
 			}
 			fieldName = "amount";
-			this.amount = obj.getDouble("amount");
+			try {
+				this.amount = obj.getDouble("amount");
+			}
+			catch(JSONException e){
+
+			}
 			fieldName = "description";
-			this.description = obj.getString("description");
+			try {
+				this.description = obj.getString("description");
+			}
+			catch(JSONException e){
+
+			}
 			fieldName = "tag1";
 			try {
 				JSONObject tag1JSON = obj.getJSONObject("tag1");
@@ -212,10 +222,14 @@ public class Request extends Model {
 				this.tag2 = null;
 			}
 			fieldName = "rUser";
-			JSONObject userJSON = obj.getJSONObject("rUser");
-			User user = new User();
-			user.populateFromJSON(userJSON);
-			this.rUser = user;
+			try {
+				JSONObject userJSON = obj.getJSONObject("rUser");
+				User user = new User();
+				user.populateFromJSON(userJSON);
+				this.rUser = user;
+			}
+			catch (JSONException e){
+			}
 		}
 		catch (JSONException e) {
 			e.printStackTrace();
