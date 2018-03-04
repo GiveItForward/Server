@@ -19,7 +19,7 @@ public class ManageOrganization
     {
         ManageOrganization manager = new ManageOrganization();
         //manager.approveOrganization(1);
-        Organization org = manager.createOrganization(new Organization("F", "F", "F", "F", "F", "F", "F"), 2);
+        //Organization org = manager.createOrganization(new Organization("F", "F", "F", "F", "F", "F", "F"), 2);
         //Organization org = manager.approveOrganization(7);
         //System.out.println(org.asJSON().toString());
         //Approved orgs
@@ -37,6 +37,9 @@ public class ManageOrganization
 //            System.out.println(o.asString());
 //            System.out.println(o.asJSON());
 //        }
+        //List<Organization> o = manager.searchForOrg("utah");
+        Organization o = manager.getOrgByOrgId(6);
+        manager.approveOrganization(o);
     }
 
     public ManageOrganization()
@@ -135,6 +138,13 @@ public class ManageOrganization
         } finally {
             s.close();
         }
+
+        // Notification side effect:
+        ManageUser uManager = new ManageUser();
+        User u = uManager.makeQuery("from User where oid = " + org.getOid()).get(0);
+        ManageNotification noteManager = new ManageNotification();
+        noteManager.createNotification("Your organization, " + org.getName() + ", has been approved!", u.getUid());
+
         return org;
     }
 
@@ -228,5 +238,16 @@ public class ManageOrganization
             session.close();
             return orgs;
         }
+    }
+
+    /**
+     * Fuzzy search for an org based on passed in search string
+     * @param match - string to match on
+     * @return - list of orgs that match - based on email or name
+     */
+    public List<Organization> searchForOrg(String match) {
+        match = "'%" + match + "%'";
+        return makeQuery("from Organization where name like " + match + " or email like " + match +
+                         " or website like " + match + " or address like " + match);
     }
 }

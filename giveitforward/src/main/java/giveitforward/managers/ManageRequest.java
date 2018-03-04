@@ -57,31 +57,7 @@ public class ManageRequest {
 //		request.setRid(73);
 //		mr.deleteRequest(request);
 
-        List<RequestTag> requestTags = new ArrayList<RequestTag>();
-        RequestTag r1 = new RequestTag();
-        r1.setRequestTid(1);
-        requestTags.add(r1);
-        RequestTag r2 = new RequestTag();
-        r2.setRequestTid(6);
-        requestTags.add(r2);
-        RequestTag r3 = new RequestTag();
-        r3.setRequestTid(3);
-        requestTags.add(r3);
-
-        List<UserTag> userTags = new ArrayList<UserTag>();
-        UserTag t1 = new UserTag();
-        t1.setUserTid(2);
-        userTags.add(t1);
-        UserTag t2 = new UserTag();
-        t2.setUserTid(10);
-        userTags.add(t2);
-        UserTag t3 = new UserTag();
-        t3.setUserTid(3);
-        userTags.add(t3);
-        List<Request> list = mr.getRequestsFilterByTags(requestTags, userTags, "old", "low");
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getRid());
-        }
+        mr.fulfillRequest(54, 1);
     }
 
     public ManageRequest() {
@@ -142,9 +118,10 @@ public class ManageRequest {
     public boolean fulfillRequest(int rid, int duid) {
         Session s = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
+        Request r;
         try {
             t = s.beginTransaction();
-            Request r = (Request) s.get(Request.class, rid);
+            r = (Request) s.get(Request.class, rid);
             r.setDuid(duid);
             r.setDonateTime(new Timestamp(System.currentTimeMillis()));
             s.update(r);
@@ -155,6 +132,13 @@ public class ManageRequest {
         } finally {
             s.close();
         }
+
+        // Notification Side Effect:
+        ManageUser userManager = new ManageUser();
+        User donator = userManager.getUserfromUID(duid);
+        ManageNotification noteManager = new ManageNotification();
+        noteManager.createNotification("Your donation was FULFILLED by " + donator.getUsername(), r.getRequestor().getUid());
+
         return true;
     }
 

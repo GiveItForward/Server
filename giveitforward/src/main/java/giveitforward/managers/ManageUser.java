@@ -45,12 +45,15 @@ public class ManageUser {
 //        mu.promoteUserOrg(u);
 //        System.err.println(u.asJSON());
 
-        User ur = mu.getUserfromUID(4350);
+//        User ur = mu.getUserfromUID(4350);
 //        ur.setOrgId(1);
 //        mu.promoteUserOrg(ur);
-		mu.demoteUserOrg(ur);
+//		mu.demoteUserOrg(ur);
 //        mu.deactivateUser(ur);
 
+        //List<User> u = mu.searchForUser("sara");
+        //mu.verifyTag(3959, 3, 2);
+        //mu.promoteUserAdmin(mu.getUserfromUID(4350));
     }
 
     public ManageUser() {
@@ -92,6 +95,13 @@ public class ManageUser {
     public User verifyTag(int uid, int oid, int tid){
     	String query = "update user_tag_pair set verified_by = " + oid + " where userid = " + uid +" and tagid = " + tid;
     	makeSQLQuery(query);
+
+    	// Notification side effect
+        ManageNotification noteManager = new ManageNotification();
+        ManageOrganization orgManager = new ManageOrganization();
+        String orgname = orgManager.getOrgByOrgId(oid).getName();
+        noteManager.createNotification("Your TAGS were VERIFIED by " + orgname, uid);
+
     	return getUserfromUID(uid);
 	}
 
@@ -312,7 +322,7 @@ public class ManageUser {
      * @param query HQL query to be performed.
      * @return a list of Users which results from the given query.
      */
-    private List<User> makeQuery(String query) {
+    public List<User> makeQuery(String query) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         List<User> r = null;
@@ -495,7 +505,12 @@ public class ManageUser {
 
 	public boolean promoteUserAdmin(User newUser) {
 		String query = "update users set isAdmin=true where uid=" + newUser.getUid();
-		return makeSQLQuery(query);
+        if(makeSQLQuery(query)) {
+            ManageNotification noteManager = new ManageNotification();
+            noteManager.createNotification("You have been promoted to an admin.", newUser.getUid());
+            return true;
+        }
+		return false;
 	}
 
 	public boolean demoteUserOrg(User newUser) {
@@ -539,5 +554,17 @@ public class ManageUser {
 
         System.out.println("successfully promoted user to org user");
         return updatedUser;
+    }
+
+    /**
+     * Fuzzy search for a user on a string to match with.
+     * Searches based on username, email, first name, and last name
+     * @param match - string to match on
+     * @return - list of users that match.
+     */
+    public List<User> searchForUser(String match) {
+        match = "'%" + match + "%'";
+        return makeQuery("from User where username like " + match + " or email like " + match +
+                         " or firstname like " + match + " or lastname like " + match);
     }
 }

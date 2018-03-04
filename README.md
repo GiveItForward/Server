@@ -46,6 +46,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 |/users/promote/admin | PUT | NONE | ...|
 |/users/demote/admin | PUT | NONE | ...|
 |/users/verifytag | PUT | NONE | ...|
+| /users/search | GET | search:{searchString} | - Returns list of users matching the search string |
 
 \* indicates an optional header.
 
@@ -59,6 +60,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 | /organizations/delete | DELETE | See Org Json Parameters. | - Deactivates org by setting inactive date <br>- Returns the deactivated org |
 | /organizations/approve | PUT | See Org Json Parameters. | - Set approved date in DB<br>- Returns approved org |
 | /organizations/oid | GET | oid:{oid} | - Gets the org for the given oid |
+| /organizations/search | GET | search:{searchString} | - Gets all orgs that match on the string in the headers |
 
 \* indicates an optional header.
 
@@ -107,7 +109,8 @@ Each API call is defined by a path which may or may not consist of multiple head
 |User| Create User <br> Update User <br> Delete User| <br>{"image":"/img/default_profile_pic.png", <br>"bio":"bio", <br>"email":"e@email.co", <br>"password":"pwd", <br>"orgId":"", <br>"username":"usrnme", <br>"tags": [ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "nme", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "1" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tagname": "otr", <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tid": "2" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;]<br>}|
 | Thank You | Create Thank You|{"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 | Organization | Create Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
-| Request | Filter Request | {"age":"old/new",<br>"price":"low/high"<br>"rtags": [<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":"name",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]<br>"utags": [<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tagname":"name",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tid":0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]<br>} |
+| Request | Filter Request | {****"age"**:"old/new",<br>****"price"**:"low/high"<br>"rtags": [&nbsp;8&nbsp;]<br>"utags": [&nbsp;0, 1 ]<br>} |
+** indicates optional json
 
 ### Security:
 

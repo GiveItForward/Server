@@ -2,21 +2,16 @@ package giveitforward.gateway;
 
 import giveitforward.managers.*;
 import giveitforward.models.*;
+import giveitforward.models.Request;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Path("/")
@@ -488,6 +483,19 @@ public class Gateway {
 		return manageUserResponse(err, newUser);
 	}
 
+	@GET
+	@Path("/users/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchUsers(@Context HttpHeaders headers)
+	{
+		String match = headers.getRequestHeader("search").get(0);
+
+		String err = "Unable to search for users.";
+		ManageUser manager = new ManageUser();
+		List<User> users = manager.searchForUser(match);
+
+		return manageCollectionResponse(err, users);
+	}
 
 	/********************************* ORG PATHS *******************************************/
 	/**
@@ -636,10 +644,24 @@ public class Gateway {
         ManageOrganization manager = new ManageOrganization();
         Organization org = manager.getOrgByOrgId(oid);
 
-        String err = "unable to get user with uid " + oid;
+        String err = "unable to get org with oid " + oid;
 
         return manageObjectResponse(err, org);
     }
+
+	@GET
+	@Path("/organizations/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchOrgs(@Context HttpHeaders headers)
+	{
+		String match = headers.getRequestHeader("search").get(0);
+
+		String err = "Unable to search for orgs.";
+		ManageOrganization manager = new ManageOrganization();
+		List<Organization> orgs = manager.searchForOrg(match);
+
+		return manageCollectionResponse(err, orgs);
+	}
 
 	/******************************* REQUEST PATHS *****************************************/
 	@GET
@@ -824,37 +846,45 @@ public class Gateway {
     @GET
 	@Path("/requests/filter")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response filterRequest(String reqJson) {
-		String err = "unable to fetch filtered requests";
+	public Response filterRequest(@Context HttpHeaders headers) {
 
-//		JSONObject reqJSON = new JSONObject(headers.getRequestHeader("rtags"));
-		JSONObject reqJSON = new JSONObject(reqJson);
+		String err = "unable to fetch filtered requests";
 
 		ManageRequest manager = new ManageRequest();
 		List<RequestTag> reqTags = new ArrayList<RequestTag>();
 		List<UserTag> userTags = new ArrayList<UserTag>();
 
-//		String age = headers.getRequestHeader("age").get(0);
-//		String price = headers.getRequestHeader("price").get(0);
+        String age = "", price = "";
+        try {
+        	age = headers.getRequestHeader("age").get(0);
+        } catch(Exception e) {}
+        try {
+        	price = headers.getRequestHeader("price").get(0);
+        } catch (Exception e) {}
 
-		String age = reqJSON.getString("age");
-		String price = reqJSON.getString("price");
+        String rtagString = "", utagString = "";
+        try {
+            rtagString = headers.getRequestHeader("rtags").get(0);
+            utagString = headers.getRequestHeader("utags").get(0);
+        } catch (Exception e) {}
 
-		for (Object obj : reqJSON.getJSONArray("rtags")) {
-			RequestTag tag = new RequestTag();
-			JSONObject ob = (JSONObject)obj;
-			tag.setRequestTagname(ob.getString("tagname"));
-			tag.setRequestTid(ob.getInt("tid"));
-			reqTags.add(tag);
-		}
+        if (!rtagString.isEmpty()) {
+            String[] rtags = rtagString.split(",");
+            for (int i = 0; i < rtags.length; i++) {
+                RequestTag tag = new RequestTag();
+                tag.setRequestTid(Integer.parseInt(rtags[i].trim()));
+                reqTags.add(tag);
+            }
+        }
+        if (!utagString.isEmpty()) {
+            String[] utags = rtagString.split(",");
+            for (int i = 0; i < utags.length; i++) {
+                UserTag tag = new UserTag();
+                tag.setUserTid(Integer.parseInt(utags[i].trim()));
+                userTags.add(tag);
+            }
+        }
 
-		for (Object obj : reqJSON.getJSONArray("utags")) {
-			UserTag tag = new UserTag();
-			JSONObject ob = (JSONObject) obj;
-			tag.setUsertagName(ob.getString("tagname"));
-			tag.setUserTid(ob.getInt("tid"));
-			userTags.add(tag);
-		}
 		List<Request> filterRequestModel = manager.getRequestsFilterByTags(reqTags, userTags, age, price);
 
 		return manageCollectionResponse(err,filterRequestModel);

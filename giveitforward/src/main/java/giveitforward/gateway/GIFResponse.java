@@ -16,13 +16,15 @@ public class GIFResponse {
 	 * @return
 	 */
 	public static Response getSuccessObjectResponse(String json) {
+
+
 		return Response.ok()
 				.entity(json)
 				.build();
 	}
 
 	/**
-	 * Returns a server error response containting the given message.
+	 * Returns a server error response containing the given message.
 	 * @return
 	 */
 	public static Response getFailueResponse(String msg){
