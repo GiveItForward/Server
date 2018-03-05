@@ -584,23 +584,15 @@ public class Gateway {
 	 */
 	@DELETE
 	@Path("/organizations/delete")
-	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteOrganization(String orgJson)
+	public Response deleteOrganization(@Context HttpHeaders headers)
 	{
+		Integer oid = Integer.parseInt(headers.getRequestHeader("oid").get(0));
+
 		String err = "Unable to delete org.";
 
-		Organization newOrg = new Organization();
-		JSONObject orgJSON = new JSONObject(orgJson);
-		String errorResult = newOrg.populateFromJSON(orgJSON);
-
-		//Trouble creating from JSON
-		if(errorResult != null) {
-			return manageErrorResponse(errorResult);
-		}
-
 		ManageOrganization manager = new ManageOrganization();
-		Organization orgResult = manager.deleteOrganization(newOrg);
+		Organization orgResult = manager.deleteOrganization(oid);
 
 		return manageObjectResponse(err, orgResult);
 	}
@@ -775,7 +767,6 @@ public class Gateway {
 
 	@DELETE
 	@Path("/requests/delete")
-//	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteRequest(@Context HttpHeaders headers) {
 

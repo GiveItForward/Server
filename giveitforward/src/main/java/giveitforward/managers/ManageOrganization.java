@@ -48,10 +48,8 @@ public class ManageOrganization
 
     /**
      * Creates an organization with a null timestamp to represent that this organization is pending.
-     * @param name org name to be displayed.
-     * @param email org email to be displayed
-     * @param website org website to be displayed.
-     * @param phone_number
+     * @param org org to be created.
+     * @param uid uid of user associated with this org.
      * @return organization which was added to the organization table.
      */
     public Organization createOrganization(Organization org, int uid)
@@ -119,13 +117,12 @@ public class ManageOrganization
 
     /**
      * Adds a timestamp to the organization to mark that it has been approved.
-     * @param oid
+     * @param org
      * @return the org that has been approved.
      */
     public Organization approveOrganization(Organization org)
     {
-        Organization oldOrg = getOrgByOrgId(org.getOid());
-        org.setInactivedate(oldOrg.getInactivedate());
+        org = getOrgByOrgId(org.getOid());
         Session s = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
         try {
@@ -152,10 +149,10 @@ public class ManageOrganization
      * Removes an organization from the organization table by setting its inactivedate
      * @return true if the organization was successfully removed.
      */
-    public Organization deleteOrganization(Organization org)
+    public Organization deleteOrganization(Integer oid)
     {
-        Organization oldOrg = getOrgByOrgId(org.getOid());
-        org.setApproveddate(oldOrg.getApproveddate());
+    	//Get stored org with given oid.
+        Organization org = getOrgByOrgId(oid);
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -178,6 +175,19 @@ public class ManageOrganization
         }
 
         System.out.println("successfully deactivated org");
+
+		// Notification side effect:
+		ManageUser uManager = new ManageUser();
+		User u = uManager.makeQuery("from User where oid = " + org.getOid()).get(0);
+
+		//Remove the org from this user
+		u.setOrgId(null);
+		User newUser = uManager.updateUser(u);
+		if(newUser == null){
+			return null;
+		}
+		ManageNotification noteManager = new ManageNotification();
+		noteManager.createNotification("Your organization, " + org.getName() + ", has been denied.", u.getUid());
         return org;
     }
 
