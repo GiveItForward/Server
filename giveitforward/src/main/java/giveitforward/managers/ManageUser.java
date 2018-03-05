@@ -2,6 +2,7 @@ package giveitforward.managers;
 
 import giveitforward.models.EmailCode;
 import giveitforward.models.User;
+import giveitforward.models.UserTag;
 import giveitforward.models.UserTagPair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -93,8 +94,24 @@ public class ManageUser {
     }
 
     public User verifyTag(int uid, int oid, int tid){
+    	User currentuser = this.getUserFromUid(uid);
     	String query = "update user_tag_pair set verified_by = " + oid + " where userid = " + uid +" and tagid = " + tid;
-    	makeSQLQuery(query);
+    	for(UserTagPair t : currentuser.getTags()){
+//    		if (t.getTid() == tid && t.getVerifiedBy() == oid){
+//    			// unverify tag only if this org verified it in the first place
+//			}
+			if (t.getTid() == tid && t.getVerifiedBy() != null) {
+				// unverify tag no matter which org verified it.
+				query = "update user_tag_pair set verified_by = NULL where userid = " + uid + " and tagid = " + tid;
+				break;
+			}
+		}
+
+		boolean status = makeSQLQuery(query);
+
+		if (status == false) {
+    		return null;
+		}
 
     	// Notification side effect
         ManageNotification noteManager = new ManageNotification();

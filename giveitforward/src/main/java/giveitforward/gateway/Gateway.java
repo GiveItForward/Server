@@ -267,9 +267,6 @@ public class Gateway {
 		return GIFResponse.getSuccessObjectResponse(jsonOb.toString());
 	}
 
-	// This is not the right thing to be doing... What if the user makes the payment but doesn't return to the site?
-	// PayPal has to have something for this. There must be a way for us to tell paypal we want to be notified when a user
-	// cancels or completes a payment.
 	@GET
 	@Path("/users/gethash")
 	@Produces(MediaType.APPLICATION_JSON)

@@ -54,11 +54,11 @@ public class UserTagPair extends Model {
 		this.time = time;
 	}
 
-	public int getVerifiedBy() {
+	public Integer getVerifiedBy() {
 		return verifiedBy;
 	}
 
-	public void setVerifiedBy(int verifiedBy) {
+	public void setVerifiedBy(Integer verifiedBy) {
 		this.verifiedBy = verifiedBy;
 	}
 
