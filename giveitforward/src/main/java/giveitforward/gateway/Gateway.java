@@ -389,7 +389,8 @@ public class Gateway {
 			return manageUserResponse(err, newUser);
 		}
 		newUser.setAdmin(true);
-		addTagsToUser(userJSON, newUser);
+		newUser = manager.getUserfromUID(newUser.getUid());
+//		addTagsToUser(userJSON, newUser);
 
 		return manageUserResponse(err, newUser);
 	}
@@ -850,6 +851,7 @@ public class Gateway {
         	price = headers.getRequestHeader("price").get(0);
         } catch (Exception e) {}
 
+
         String rtagString = "", utagString = "";
         try {
             rtagString = headers.getRequestHeader("rtags").get(0);
@@ -865,7 +867,7 @@ public class Gateway {
             }
         }
         if (!utagString.isEmpty()) {
-            String[] utags = rtagString.split(",");
+            String[] utags = utagString.split(",");
             for (int i = 0; i < utags.length; i++) {
                 UserTag tag = new UserTag();
                 tag.setUserTid(Integer.parseInt(utags[i].trim()));

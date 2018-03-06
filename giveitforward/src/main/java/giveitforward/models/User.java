@@ -367,10 +367,20 @@ public class User extends Model {
 			}
 
 			fieldName = "email";
-            this.email = object.getString("email");
+        	try {
+				this.email = object.getString("email");
+			}
+			catch(JSONException e){
+
+			}
 
 			fieldName = "username";
-            this.username = object.getString("username");
+        	try {
+				this.username = object.getString("username");
+			}
+			catch(JSONException e){
+
+			}
 
 			fieldName = "password";
             try {
@@ -392,7 +402,12 @@ public class User extends Model {
 			}
 
 			fieldName = "bio";
-            this.bio = object.getString("bio");
+			try {
+				this.bio = object.getString("bio");
+			}
+			catch(JSONException e){
+				this.bio = null;
+			}
 
 			fieldName = "orgId";
             try {
