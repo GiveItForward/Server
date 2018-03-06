@@ -128,9 +128,6 @@ public class Gateway {
 			UserTag tag = new UserTag();
 			JSONObject ob = (JSONObject) obj;
 			tag.setUsertagName(ob.getString("tagname"));
-			if(tag.getUsertagName().equals("")){
-				continue;
-			}
 			try {
 				tag.setUserTid(ob.getInt("tid"));
 			}
