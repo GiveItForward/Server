@@ -1019,6 +1019,14 @@ public class Gateway {
 		return manageCollectionResponse(err, notes);
 	}
 
+	@POST
+	@Path("/svgavatars/*")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Response avatarSave(String data) {
+		System.out.println(data);
+		return Response.ok().entity("testing avatar").build();
+	}
+
 	/*********************************************** Helpers *************************************/
 	private int getYear(Timestamp t) {//your object here.
 		Calendar cal = Calendar.getInstance();
