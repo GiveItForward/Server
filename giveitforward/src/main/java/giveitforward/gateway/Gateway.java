@@ -1021,6 +1021,20 @@ public class Gateway {
 		return manageCollectionResponse(err, notes);
 	}
 
+	@POST
+	@Path("/svgavatars")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public Response avatarSave(@Context HttpHeaders headers, String data) {
+		String uid = headers.getRequestHeader("uid").get(0);
+
+		ManageUser mu = new ManageUser();
+		User u = mu.updatePic(uid, data);
+
+		String err = "could not update user profile pic";
+
+		return manageObjectResponse(err, u);
+	}
+
 	/*********************************************** Helpers *************************************/
 	private int getYear(Timestamp t) {//your object here.
 		Calendar cal = Calendar.getInstance();

@@ -55,6 +55,8 @@ public class ManageUser {
         //List<User> u = mu.searchForUser("sara");
         //mu.verifyTag(3959, 3, 2);
         //mu.promoteUserAdmin(mu.getUserfromUID(4350));
+
+//        User u = mu.updatePic("1", "/img/profile/grey_default.png");
     }
 
     public ManageUser() {
@@ -583,5 +585,15 @@ public class ManageUser {
         match = "'%" + match + "%'";
         return makeQuery("from User where username like " + match + " or email like " + match +
                          " or firstname like " + match + " or lastname like " + match);
+    }
+
+    public User updatePic(String uid, String filename) {
+        String query = "update users set photo = '" + filename + "' where uid = " + uid;
+        if (!makeSQLQuery(query)) {
+            return null;
+        }
+        else {
+            return getUserfromUID(Integer.parseInt(uid));
+        }
     }
 }
