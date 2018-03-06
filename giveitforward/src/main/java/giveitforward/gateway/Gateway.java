@@ -134,6 +134,9 @@ public class Gateway {
 			catch(JSONException e){
 				tag = new ManageUserTag().getTagByTagname(tag.getUsertagName());
 			}
+			if(tag == null){
+			    continue;
+            }
 			int uid = newUser.getUid();
 			int tid = tag.getUserTid();
 			UserTagPair newTag = new ManageUserTag().getUserTagPair(uid, tid);
