@@ -53,6 +53,12 @@ public class Gateway {
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
+		System.out.println();
+
+        // todo - this is wrong. We need to generate a new salt for every user and put it in the database alongside the hash
+        String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userJSON.get("password") + "supercalifragilisticexpialidocious");
+        userJSON.put("password", sha256hex);
+
 		String errorResult = newUser.populateFromJSON(userJSON);
 
 		//Trouble creating from JSON
@@ -158,29 +164,24 @@ public class Gateway {
 		return manageUserResponse(err, userResult);
 	}
 
+
 	// TODO - this is to deactivate a users account (put an inactive date and remove them from system visibility)
 	@DELETE
 	@Path("/users/delete")
-	@Consumes({MediaType.APPLICATION_JSON})
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteUser(String userJSon)//(@Context HttpHeaders headers)
+    @Produces(MediaType.APPLICATION_JSON)
+	public Response deleteUser(@Context HttpHeaders headers)//(@Context HttpHeaders headers)
 	{
-		String err = "Unable to delete user.";
 
-		User newUser = new User();
-		JSONObject userJSON = new JSONObject(userJSon);
-		String errorResult = newUser.populateFromJSON(userJSON);
+        String err = "Unable to delete user.";
 
-		//Trouble creating from JSON
-		if(errorResult != null) {
-			return manageErrorResponse(errorResult);
-		}
+        String uid = headers.getRequestHeader("uid").get(0);
 
-		ManageUser manager = new ManageUser();
-		User currentUser = manager.getUserfromUID(newUser.getUid());
-		currentUser.setInactivedate(new Timestamp(System.currentTimeMillis()));
+        ManageUser manager = new ManageUser();
+        User user = manager.getUserfromUID(Integer.parseInt(uid));
 
-		User userResult = manager.updateUser(currentUser);
+        user.setInactivedate(new Timestamp(System.currentTimeMillis()));
+
+		User userResult = manager.updateUser(user);
 
 		if(userResult == null){
 			//error
@@ -201,6 +202,18 @@ public class Gateway {
 
 		return manageCollectionResponse(err, users);
 	}
+
+    @GET
+    @Path("/users/active")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllActiveUsers(@Context HttpHeaders headers) {
+        ManageUser manager = new ManageUser();
+        List<User> users = manager.getAllActiveUsers();
+
+        String err = "Unable to get all users";
+
+        return manageCollectionResponse(err, users);
+    }
 
 	@GET
 	@Path("/users/byuid")

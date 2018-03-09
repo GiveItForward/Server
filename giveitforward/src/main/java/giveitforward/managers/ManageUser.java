@@ -336,6 +336,10 @@ public class ManageUser {
         return makeQuery("from User order by uid");
     }
 
+    public List<User> getAllActiveUsers(){
+        return makeQuery("from User where inactivedate is null order by lastname asc");
+    }
+
 
     /**
      * @param query HQL query to be performed.
