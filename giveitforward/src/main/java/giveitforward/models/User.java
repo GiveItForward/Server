@@ -381,7 +381,6 @@ public class User extends Model {
 			catch(JSONException e){
 
 			}
-
 			fieldName = "password";
             try {
 				this.password = object.getString("password");
