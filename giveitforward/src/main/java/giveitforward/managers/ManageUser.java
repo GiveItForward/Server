@@ -325,8 +325,35 @@ public class ManageUser {
      * @param username
      * @return
      */
-    public List<User> getUserFromUsername(String username){
-        return makeQuery("from User where username = " + username);
+    public User getUserFromUsername(String username){
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+		User u = null;
+
+		try
+		{
+			t = session.beginTransaction();
+
+			Criteria criteria = session.createCriteria(User.class);
+			criteria.add(Restrictions.eq("username", username));
+
+			u = (User) criteria.uniqueResult();
+
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+		} finally
+		{
+			session.close();
+			return u;
+		}
     }
 
 //	/**

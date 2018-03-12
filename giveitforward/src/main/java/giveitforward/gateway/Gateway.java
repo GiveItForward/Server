@@ -67,8 +67,15 @@ public class Gateway {
 		}
 
 		ManageUser manager = new ManageUser();
-		User userResult = manager.signupUser(newUser);
 
+		if(manager.getUserFromEmail(newUser.getEmail()) != null){
+			return manageErrorResponse("An account with this email already exists.");
+		}
+		else if(manager.getUserFromUsername(newUser.getUsername()) != null){
+			return manageErrorResponse("This username has been taken.");
+		}
+
+		User userResult = manager.signupUser(newUser);
 
 		if(userResult == null){
 			//error
@@ -76,7 +83,6 @@ public class Gateway {
 		}
 		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
 		if (!confirmed){
-			 //TODO: When we want to release this we will uncomment.
 			manager.deleteUser(userResult);
 			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
 		}
