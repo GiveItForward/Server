@@ -61,24 +61,24 @@ public class ManageRequest {
         RequestTag r1 = new RequestTag();
         r1.setRequestTid(1);
         requestTags.add(r1);
-        RequestTag r2 = new RequestTag();
-        r2.setRequestTid(6);
-        requestTags.add(r2);
-        RequestTag r3 = new RequestTag();
-        r3.setRequestTid(3);
-        requestTags.add(r3);
+//        RequestTag r2 = new RequestTag();
+//        r2.setRequestTid(6);
+//        requestTags.add(r2);
+//        RequestTag r3 = new RequestTag();
+//        r3.setRequestTid(3);
+//        requestTags.add(r3);
 
         List<UserTag> userTags = new ArrayList<UserTag>();
         UserTag t1 = new UserTag();
-        t1.setUserTid(2);
+        t1.setUserTid(11);
         userTags.add(t1);
-        UserTag t2 = new UserTag();
-        t2.setUserTid(10);
-        userTags.add(t2);
-        UserTag t3 = new UserTag();
-        t3.setUserTid(3);
-        userTags.add(t3);
-        List<Request> list = mr.getRequestsFilterByTags(requestTags, null, "", "high");
+//        UserTag t2 = new UserTag();
+//        t2.setUserTid(10);
+//        userTags.add(t2);
+//        UserTag t3 = new UserTag();
+//        t3.setUserTid(3);
+//        userTags.add(t3);
+        List<Request> list = mr.getRequestsFilterByTags(requestTags, userTags, "", "");
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i).getRid());
         }
@@ -110,12 +110,6 @@ public class ManageRequest {
             if (tag1 != null) {
                 RequestTag tag1_1 = new ManageRequestTag().getTagByTagname(tag1.getRequestTagname());
                 req.setTag1(tag1_1);
-            }
-
-            RequestTag tag2 = req.getTag2();
-            if (tag2 != null) {
-                RequestTag tag2_2 = new ManageRequestTag().getTagByTagname(tag2.getRequestTagname());
-                req.setTag1(tag2_2);
             }
 
 
@@ -334,12 +328,12 @@ public class ManageRequest {
         // Request tags
         if (requestTags != null && !requestTags.isEmpty()) {
             int firstTag = requestTags.get(0).getRequestTid();
-            query += " where (r.tag1 = " + firstTag + " or r.tag2 = " + firstTag;
+            query += " where (r.tag1 = " + firstTag;
 
             // Iteratively add all request tags
             for (int i = 1; i < requestTags.size(); i++) {
                 int currTag = requestTags.get(i).getRequestTid();
-                query += " or r.tag1 = " + currTag + " or r.tag2 = " + currTag;
+                query += " or r.tag1 = " + currTag;
             }
             query += ")";
         }
