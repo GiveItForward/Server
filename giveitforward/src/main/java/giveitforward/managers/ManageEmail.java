@@ -7,8 +7,10 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import giveitforward.models.EmailCode;
 import giveitforward.models.User;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 
 
 import java.security.SecureRandom;
@@ -26,6 +28,38 @@ public class ManageEmail {
 //s
 //        confirmEmail("11111111111111111111111111111111");
     }
+
+	public static EmailCode getEmailCodeFromUser(User user, char type) {
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+		EmailCode ec = null;
+
+		try
+		{
+			t = session.beginTransaction();
+
+			Criteria criteria = session.createCriteria(EmailCode.class);
+			criteria.add(Restrictions.eq("uid", user.getUid()));
+			criteria.add(Restrictions.eq("type", type));
+
+			ec = (EmailCode) criteria.uniqueResult();
+
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+		} finally
+		{
+			session.close();
+			return ec;
+		}
+	}
 
     public static boolean forgotPassword(String email){
         // get the user
@@ -99,7 +133,7 @@ public class ManageEmail {
 			 * TransferManager manages a pool of threads, so we create a
 			 * single instance and share it throughout our application.
 			 */
-			ProfileCredentialsProvider credentialsProvider = new ProfileCredentialsProvider();
+			ProfileCredentialsProvider credentialsProvider = new ProfileCredentialsProvider("/.aws/credentials", "default");
 			try {
 				credentialsProvider.getCredentials();
 			} catch (Exception e) {

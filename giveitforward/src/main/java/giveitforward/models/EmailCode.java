@@ -1,5 +1,10 @@
 package giveitforward.models;
 
+import giveitforward.managers.SessionFactorySingleton;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.json.JSONObject;
 
 import javax.persistence.*;

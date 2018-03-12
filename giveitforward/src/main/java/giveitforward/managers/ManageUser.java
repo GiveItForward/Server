@@ -158,6 +158,19 @@ public class ManageUser {
 
 
     public boolean deleteUser(User user){
+    	//Delete all tags
+    	ManageUserTag mut = new ManageUserTag();
+    	for (UserTagPair utp : user.getTags())
+		{
+			mut.deleteTag(utp.getTid());
+		}
+
+		//Delete any existing email codes.
+		EmailCode ec = ManageEmail.getEmailCodeFromUser(user, 'c');
+    	if(ec != null) {
+			ManageEmail.deleteHash(ec);
+		}
+
 		Session session = SessionFactorySingleton.getFactory().openSession();
 		Transaction t = null;
 
