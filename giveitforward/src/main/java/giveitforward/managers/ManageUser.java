@@ -319,7 +319,6 @@ public class ManageUser {
 
     }
 
-    //TODO: make a soft search?
 
     /**
      * Queries the DB for
@@ -340,6 +339,9 @@ public class ManageUser {
         return makeQuery("from User where inactivedate is null order by lastname asc");
     }
 
+    public List<User> getAllAdminUsers() {
+        return makeQuery("from User where isadmin is true");
+    }
 
     /**
      * @param query HQL query to be performed.

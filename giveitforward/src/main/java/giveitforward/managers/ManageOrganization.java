@@ -19,7 +19,7 @@ public class ManageOrganization
     {
         ManageOrganization manager = new ManageOrganization();
         //manager.approveOrganization(1);
-        //Organization org = manager.createOrganization(new Organization("F", "F", "F", "F", "F", "F", "F"), 2);
+        Organization org = manager.createOrganization(new Organization("F", "F", "F", "F", "F", "F", "F"), 1900);
         //Organization org = manager.approveOrganization(7);
         //System.out.println(org.asJSON().toString());
         //Approved orgs
@@ -37,10 +37,10 @@ public class ManageOrganization
 //            System.out.println(o.asString());
 //            System.out.println(o.asJSON());
 //        }
-        //List<Organization> o = manager.searchForOrg("utah");
+
 //        Organization o = manager.getOrgByOrgId(6);
 //        manager.approveOrganization(o);
-        List<Organization> l = manager.searchForOrg("utah");
+//        List<Organization> l = manager.searchForOrg("utah");
     }
 
     public ManageOrganization()
@@ -67,6 +67,10 @@ public class ManageOrganization
             t = session.beginTransaction();
             ManageUser mu = new ManageUser();
             mu.addOrgToUser(uid, org.getOid());
+
+            ManageNotification mn = new ManageNotification();
+            mn.createNotification("Your organization application is currently pending approval!", uid);
+            mn.createAdminNotification("You have an organization awaiting approval.", mu.getAllAdminUsers());
             t.commit();
         } catch (Exception e)
         {

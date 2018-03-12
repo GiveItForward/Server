@@ -1,6 +1,7 @@
 package giveitforward.managers;
 
 import giveitforward.models.Notification;
+import giveitforward.models.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -156,5 +157,15 @@ public class ManageNotification {
         }
         session.close();
         return n;
+    }
+
+    /**
+     * Creates a notification for all admin users.
+     * @param message - notification message
+     */
+    public void createAdminNotification(String message, List<User> admins) {
+        for (User u : admins) {
+            createNotification(message, u.getUid());
+        }
     }
 }
