@@ -319,7 +319,6 @@ public class ManageUser {
 
     }
 
-    //TODO: make a soft search?
 
     /**
      * Queries the DB for
@@ -353,6 +352,9 @@ public class ManageUser {
         return makeQuery("from User where inactivedate is null order by lastname asc");
     }
 
+    public List<User> getAllAdminUsers() {
+        return makeQuery("from User where isadmin is true");
+    }
 
     /**
      * @param query HQL query to be performed.
@@ -601,7 +603,7 @@ public class ManageUser {
     public List<User> searchForUser(String match) {
         match = "'%" + match + "%'";
         return makeQuery("from User where username like " + match + " or email like " + match +
-                         " or firstname like " + match + " or lastname like " + match);
+                         " or firstname like " + match + " or lastname like " + match + " and inactivedate is null");
     }
 
     public User updatePic(String uid, String filename) {
