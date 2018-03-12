@@ -38,8 +38,9 @@ public class ManageOrganization
 //            System.out.println(o.asJSON());
 //        }
         //List<Organization> o = manager.searchForOrg("utah");
-        Organization o = manager.getOrgByOrgId(6);
-        manager.approveOrganization(o);
+//        Organization o = manager.getOrgByOrgId(6);
+//        manager.approveOrganization(o);
+        List<Organization> l = manager.searchForOrg("utah");
     }
 
     public ManageOrganization()
@@ -258,6 +259,6 @@ public class ManageOrganization
     public List<Organization> searchForOrg(String match) {
         match = "'%" + match + "%'";
         return makeQuery("from Organization where name like " + match + " or email like " + match +
-                         " or website like " + match + " or address like " + match);
+                         " or website like " + match + " or address like " + match + " and approveddate is not null and inactivedate is null");
     }
 }

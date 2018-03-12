@@ -588,7 +588,7 @@ public class ManageUser {
     public List<User> searchForUser(String match) {
         match = "'%" + match + "%'";
         return makeQuery("from User where username like " + match + " or email like " + match +
-                         " or firstname like " + match + " or lastname like " + match);
+                         " or firstname like " + match + " or lastname like " + match + " and inactivedate is null");
     }
 
     public User updatePic(String uid, String filename) {
