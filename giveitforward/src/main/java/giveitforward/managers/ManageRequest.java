@@ -78,7 +78,7 @@ public class ManageRequest {
         UserTag t3 = new UserTag();
         t3.setUserTid(3);
         userTags.add(t3);
-        List<Request> list = mr.getRequestsFilterByTags(null, null, "", "high");
+        List<Request> list = mr.getRequestsFilterByTags(requestTags, null, "", "high");
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i).getRid());
         }
@@ -368,6 +368,13 @@ public class ManageRequest {
                 query += " or r.rUser = " + uids.get(i).getUid();
             }
             query += ")";
+        }
+
+        if ((requestTags == null || requestTags.isEmpty()) && (userTags == null || userTags.isEmpty())) {
+            query += " where r.duid is null";
+        }
+        else {
+            query += " and r.duid is null ";
         }
 
         if (price.equals("low"))
