@@ -136,6 +136,12 @@ public class Organization extends Model {
         object.put("description", this.description);
         object.put("address", this.address);
         object.put("image", this.image);
+        if(this.approveddate == null){
+            object.put("approved", false);
+        }
+        else {
+            object.put("approved", true);
+        }
         return object;
     }
 

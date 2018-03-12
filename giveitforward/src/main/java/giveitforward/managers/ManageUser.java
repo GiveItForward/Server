@@ -64,7 +64,7 @@ public class ManageUser {
 
 
 
-    private User getUserFromEmail(String email)
+    public User getUserFromEmail(String email)
     {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
@@ -329,6 +329,19 @@ public class ManageUser {
     public List<User> getUserFromUsername(String username){
         return makeQuery("from User where username = " + username);
     }
+
+//	/**
+//	 * Queries the DB for
+//	 * @param email
+//	 * @return
+//	 */
+//	public User getUserFromEmail(String email){
+//		List<User> ul = makeQuery("from User where email = " + email);
+//		if(ul.size() != 1){
+//			return null;
+//		}
+//		return ul.get(0);
+//	}
 
     public List<User> getAllUsers(){
 //        return makeQuery("SELECT uid, username, email, bio, isAdmin, " +

@@ -74,12 +74,12 @@ public class Gateway {
 			//error
 			return manageUserResponse(err, userResult);
 		}
-//		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-//		if (!confirmed){
-			// //TODO: When we want to release this we will uncomment.
-//			manager.deleteUser(userResult);
-//			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
-//		}
+		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+		if (!confirmed){
+			 //TODO: When we want to release this we will uncomment.
+			manager.deleteUser(userResult);
+			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+		}
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
@@ -98,7 +98,7 @@ public class Gateway {
 		return manageUserResponse(err, userResult);
 	}
 
-	//response is to login the user?
+
 	@GET
 	@Path("/confirm/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -109,6 +109,23 @@ public class Gateway {
 
 		return manageUserResponse(err, userResult);
 	}
+
+
+	@GET
+	@Path("/forgotpassword")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response forgotPassword(@Context HttpHeaders headers) {
+		String email = headers.getRequestHeader("email").get(0);
+		boolean result = ManageEmail.forgotPassword(email);
+
+		if (result == false){
+			return manageErrorResponse("Password reset, unable to send.");
+		}
+		else {
+			return GIFResponse.getSuccessObjectResponse("Passoword reset sent!");
+		}
+	}
+
 
 	@PUT
 	@Path("/users/update")
@@ -130,6 +147,14 @@ public class Gateway {
 		ManageUser manager = new ManageUser();
 
 		//Add tags to user
+		try{
+			userJSON.getJSONArray("tags");
+		}
+		catch(JSONException e){
+
+			userJSON.put("tags", new JSONArray());
+		}
+
 		for (Object obj : userJSON.getJSONArray("tags")) {
 			UserTag tag = new UserTag();
 			JSONObject ob = (JSONObject) obj;
@@ -141,8 +166,8 @@ public class Gateway {
 				tag = new ManageUserTag().getTagByTagname(tag.getUsertagName());
 			}
 			if(tag == null){
-			    continue;
-            }
+				continue;
+			}
 			int uid = newUser.getUid();
 			int tid = tag.getUserTid();
 			UserTagPair newTag = new ManageUserTag().getUserTagPair(uid, tid);
