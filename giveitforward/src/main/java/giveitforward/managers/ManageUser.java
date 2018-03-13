@@ -1,5 +1,6 @@
 package giveitforward.managers;
 
+import giveitforward.gateway.GIFOptional;
 import giveitforward.models.EmailCode;
 import giveitforward.models.User;
 import giveitforward.models.UserTag;
@@ -205,20 +206,29 @@ public class ManageUser {
      * @param password  user password attempting to be verified
      * @return  The user object with all of their pertinent information OR null if the login was unsuccessful
      */
-    public User loginUser(String email, String password)
+    public GIFOptional loginUser(String email, String password)
     {
+    	GIFOptional result = new GIFOptional();
+    	String errMsg;
+
         User u = getUserFromEmail(email);
 
         if (u == null)
         {
-            System.out.println("USER DOESN'T EXIST");
-            return null;
+			errMsg = "User doesn't exist";
+            System.out.println(errMsg);
+            result.setErrorMessage(errMsg);
         }
         else if (u.getInactivedate() != null)
         {
-            System.out.println("USER HAS BEEN DEACTIVATED");
-            return null;
+			errMsg = "User has been deactivated";
+            System.out.println(errMsg);
+            result.setErrorMessage(errMsg);
         }
+        else if (u.getSignupdate() == null){
+        	errMsg = "Unconfirmed email";
+        	result.setErrorMessage(errMsg);
+		}
         else {
             System.out.println("Email: " + u.getEmail());
             String pword = u.getPassword();
@@ -226,12 +236,15 @@ public class ManageUser {
 
             if (pword.equals(password)) {
                 System.out.println("Logged in!");
-                return u;
+                result.setObject(u);
             } else {
-                System.out.println("Passwords don't match!");
-                return null;
+            	errMsg = "Passwords don't match.";
+                System.out.println(errMsg);
+                result.setErrorMessage(errMsg);
             }
         }
+
+        return result;
     }
 
     public User signupUser(User newUser)

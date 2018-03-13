@@ -79,7 +79,7 @@ public class User extends Model {
         this.orgId = orgId;
         this.image = photo;
         this.bio = bio;
-        this.signupdate = new Timestamp(System.currentTimeMillis());
+        this.signupdate = null;
         this.firstname = first;
         this.lastname = last;
     }
@@ -92,7 +92,7 @@ public class User extends Model {
         this.orgId = orgId;
         this.image = photo;
         this.bio = bio;
-        this.signupdate = new Timestamp(System.currentTimeMillis());
+        this.signupdate = signupdate;
         this.firstname = firstname;
         this.lastname = lastname;
     }
@@ -104,7 +104,7 @@ public class User extends Model {
         this.isAdmin = isAdmin;
         this.image = photo;
         this.bio = bio;
-        this.signupdate = new Timestamp(System.currentTimeMillis());
+        this.signupdate = null;
         this.firstname = first;
         this.lastname = last;
     }

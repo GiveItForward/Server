@@ -29,16 +29,22 @@ public class Gateway {
 	@Path("/users/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response userLogin(@Context HttpHeaders headers) {
+		String err = "Unable to log in user.";
 
 		String username = headers.getRequestHeader("email").get(0);
 		String password = headers.getRequestHeader("password").get(0);
 
 		ManageUser manager = new ManageUser();
-		User userResult = manager.loginUser(username, password);
-
-		String err = "Unable to log in user.";
-
-		return manageUserResponse(err, userResult);
+		User userResult;
+		GIFOptional result = manager.loginUser(username, password);
+		if(result.getObject() != null){
+			userResult = (User)result.getObject();
+			return manageUserResponse(err, userResult);
+		}
+		else {
+			err = result.getErrorMessage();
+			return manageErrorResponse(err);
+		}
 	}
 
 
