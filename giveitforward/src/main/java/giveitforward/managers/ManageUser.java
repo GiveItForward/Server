@@ -515,7 +515,9 @@ public class ManageUser {
 			return null;
 		}
 		else {
-			updatedUser.setSignupdate(currentUser.getSignupdate());
+			if(updatedUser.getSignupdate() == null) {
+				updatedUser.setSignupdate(currentUser.getSignupdate());
+			}
 			if (updatedUser.isAdmin() == null) {
 				updatedUser.setAdmin(currentUser.isAdmin());
 			}

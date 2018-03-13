@@ -196,6 +196,9 @@ public class ManageEmail {
     public static User confirmEmail(String hash){
 
         EmailCode ec = confirmHash(hash);
+        if(ec == null){
+        	return null;
+		}
 
         //set the signup date in the user table.
         User u = new ManageUser().confirmEmail(ec.getUid());
