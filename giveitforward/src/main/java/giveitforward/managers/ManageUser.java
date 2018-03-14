@@ -527,6 +527,11 @@ public class ManageUser {
 			if (updatedUser.getPassword() == null) {
 				updatedUser.setPassword(currentUser.getPassword());
 			}
+			else {
+				//Double hash the password.
+				String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(updatedUser.getPassword() + "supercalifragilisticexpialidocious");
+				updatedUser.setPassword(sha256hex);
+			}
 			// Update tags.
 			if (!currentUser.getTags().equals(updatedUser.getTags())) {
 				currentUser = updateTags(currentUser, updatedUser);

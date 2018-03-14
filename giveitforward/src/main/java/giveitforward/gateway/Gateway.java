@@ -33,6 +33,7 @@ public class Gateway {
 
 		String username = headers.getRequestHeader("email").get(0);
 		String password = headers.getRequestHeader("password").get(0);
+		password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
 
 		ManageUser manager = new ManageUser();
 		User userResult;
