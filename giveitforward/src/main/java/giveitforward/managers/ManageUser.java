@@ -527,7 +527,7 @@ public class ManageUser {
 			if (updatedUser.getPassword() == null) {
 				updatedUser.setPassword(currentUser.getPassword());
 			}
-			else {
+			else if (updatedUser.getPassword().equals(currentUser.getPassword()) == false) {
 				//Double hash the password.
 				String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(updatedUser.getPassword() + "supercalifragilisticexpialidocious");
 				updatedUser.setPassword(sha256hex);

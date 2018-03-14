@@ -186,6 +186,8 @@ public class ManageEmail {
 		String hash = ec.getUhash();
 
 		String link = "www.giveitforward.us/confirm/" + hash;
+		String email = u.getEmail();
+		String name = u.getFirstname() + " " + u.getLastname();
 
 		String emailBody = "Welcome to giveitforward.us! Please confirm your email by clicking the following link www.giveitforward.us/confirm/" + hash;
 		String htmlBody = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background: #f5f8fa; min-width: 350px; font-size: 1px; line-height: normal;\">\n" +
@@ -228,13 +230,13 @@ public class ManageEmail {
 				"\n" +
 				"                        <div style=\"height: 21px; line-height: 21px; font-size: 19px;\">&nbsp;</div> <font face=\"'Source Sans Pro', sans-serif\" color=\"#000000\" style=\"font-size: 20px; line-height: 28px;\">\n" +
 				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #000000; font-size: 20px; line-height: 28px;\">\n" +
-				"                              Hey Smiles Davis,\n" +
+				"                              Welcome " + name + ",\n" +
 				"                              </span>\n" +
 				"                           </font>\n" +
 				"\n" +
 				"                        <div style=\"height: 6px; line-height: 6px; font-size: 4px;\">&nbsp;</div> <font face=\"'Source Sans Pro', sans-serif\" color=\"#000000\" style=\"font-size: 20px; line-height: 28px;\">\n" +
 				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #000000; font-size: 20px; line-height: 28px;\">\n" +
-				"                                We received a request to set your Give It Forward email to hello@SmilesDavis.yeah.\n" +
+				"                                We received a request to set your Give It Forward email to " + email + ".\n" +
 				"                                If this is correct, please confirm by clicking the button below.\n" +
 				"                              </span>\n" +
 				"                           </font>\n" +
@@ -267,7 +269,7 @@ public class ManageEmail {
 				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"88%\" style=\"width: 88% !important; min-width: 88%; max-width: 88%;\">\n" +
 				"                    <tr>\n" +
 				"                      <td align=\"left\" valign=\"top\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#7f7f7f\" style=\"font-size: 17px; line-height: 23px;\">\n" +
-				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #7f7f7f; font-size: 17px; line-height: 23px;\">Once you confirm, all future messages about your Give It Forward account will be sent to hello@SmilesDavis.yeah.</span>\n" +
+				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #7f7f7f; font-size: 17px; line-height: 23px;\">Once you confirm, all future messages about your Give It Forward account will be sent to " + email + ".</span>\n" +
 				"                           </font>\n" +
 				"\n" +
 				"                        <div style=\"height: 30px; line-height: 30px; font-size: 28px;\">&nbsp;</div>\n" +
