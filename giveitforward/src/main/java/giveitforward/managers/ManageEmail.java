@@ -5,6 +5,7 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
+import giveitforward.gateway.Globals;
 import giveitforward.models.EmailCode;
 import giveitforward.models.User;
 import org.hibernate.Criteria;
@@ -15,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 
 import java.security.SecureRandom;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ManageEmail {
@@ -72,30 +74,58 @@ public class ManageEmail {
 		}
 
 		String hash = ec.getUhash();
-		String emailBody = "Hi there! You’ve requested to reset the password for your Give It Forward account. To continue with this process, visit the link below. " +
-				"If this wasn’t you, simply ignore this email.\nwww.giveitforward.us/forgotpassword/" + hash;
-		String emailSubject = "Reset your password!";
-//		return sendEmail(u, emailBody, emailSubject);
-		return false;
+		String link = "www.giveitforward.us/resetpassword/" + hash;
+		String noHtmlEmailBody = "Hi there! You’ve requested to reset the password for your Give It Forward account. To continue with this process, visit the link below. " +
+				"If this was not you, simply ignore this email.\n " + link;
+
+		String subject = "Give it Forward, reset password";
+
+
+		String name = u.getFirstname() + " " + u.getLastname();
+		String body = "We received a request to reset your Give It Forward password. If this sounds familiar, please click below to enter a new password. If this doesn't sound familiar please ignore this email. Thanks for being a member of the Give It Forward family!";
+		String footnotes = "Note: your current password is still valid until you change it via the link above.";
+		String htmlBody = Globals.emailHtml(link, name, "Reset Your Password", body, "Reset Password", footnotes);
+
+		return sendEmail(u, noHtmlEmailBody, subject, htmlBody);
     }
 
     public static EmailCode getHash(User u, Character type) {
+		//First check if this entry already exists in the DB... if it does, return it and update the time.
+		EmailCode ec = getStoredHash(u, type);
+		if(ec != null){
+			//Use this ec and update the time.
+			ec.setCreationTime(new Timestamp(System.currentTimeMillis()));
+			update(ec);
+			return ec;
+		}
+		else {
+			//Create a row in EmailCode for the user.
+			String hash = getRandomHash();
 
-        //Create a row in EmailCode for the user.
-        String hash = getRandomHash();
+			ec = new EmailCode(u.getUid(), hash, type);
 
-        EmailCode ec = new EmailCode(u.getUid(), hash, type);
+			//Save the row.
+			boolean successful = ManageEmail.save(ec);
 
-        //Save the row.
-        boolean successful = ManageEmail.save(ec);
-
-        if(successful){
-            return ec;
-        }
-        else {
-            return null;
-        }
+			if (successful) {
+				return ec;
+			}
+			else {
+				return null;
+			}
+		}
     }
+
+    public static EmailCode getStoredHash(User u, Character type){
+		String query = "select e from EmailCode e where e.uid = '" + u.getUid() + "' and e.type = '" + type + "'";
+		EmailCode ec = makeQuery(query);
+
+		if(ec == null){
+			System.err.println("Failled to match hash in email_codes table");
+			return null;
+		}
+		return ec;
+	}
 
     public static boolean deleteHash(EmailCode ec) {
 
@@ -190,205 +220,10 @@ public class ManageEmail {
 		String name = u.getFirstname() + " " + u.getLastname();
 
 		String emailBody = "Welcome to giveitforward.us! Please confirm your email by clicking the following link www.giveitforward.us/confirm/" + hash;
-		String htmlBody = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background: #f5f8fa; min-width: 350px; font-size: 1px; line-height: normal;\">\n" +
-				"  <tr>\n" + "   " +
-				" <td align=\"center\" valign=\"top\">\n" +
-				"      <!--[if (gte mso 9)|(IE)]>\n" +
-				"        <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n" +
-				"          <tr>\n" +
-				"            <td align=\"center\" valign=\"top\" width=\"750\">\n" +
-				"            <![endif]-->\n" +
-				"            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"750\" class=\"table750\"\n" +
-				"            style=\"width: 100%; max-width: 750px; min-width: 350px; background: #f5f8fa;\">\n" +
-				"              <tr>\n" +
-				"                <td class=\"mob_pad\" width=\"25\" style=\"width: 25px; max-width: 25px; min-width: 25px;\">&nbsp;</td>\n" +
-				"                <td align=\"center\" valign=\"top\" style=\"background: #ffffff;\">\n" +
-				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"width: 100% !important; min-width: 100%; max-width: 100%; background: #f5f8fa;\">\n" +
-				"                    <tr>\n" +
-				"                      <td align=\"right\" valign=\"top\">\n" +
-				"                        <div class=\"top_pad\" style=\"height: 25px; line-height: 25px; font-size: 23px;\">&nbsp;</div>\n" +
-				"                      </td>\n" +
-				"                    </tr>\n" +
-				"                  </table>\n" +
-				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"88%\" style=\"width: 88% !important; min-width: 88%; max-width: 88%;\">\n" +
-				"                    <tr>\n" +
-				"                      <td align=\"center\" valign=\"top\">\n" +
-				"                        <div style=\"height: 40px; line-height: 40px; font-size: 38px;\">&nbsp;</div>\n" +
-				"                        <a href=\"#\"\n" +
-				"                        style=\"display: block; max-width: 192px;\">\n" + "                          <img src=\"https://www.giveitforward.us/img/turquoise_shadow.png\" alt=\"HireClub\" width=\"192\"\n" +
-				"                          border=\"0\" style=\"display: block; width: 192px;\" />\n" +
-				"                        </a>\n" +
-				"                        <div class=\"top_pad2\" style=\"height: 48px; line-height: 48px; font-size: 46px;\">&nbsp;</div>\n" +
-				"                      </td>\n" +
-				"                    </tr>\n" +
-				"                  </table>\n" +
-				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"88%\" style=\"width: 88% !important; min-width: 88%; max-width: 88%;\">\n" +
-				"                    <tr>\n" +
-				"                      <td align=\"left\" valign=\"top\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size: 52px; line-height: 54px; font-weight: 300; letter-spacing: -1.5px;\">\n" +
-				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 52px; line-height: 54px; font-weight: 300; letter-spacing: -1.5px;\">Confirm Your Email</span>\n" +
-				"                           </font>\n" +
-				"\n" +
-				"                        <div style=\"height: 21px; line-height: 21px; font-size: 19px;\">&nbsp;</div> <font face=\"'Source Sans Pro', sans-serif\" color=\"#000000\" style=\"font-size: 20px; line-height: 28px;\">\n" +
-				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #000000; font-size: 20px; line-height: 28px;\">\n" +
-				"                              Welcome " + name + ",\n" +
-				"                              </span>\n" +
-				"                           </font>\n" +
-				"\n" +
-				"                        <div style=\"height: 6px; line-height: 6px; font-size: 4px;\">&nbsp;</div> <font face=\"'Source Sans Pro', sans-serif\" color=\"#000000\" style=\"font-size: 20px; line-height: 28px;\">\n" +
-				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #000000; font-size: 20px; line-height: 28px;\">\n" +
-				"                                We received a request to set your Give It Forward email to " + email + ".\n" +
-				"                                If this is correct, please confirm by clicking the button below.\n" +
-				"                              </span>\n" +
-				"                           </font>\n" +
-				"\n" +
-				"                        <div style=\"height: 30px; line-height: 30px; font-size: 28px;\">&nbsp;</div>\n" +
-				"                        <table class=\"mob_btn\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"\n" +
-				"                        style=\"background: #6070E9; border-radius: 4px;\">\n" +
-				"                          <tr>\n" +
-				"                            <td align=\"center\" valign=\"top\">\n" +
-				"                              <a href=\"" + link + "\"\n" +
-				"                              target=\"_blank\" style=\"display: block; border: 1px solid #6070E9; border-radius: 4px; padding: 19px 27px; font-family: 'Source Sans Pro', Arial, Verdana, Tahoma, Geneva, sans-serif; color: #ffffff; font-size: 26px; line-height: 30px; text-decoration: none; white-space: nowrap; font-weight: 600;\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#ffffff\" style=\"font-size: 26px; line-height: 30px; text-decoration: none; white-space: nowrap; font-weight: 600;\">\n" +
-				"               <span style=\"font-family: 'Source Sans Pro', Arial, Verdana, Tahoma, Geneva, sans-serif; color: #ffffff; font-size: 26px; line-height: 30px; text-decoration: none; white-space: nowrap; font-weight: 600;\">Confirm Email</span>\n" +
-				"            </font>\n" +
-				"\n" +
-				"                              </a>\n" +
-				"                            </td>\n" +
-				"                          </tr>\n" +
-				"                        </table>\n" +
-				"                        <div style=\"height: 90px; line-height: 90px; font-size: 88px;\">&nbsp;</div>\n" +
-				"                      </td>\n" +
-				"                    </tr>\n" +
-				"                  </table>\n" +
-				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"90%\" style=\"width: 90% !important; min-width: 90%; max-width: 90%; border-width: 1px; border-style: solid; border-color: #e8e8e8; border-bottom: none; border-left: none; border-right: none;\">\n" +
-				"                    <tr>\n" +
-				"                      <td align=\"left\" valign=\"top\">\n" +
-				"                        <div style=\"height: 28px; line-height: 28px; font-size: 26px;\">&nbsp;</div>\n" +
-				"                      </td>\n" +
-				"                    </tr>\n" +
-				"                  </table>\n" +
-				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"88%\" style=\"width: 88% !important; min-width: 88%; max-width: 88%;\">\n" +
-				"                    <tr>\n" +
-				"                      <td align=\"left\" valign=\"top\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#7f7f7f\" style=\"font-size: 17px; line-height: 23px;\">\n" +
-				"                              <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #7f7f7f; font-size: 17px; line-height: 23px;\">Once you confirm, all future messages about your Give It Forward account will be sent to " + email + ".</span>\n" +
-				"                           </font>\n" +
-				"\n" +
-				"                        <div style=\"height: 30px; line-height: 30px; font-size: 28px;\">&nbsp;</div>\n" +
-				"                      </td>\n" +
-				"                    </tr>\n" +
-				"                  </table>\n" +
-				"                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"width: 100% !important; min-width: 100%; max-width: 100%; background: #f5f8fa;\">\n" +
-				"                    <tbody>\n" +
-				"                      <tr>\n" +
-				"                        <td align=\"center\" valign=\"top\">\n" +
-				"                          <div style=\"height: 34px; line-height: 34px; font-size: 32px;\">&nbsp;</div>\n" +
-				"                          <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"88%\" style=\"width: 88% !important; min-width: 88%; max-width: 88%;\">\n" +
-				"                            <tbody>\n" +
-				"                              <tr>\n" +
-				"                                <td align=\"center\" valign=\"top\">\n" +
-				"                                  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"78%\" style=\"min-width: 300px;\">\n" +
-				"                                    <tbody>\n" +
-				"                                      <tr>\n" +
-				"                                        <td align=\"center\" valign=\"top\" width=\"23%\">\n" +
-				"                                          <a href=\"mailto:help@hireclub.com\" style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\">\n" +
-				"                                    <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\">HELP</span>\n" +
-				"                                 </font>\n" +
-				"\n" +
-				"                                          </a>\n" +
-				"                                        </td>\n" +
-				"                                        <td align=\"center\" valign=\"top\" width=\"10%\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size: 17px; line-height: 17px; font-weight: bold;\">\n" +
-				"                                 <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 17px; line-height: 17px; font-weight: bold;\">•</span>\n" +
-				"                              </font>\n" +
-				"\n" +
-				"                                        </td>\n" +
-				"                                        <td align=\"center\" valign=\"top\" width=\"23%\">\n" +
-				"                                          <a href=\"#\"\n" +
-				"                                          style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\">\n" +
-				"                                    <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\">SETTINGS</span>\n" +
-				"                                 </font>\n" +
-				"\n" +
-				"                                          </a>\n" +
-				"                                        </td>\n" +
-				"                                        <td align=\"center\" valign=\"top\" width=\"10%\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size: 17px; line-height: 17px; font-weight: bold;\">\n" +
-				"                                    <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 17px; line-height: 17px; font-weight: bold;\">•</span>\n" +
-				"                                 </font>\n" +
-				"\n" +
-				"                                        </td>\n" +
-				"                                        <td align=\"center\" valign=\"top\" width=\"23%\">\n" +
-				"                                          <a href=\"#\"\n" +
-				"                                          style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\"> <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\">\n" +
-				"                                       <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 14px; line-height: 20px; text-decoration: none; white-space: nowrap; font-weight: bold;\">PROFILE</span>\n" +
-				"                                    </font>\n" +
-				"\n" +
-				"                                          </a>\n" +
-				"                                        </td>\n" +
-				"                                      </tr>\n" + "                                    </tbody>\n" +
-				"                                  </table>\n" +
-				"                                  <div style=\"height: 34px; line-height: 34px; font-size: 32px;\">&nbsp;</div> <font face=\"'Source Sans Pro', sans-serif\" color=\"#868686\" style=\"font-size: 15px; line-height: 20px;\">\n" +
-				"                        <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #868686; font-size: 15px; line-height: 20px;\">\n" +
-				"                           Give It Forward\n" + "                           <br>\n" +
-				"                           Salt Lake City · UT · 84112</span>\n" +
-				"                     </font>\n" +
-				"\n" +
-				"                                  <div style=\"height: 4px; line-height: 4px; font-size: 2px;\">&nbsp;</div>\n" +
-				"                                  <div style=\"height: 3px; line-height: 3px; font-size: 1px;\">&nbsp;</div>\n" +
-				"                                  <!-- <font face=\"'Source Sans Pro', sans-serif\" color=\"#1a1a1a\" style=\"font-size:\n" +
-				"                                  17px; line-height: 20px;\">\n" +
-				"                        <span style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 17px; line-height: 20px;\"><a href=\"mailto:help@hireclub.com\" style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 17px; line-height: 20px; text-decoration: none;\">help@hireclub.com</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href=\"#\" target=\"_blank\" style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 17px; line-height: 20px; text-decoration: none;\">1(800)232-90-26</a> &nbsp;&nbsp;|&nbsp;&nbsp; <a href=\"#\" target=\"_blank\" style=\"font-family: 'Source Sans Pro', Arial, Tahoma, Geneva, sans-serif; color: #1a1a1a; font-size: 17px; line-height: 20px; text-decoration: none;\">Unsubscribe</a></span>\n" +
-				"                     </font> \n" +
-				"\n" +
-				"                     <div style=\"height: 35px; line-height: 35px; font-size: 33px;\">&nbsp;</div>\n" +
-				"\n" +
-				"                     <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
-				"                        <tbody><tr>\n" +
-				"                           <td align=\"center\" valign=\"top\">\n" +
-				"                              <a href=\"#\" target=\"_blank\" style=\"display: block; max-width: 19px;\">\n" +
-				"                                 <img src=\"images/soc_1.png\" alt=\"img\" width=\"19\" border=\"0\" style=\"display: block; width: 19px;\">\n" +
-				"                              </a>\n" +
-				"                           </td>\n" +
-				"                           <td width=\"45\" style=\"width: 45px; max-width: 45px; min-width: 45px;\">&nbsp;</td>\n" +
-				"                           <td align=\"center\" valign=\"top\">\n" +
-				"                              <a href=\"#\" target=\"_blank\" style=\"display: block; max-width: 18px;\">\n" +
-				"                                 <img src=\"images/soc_2.png\" alt=\"img\" width=\"18\" border=\"0\" style=\"display: block; width: 18px;\">\n" +
-				"                              </a>\n" +
-				"                           </td>\n" +
-				"                           <td width=\"45\" style=\"width: 45px; max-width: 45px; min-width: 45px;\">&nbsp;</td>\n" +
-				"                           <td align=\"center\" valign=\"top\">\n" +
-				"                              <a href=\"#\" target=\"_blank\" style=\"display: block; max-width: 21px;\">\n" +
-				"                                 <img src=\"images/soc_3.png\" alt=\"img\" width=\"21\" border=\"0\" style=\"display: block; width: 21px;\">\n" +
-				"                              </a>\n" +
-				"                           </td>\n" +
-				"                           <td width=\"45\" style=\"width: 45px; max-width: 45px; min-width: 45px;\">&nbsp;</td>\n" +
-				"                           <td align=\"center\" valign=\"top\">\n" +
-				"                              <a href=\"#\" target=\"_blank\" style=\"display: block; max-width: 25px;\">\n" +
-				"                                 <img src=\"images/soc_4.png\" alt=\"img\" width=\"25\" border=\"0\" style=\"display: block; width: 25px;\">\n" +
-				"                              </a>\n" +
-				"                           </td>\n" +
-				"                        </tr>\n" +
-				"                     </tbody></table>\n" +
-				"                     -->\n" +
-				"                                  <div style=\"height: 35px; line-height: 35px; font-size: 33px;\">&nbsp;</div>\n" +
-				"                                </td>\n" +
-				"                              </tr>\n" +
-				"                            </tbody>\n" +
-				"                          </table>\n" +
-				"                        </td>\n" +
-				"                      </tr>\n" +
-				"                    </tbody>\n" +
-				"                  </table>\n" +
-				"                </td>\n" +
-				"                <td class=\"mob_pad\" width=\"25\" style=\"width: 25px; max-width: 25px; min-width: 25px;\">&nbsp;</td>\n" +
-				"              </tr>\n" +
-				"            </table>\n" +
-				"            <!--[if (gte mso 9)|(IE)]>\n" +
-				"            </td>\n" +
-				"          </tr>\n" +
-				"        </table>\n" +
-				"      <![endif]-->\n" +
-				"    </td>\n" +
-				"  </tr>\n" +
-				"</table>\n";
-
+		String body = "We received a request to set your Give It Forward email to " + email + ".\n If this is correct, please confirm by clicking the button below.\n";
+		String footnotes = "Once you confirm, all future messages about your Give It Forward account will be sent to " + email + ".";
 		String emailSubject = "Give it Forward, confirm email";
+		String htmlBody = Globals.emailHtml(link, name, "Confirm Your Email", body, "Confirm Email", footnotes);
 		return sendEmail(u, emailBody, emailSubject, htmlBody);
     }
 
@@ -404,11 +239,34 @@ public class ManageEmail {
 		return ec;
 	}
 
-    public static User confirmEmail(String hash){
+	public static User resetPassword(String hash, String password){
+		EmailCode ec = confirmHash(hash);
+		if(ec == null){
+			return null;
+		}
+		if(ec.getType() != 'f'){
+			return null;
+		}
+		User u = new ManageUser().getUserfromUID(ec.getUid());
+		u.setPassword(password);
+		u =  new ManageUser().updateUser(u);
+		if(u == null){
+			//return error
+			return null;
+		}
 
+		delete(ec);
+
+		return u;
+	}
+
+    public static User confirmEmail(String hash){
         EmailCode ec = confirmHash(hash);
         if(ec == null){
         	return null;
+		}
+		if(ec.getType() != 'c'){
+			return null;
 		}
 
         //set the signup date in the user table.
@@ -491,6 +349,33 @@ public class ManageEmail {
         return true;
     }
 
+    private static EmailCode update(EmailCode ec){
+		Session session = SessionFactorySingleton.getFactory().openSession();
+		Transaction t = null;
+
+		try
+		{
+			t = session.beginTransaction();
+			session.update(ec);
+			session.flush();
+			t.commit();
+		} catch (Exception e)
+		{
+			if (t != null)
+			{
+				t.rollback();
+			}
+			System.out.println("ROLLBACK");
+			e.printStackTrace();
+			return null;
+		} finally
+		{
+			session.close();
+		}
+
+		System.out.println("successfully added user");
+		return ec;
+	}
 
     private static String getRandomHash() {
         SecureRandom random = new SecureRandom();

@@ -25,6 +25,9 @@ public class EmailCode extends Model {
     @Column(name = "type")
     private Character type;
 
+    @Column(name = "creation_time")
+	private Timestamp creationTime;
+
     public EmailCode(int uid, String uhash, Character type) {
         this.uid = uid;
         this.uHash = uhash;
@@ -54,6 +57,14 @@ public class EmailCode extends Model {
     public void setType(Character type) {
         this.type = type;
     }
+
+	public Timestamp getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Timestamp creationTime) {
+		this.creationTime = creationTime;
+	}
 
     public String asString() {
         return null;
