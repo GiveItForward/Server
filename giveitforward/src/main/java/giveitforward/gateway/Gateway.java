@@ -54,9 +54,11 @@ public class Gateway {
 	@Path("/users/create")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response newUser(String userJSon)//(String userJson)
+	public Response newUser(@Context HttpHeaders headers, String userJSon)//(String userJson)
 	{
 		String err = "Unable to create user.";
+
+        boolean google = Boolean.parseBoolean(headers.getRequestHeader("google").get(0));
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
@@ -88,11 +90,14 @@ public class Gateway {
 			//error
 			return manageUserResponse(err, userResult);
 		}
-		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-		if (!confirmed){
-			manager.deleteUser(userResult);
-			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
-		}
+
+		if (!google) {
+            boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+            if (!confirmed) {
+                manager.deleteUser(userResult);
+                return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+            }
+        }
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {

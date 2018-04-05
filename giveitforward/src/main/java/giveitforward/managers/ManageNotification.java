@@ -149,7 +149,7 @@ public class ManageNotification {
 
         try {
             t = session.beginTransaction();
-            String query = "from Notification where opened = false and uid = " + uid;
+            String query = "from Notification where opened = false and uid = " + uid + " order by date desc";
             n = (List<Notification>) session.createQuery(query).list();
         } catch (Exception e) {
             session.close();

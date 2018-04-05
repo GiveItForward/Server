@@ -99,6 +99,7 @@ public class ManageUser {
     public User verifyTag(int uid, int oid, int tid){
     	User currentuser = this.getUserFromUid(uid);
     	String query = "update user_tag_pair set verified_by = " + oid + " where userid = " + uid +" and tagid = " + tid;
+    	String noteMessage = "Your TAGS were VERIFIED by ";
     	for(UserTagPair t : currentuser.getTags()){
 //    		if (t.getTid() == tid && t.getVerifiedBy() == oid){
 //    			// unverify tag only if this org verified it in the first place
@@ -106,6 +107,7 @@ public class ManageUser {
 			if (t.getTid() == tid && t.getVerifiedBy() != null) {
 				// unverify tag no matter which org verified it.
 				query = "update user_tag_pair set verified_by = NULL where userid = " + uid + " and tagid = " + tid;
+				noteMessage = "Your TAGS were UNVERIFIED by ";
 				break;
 			}
 		}
@@ -120,7 +122,7 @@ public class ManageUser {
         ManageNotification noteManager = new ManageNotification();
         ManageOrganization orgManager = new ManageOrganization();
         String orgname = orgManager.getOrgByOrgId(oid).getName();
-        noteManager.createNotification("Your TAGS were VERIFIED by " + orgname, uid);
+        noteManager.createNotification(noteMessage + orgname, uid);
 
     	return getUserfromUID(uid);
 	}
