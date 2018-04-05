@@ -97,7 +97,9 @@ public class Gateway {
                 manager.deleteUser(userResult);
                 return GIFResponse.getFailueResponse("Failed to send confirmation email.");
             }
-        }
+        } else {
+			manager.confirmEmail(userResult.getUid());
+		}
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
