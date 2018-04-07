@@ -35,9 +35,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        } finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
@@ -46,7 +47,7 @@ public class ManageNotification {
      * @return true if the transaction was successfully completed.
      */
     public Notification seenNotification(int nid) {
-        Notification n;
+        Notification n = null;
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
 
@@ -59,9 +60,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        } finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
@@ -94,9 +96,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        }  finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
@@ -114,8 +117,10 @@ public class ManageNotification {
         } catch (Exception e) {
             s.close();
             return null;
+        }  finally {
+            s.close();
+            return n;
         }
-        return n;
     }
 
     /**
@@ -134,7 +139,10 @@ public class ManageNotification {
             s.close();
             return false;
         }
-        return true;
+        finally {
+            s.close();
+            return true;
+        }
     }
 
     /**
@@ -145,7 +153,7 @@ public class ManageNotification {
     public List<Notification> getAllUnreadNotifications(int uid) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
-        List<Notification> n;
+        List<Notification> n = null;
 
         try {
             t = session.beginTransaction();
@@ -154,9 +162,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        } finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
