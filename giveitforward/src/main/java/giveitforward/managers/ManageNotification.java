@@ -23,8 +23,8 @@ public class ManageNotification {
      * @param uid -- the user attached to this notification.
      * @return -- the new notification or null if failed
      */
-    public Notification createNotification(String message, int uid) {
-        Notification n = new Notification(message, uid);
+    public Notification createNotification(String message, int uid, int note_type, Integer rid) {
+        Notification n = new Notification(message, uid, note_type, rid);
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -169,12 +169,12 @@ public class ManageNotification {
     }
 
     /**
-     * Creates a notification for all admin users.
+     * Creates a notification for all admin users
      * @param message - notification message
      */
-    public void createAdminNotification(String message, List<User> admins) {
+    public void createAdminNotification(String message, List<User> admins, int note_type, Integer rid) {
         for (User u : admins) {
-            createNotification(message, u.getUid());
+            createNotification(message, u.getUid(), note_type, rid);
         }
     }
 }

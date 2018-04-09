@@ -59,7 +59,7 @@ public class ManageThankYou {
         Request r = reqManager.getRequestByRid("" + thankyou.getRid()).get(0);
 		User requestor = userManager.getUserfromUID(r.getRequestor().getUid());
 		ManageNotification noteManager = new ManageNotification();
-		noteManager.createNotification("You received a THANK YOU from " + requestor.getUsername(), r.getDuid());
+		noteManager.createNotification("You received a THANK YOU from " + requestor.getUsername(), r.getDuid(), 2, r.getRid());
 
         return thankyou;
     }

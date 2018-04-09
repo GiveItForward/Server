@@ -29,13 +29,21 @@ public class Notification extends Model {
     @Column(name = "opened")
     private boolean opened;
 
+    @Column(name = "note_type")
+    private int note_type;
+
+    @Column(name = "rid")
+    private Integer rid;
+
     public Notification() {}
 
-    public Notification(String _message, int _uid) {
+    public Notification(String _message, int _uid, int _note_type, Integer _rid) {
         message = _message;
         uid = _uid;
         date = new Timestamp(System.currentTimeMillis());
         opened = false;
+        note_type = _note_type;
+        rid = _rid;
     }
 
     public int getNid() {
@@ -78,6 +86,22 @@ public class Notification extends Model {
         return opened;
     }
 
+    public int getNote_type() {
+        return note_type;
+    }
+
+    public void setNote_type(int note_type) {
+        this.note_type = note_type;
+    }
+
+    public int getRid() {
+        return rid;
+    }
+
+    public void setRid(Integer rid) {
+        this.rid = rid;
+    }
+
     public String asString() {
         return null;
     }
@@ -89,6 +113,13 @@ public class Notification extends Model {
         object.put("message", this.message);
         object.put("uid", this.message);
         object.put("opened", this.opened);
+        object.put("note_type", this.note_type);
+        try {
+            object.put("rid", this.rid);
+        }
+        catch (Exception e) {
+            object.put("rid", 0);
+        }
         return object;
     }
 
@@ -106,6 +137,17 @@ public class Notification extends Model {
 
 			fieldName = "opened";
             this.opened = obj.getBoolean("opened");
+
+            fieldName = "note_type";
+            this.note_type = obj.getInt("note_type");
+
+            try {
+                fieldName = "rid";
+                this.rid = obj.getInt("rid");
+            }
+            catch (Exception e) {
+                this.rid = null;
+            }
         }
         catch (JSONException e) {
             e.printStackTrace();

@@ -100,6 +100,7 @@ public class ManageUser {
     	User currentuser = this.getUserFromUid(uid);
     	String query = "update user_tag_pair set verified_by = " + oid + " where userid = " + uid +" and tagid = " + tid;
     	String noteMessage = "Your TAGS were VERIFIED by ";
+    	int note_type = 3;
     	for(UserTagPair t : currentuser.getTags()){
 //    		if (t.getTid() == tid && t.getVerifiedBy() == oid){
 //    			// unverify tag only if this org verified it in the first place
@@ -108,6 +109,7 @@ public class ManageUser {
 				// unverify tag no matter which org verified it.
 				query = "update user_tag_pair set verified_by = NULL where userid = " + uid + " and tagid = " + tid;
 				noteMessage = "Your TAGS were UNVERIFIED by ";
+				note_type = 4;
 				break;
 			}
 		}
@@ -122,7 +124,7 @@ public class ManageUser {
         ManageNotification noteManager = new ManageNotification();
         ManageOrganization orgManager = new ManageOrganization();
         String orgname = orgManager.getOrgByOrgId(oid).getName();
-        noteManager.createNotification(noteMessage + orgname, uid);
+        noteManager.createNotification(noteMessage + orgname, uid, note_type, null);
 
     	return getUserfromUID(uid);
 	}
@@ -607,7 +609,7 @@ public class ManageUser {
 		String query = "update users set isAdmin=true where uid=" + newUser.getUid();
         if(makeSQLQuery(query)) {
             ManageNotification noteManager = new ManageNotification();
-            noteManager.createNotification("You have been promoted to an admin.", newUser.getUid());
+            noteManager.createNotification("You have been promoted to an admin.", newUser.getUid(), 9, null);
             return true;
         }
 		return false;
