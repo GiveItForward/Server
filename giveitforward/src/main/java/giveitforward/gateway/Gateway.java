@@ -31,13 +31,27 @@ public class Gateway {
 	public Response userLogin(@Context HttpHeaders headers) {
 		String err = "Unable to log in user.";
 
-		String username = headers.getRequestHeader("email").get(0);
+		String email = headers.getRequestHeader("email").get(0);
 		String password = headers.getRequestHeader("password").get(0);
 		password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
 
+		boolean google;
+		try {
+			google = Boolean.parseBoolean(headers.getRequestHeader("google").get(0));
+		} catch (Exception e) {
+			google = false;
+		}
+
 		ManageUser manager = new ManageUser();
+
 		User userResult;
-		GIFOptional result = manager.loginUser(username, password);
+		GIFOptional result;
+		if (google) {
+			result = manager.loginGoogleUser(password);
+		} else {
+			result = manager.loginUser(email, password);
+		}
+
 		if(result.getObject() != null){
 			userResult = (User)result.getObject();
 			return manageUserResponse(err, userResult);
@@ -58,7 +72,12 @@ public class Gateway {
 	{
 		String err = "Unable to create user.";
 
-        boolean google = Boolean.parseBoolean(headers.getRequestHeader("google").get(0));
+        boolean google;
+        try {
+			google = Boolean.parseBoolean(headers.getRequestHeader("google").get(0));
+		} catch (Exception e) {
+        	google = false;
+		}
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
