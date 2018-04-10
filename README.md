@@ -144,3 +144,12 @@ myDonations:
 
 
 ### Beta:
+
+
+### Types of Notifications:
+* Org Approved
+* Org Not approved
+* Request fulfilled
+* Someone Said Thank You
+* Tag was Approved
+* Tag was Unapproved
