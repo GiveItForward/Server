@@ -23,8 +23,8 @@ public class ManageNotification {
      * @param uid -- the user attached to this notification.
      * @return -- the new notification or null if failed
      */
-    public Notification createNotification(String message, int uid) {
-        Notification n = new Notification(message, uid);
+    public Notification createNotification(String message, int uid, int note_type, Integer rid) {
+        Notification n = new Notification(message, uid, note_type, rid);
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t = null;
 
@@ -35,9 +35,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        } finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
@@ -46,7 +47,7 @@ public class ManageNotification {
      * @return true if the transaction was successfully completed.
      */
     public Notification seenNotification(int nid) {
-        Notification n;
+        Notification n = null;
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
 
@@ -59,9 +60,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        } finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
@@ -94,9 +96,10 @@ public class ManageNotification {
         } catch (Exception e) {
             session.close();
             return null;
+        }  finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
@@ -114,8 +117,10 @@ public class ManageNotification {
         } catch (Exception e) {
             s.close();
             return null;
+        }  finally {
+            s.close();
+            return n;
         }
-        return n;
     }
 
     /**
@@ -134,7 +139,10 @@ public class ManageNotification {
             s.close();
             return false;
         }
-        return true;
+        finally {
+            s.close();
+            return true;
+        }
     }
 
     /**
@@ -145,27 +153,28 @@ public class ManageNotification {
     public List<Notification> getAllUnreadNotifications(int uid) {
         Session session = SessionFactorySingleton.getFactory().openSession();
         Transaction t;
-        List<Notification> n;
+        List<Notification> n = null;
 
         try {
             t = session.beginTransaction();
-            String query = "from Notification where opened = false and uid = " + uid;
+            String query = "from Notification where opened = false and uid = " + uid + " order by date desc";
             n = (List<Notification>) session.createQuery(query).list();
         } catch (Exception e) {
             session.close();
             return null;
+        } finally {
+            session.close();
+            return n;
         }
-        session.close();
-        return n;
     }
 
     /**
-     * Creates a notification for all admin users.
+     * Creates a notification for all admin users
      * @param message - notification message
      */
-    public void createAdminNotification(String message, List<User> admins) {
+    public void createAdminNotification(String message, List<User> admins, int note_type, Integer rid) {
         for (User u : admins) {
-            createNotification(message, u.getUid());
+            createNotification(message, u.getUid(), note_type, rid);
         }
     }
 }

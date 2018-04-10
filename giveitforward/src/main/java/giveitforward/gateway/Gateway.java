@@ -31,13 +31,30 @@ public class Gateway {
 	public Response userLogin(@Context HttpHeaders headers) {
 		String err = "Unable to log in user.";
 
-		String username = headers.getRequestHeader("email").get(0);
-		String password = headers.getRequestHeader("password").get(0);
-		password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
+		String email = headers.getRequestHeader("email").get(0);
+
+
+		boolean google;
+		try {
+			google = Boolean.parseBoolean(headers.getRequestHeader("google").get(0));
+		} catch (Exception e) {
+			google = false;
+		}
 
 		ManageUser manager = new ManageUser();
+
 		User userResult;
-		GIFOptional result = manager.loginUser(username, password);
+		GIFOptional result;
+		if (google) {
+			String password = headers.getRequestHeader("token").get(0);
+			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
+			result = manager.loginGoogleUser(password);
+		} else {
+			String password = headers.getRequestHeader("password").get(0);
+			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
+			result = manager.loginUser(email, password);
+		}
+
 		if(result.getObject() != null){
 			userResult = (User)result.getObject();
 			return manageUserResponse(err, userResult);
@@ -54,9 +71,16 @@ public class Gateway {
 	@Path("/users/create")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response newUser(String userJSon)//(String userJson)
+	public Response newUser(@Context HttpHeaders headers, String userJSon)//(String userJson)
 	{
 		String err = "Unable to create user.";
+
+        boolean google;
+        try {
+			google = Boolean.parseBoolean(headers.getRequestHeader("google").get(0));
+		} catch (Exception e) {
+        	google = false;
+		}
 
 		User newUser = new User();
 		JSONObject userJSON = new JSONObject(userJSon);
@@ -88,10 +112,15 @@ public class Gateway {
 			//error
 			return manageUserResponse(err, userResult);
 		}
-		boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-		if (!confirmed){
-			manager.deleteUser(userResult);
-			return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+
+		if (!google) {
+            boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+            if (!confirmed) {
+                manager.deleteUser(userResult);
+                return GIFResponse.getFailueResponse("Failed to send confirmation email.");
+            }
+        } else {
+			manager.confirmEmail(userResult.getUid());
 		}
 
 		//Add tags to user
