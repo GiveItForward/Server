@@ -46,9 +46,8 @@ public class Gateway {
 		User userResult;
 		GIFOptional result;
 		if (google) {
-			String password = headers.getRequestHeader("token").get(0);
-			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
-			result = manager.loginGoogleUser(password);
+			String token = headers.getRequestHeader("token").get(0);
+			result = manager.loginGoogleUser(token);
 		} else {
 			String password = headers.getRequestHeader("password").get(0);
 			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
