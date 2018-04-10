@@ -27,7 +27,7 @@ public class GIFResponse {
 	 * Returns a server error response containing the given message.
 	 * @return
 	 */
-	public static Response getFailueResponse(String msg){
+	public static Response getFailureResponse(String msg){
 		return Response.serverError()
 				.entity(msg)
 				.build();
