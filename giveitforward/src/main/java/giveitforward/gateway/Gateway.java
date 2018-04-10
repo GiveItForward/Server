@@ -32,8 +32,7 @@ public class Gateway {
 		String err = "Unable to log in user.";
 
 		String email = headers.getRequestHeader("email").get(0);
-		String password = headers.getRequestHeader("password").get(0);
-		password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
+
 
 		boolean google;
 		try {
@@ -47,8 +46,12 @@ public class Gateway {
 		User userResult;
 		GIFOptional result;
 		if (google) {
+			String password = headers.getRequestHeader("token").get(0);
+			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
 			result = manager.loginGoogleUser(password);
 		} else {
+			String password = headers.getRequestHeader("password").get(0);
+			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
 			result = manager.loginUser(email, password);
 		}
 
