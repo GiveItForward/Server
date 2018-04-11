@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.sql.Timestamp;
@@ -46,9 +45,8 @@ public class Gateway {
 		User userResult;
 		GIFOptional result;
 		if (google) {
-			String password = headers.getRequestHeader("token").get(0);
-			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
-			result = manager.loginGoogleUser(password);
+			String token = headers.getRequestHeader("token").get(0);
+			result = manager.loginGoogleUser(token);
 		} else {
 			String password = headers.getRequestHeader("password").get(0);
 			password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password + "supercalifragilisticexpialidocious");
@@ -86,9 +84,13 @@ public class Gateway {
 		JSONObject userJSON = new JSONObject(userJSon);
 		System.out.println();
 
-        // todo - this is wrong. We need to generate a new salt for every user and put it in the database alongside the hash
-        String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userJSON.get("password") + "supercalifragilisticexpialidocious");
-        userJSON.put("password", sha256hex);
+		if (!google) {
+            // todo - this is wrong. We need to generate a new salt for every user and put it in the database alongside the hash
+            String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(userJSON.get("password") + "supercalifragilisticexpialidocious");
+            userJSON.put("password", sha256hex);
+        } else {
+		    userJSON.put("password", "");
+        }
 
 		String errorResult = newUser.populateFromJSON(userJSON);
 
@@ -113,15 +115,15 @@ public class Gateway {
 			return manageUserResponse(err, userResult);
 		}
 
-		if (!google) {
-            boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-            if (!confirmed) {
-                manager.deleteUser(userResult);
-                return GIFResponse.getFailueResponse("Failed to send confirmation email.");
-            }
-        } else {
+//		if (!google) {
+//            boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+//            if (!confirmed) {
+//                manager.deleteUser(userResult);
+//                return GIFResponse.getFailureResponse("Failed to send confirmation email.");
+//            }
+//        } else {
 			manager.confirmEmail(userResult.getUid());
-		}
+//		}
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
@@ -338,7 +340,7 @@ public class Gateway {
 			return GIFResponse.getSuccessObjectResponse(privateUser.toString());
 		}
 		else {
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 	}
 
@@ -353,7 +355,7 @@ public class Gateway {
 		String err = "unable to get donations";
 		if(requests == null)
 		{
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 
 		Double donations = getDonateAmmount(requests);
@@ -377,7 +379,7 @@ public class Gateway {
 
 		if(ec == null)
 		{
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 		return GIFResponse.getSuccessObjectResponse(ec.asJSON().toString());
 	}
@@ -395,7 +397,7 @@ public class Gateway {
 
 		if(ec == null)
 		{
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 		User user = manager.getUserfromUID(ec.getUid());
 
@@ -415,14 +417,14 @@ public class Gateway {
 
 		if(ec == null)
 		{
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 
 		boolean status = ManageEmail.deleteHash(ec);
 
 		if(status == false)
 		{
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 
 		User user = manager.getUserfromUID(ec.getUid());
@@ -1139,7 +1141,7 @@ public class Gateway {
 	}
 
 	private Response manageErrorResponse(String err){
-		return GIFResponse.getFailueResponse(err);
+		return GIFResponse.getFailureResponse(err);
 	}
 
 	private Response manageCollectionResponse(String err, List objs) {
@@ -1148,7 +1150,7 @@ public class Gateway {
 			return GIFResponse.getSuccessObjectResponse(objJSON);
 		}
 		else {
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 	}
 
@@ -1167,7 +1169,7 @@ public class Gateway {
 			return GIFResponse.getSuccessObjectResponse(jsonUser.toString());
 		}
 		else {
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 	}
 
@@ -1177,7 +1179,7 @@ public class Gateway {
 			return GIFResponse.getSuccessObjectResponse(objJSON);
 		}
 		else {
-			return GIFResponse.getFailueResponse(err);
+			return GIFResponse.getFailureResponse(err);
 		}
 	}
 
