@@ -115,15 +115,15 @@ public class Gateway {
 			return manageUserResponse(err, userResult);
 		}
 
-		if (!google) {
-            boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
-            if (!confirmed) {
-                manager.deleteUser(userResult);
-                return GIFResponse.getFailureResponse("Failed to send confirmation email.");
-            }
-        } else {
+//		if (!google) {
+//            boolean confirmed = ManageEmail.sendConfirmEmail(userResult);
+//            if (!confirmed) {
+//                manager.deleteUser(userResult);
+//                return GIFResponse.getFailureResponse("Failed to send confirmation email.");
+//            }
+//        } else {
 			manager.confirmEmail(userResult.getUid());
-		}
+//		}
 
 		//Add tags to user
 		for (Object obj : userJSON.getJSONArray("tags")) {
