@@ -1119,6 +1119,8 @@ public class Gateway {
 		return manageCollectionResponse(err, notes);
 	}
 
+    /*********************************** Avatar PATHS **************************************/
+
 	@POST
 	@Path("/svgavatars")
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -1132,6 +1134,20 @@ public class Gateway {
 
 		return manageObjectResponse(err, u);
 	}
+
+    /*********************************** NLP PATHS **************************************/
+    @GET
+    @Path("/nlp")
+    public Response checkTextNLP(@Context HttpHeaders headers) {
+        String text = headers.getRequestHeader("stringToCheck").get(0);
+
+        ManageNLP manager = new ManageNLP();
+        StanfordNLP nlp = manager.parseText(text, false);
+
+        String err = "could not parse text with NLP library.";
+
+        return manageObjectResponse(err, nlp);
+    }
 
 	/*********************************************** Helpers *************************************/
 	private int getYear(Timestamp t) {//your object here.
