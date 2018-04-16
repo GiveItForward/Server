@@ -19,7 +19,7 @@ public class ManageThankYou {
     public static void main(String[] args) {
 
         ManageThankYou mty = new ManageThankYou();
-        mty.createThankYou(new ThankYou(54, "Thanks for helping out!", null));
+        mty.createThankYou(new ThankYou(6, "Thanks for helping out!", null));
     }
 
     public ManageThankYou(){

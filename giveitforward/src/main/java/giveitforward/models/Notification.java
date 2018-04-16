@@ -115,7 +115,11 @@ public class Notification extends Model {
         object.put("opened", this.opened);
         object.put("note_type", this.note_type);
         try {
-            object.put("rid", this.rid);
+            if (this.rid != null) {
+                object.put("rid", this.rid);
+            } else {
+                object.put("rid", 0);
+            }
         }
         catch (Exception e) {
             object.put("rid", 0);
