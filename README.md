@@ -86,7 +86,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 ###### NLP
 | Path          | HTTP<br>Method | Headers   | Properties |
 | ------------- |------|-----------|-----------|
-| /nlp | Header: stringToCheck | GET | - Returns a JSON Object with "city" and "person" tags which are either true or false |
+| /nlp | GET | stringToCheck | - Returns a JSON Object with "city" and "person" tags which are either true or false |
 
 ###### Notifications
 | Path          | HTTP<br>Method | Headers   | Properties |
