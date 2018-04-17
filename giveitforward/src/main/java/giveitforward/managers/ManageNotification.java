@@ -168,6 +168,30 @@ public class ManageNotification {
         }
     }
 
+
+    /**
+     * Get all unread notifications for a specific user
+     * @param uid -- uid of the user
+     * @return -- list of unread notifications (empty if all read) and null for failure
+     */
+    public List<Notification> getAllReadNotifications(int uid) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t;
+        List<Notification> n = null;
+
+        try {
+            t = session.beginTransaction();
+            String query = "from Notification where opened = true and uid = " + uid + " order by date desc";
+            n = (List<Notification>) session.createQuery(query).list();
+        } catch (Exception e) {
+            session.close();
+            return null;
+        } finally {
+            session.close();
+            return n;
+        }
+    }
+
     /**
      * Creates a notification for all admin users
      * @param message - notification message
