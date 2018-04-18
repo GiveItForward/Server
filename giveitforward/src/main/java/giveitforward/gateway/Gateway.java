@@ -1142,7 +1142,7 @@ public class Gateway {
         String text = headers.getRequestHeader("stringToCheck").get(0);
 
         ManageNLP manager = new ManageNLP();
-        StanfordNLP nlp = manager.parseText(text, false);
+        StanfordNLP nlp = manager.parseText(text, true);
 
         String err = "could not parse text with NLP library.";
 
