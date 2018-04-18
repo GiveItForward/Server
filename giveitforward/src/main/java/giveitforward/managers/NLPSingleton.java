@@ -23,7 +23,7 @@ public class NLPSingleton {
             Properties props = new Properties();
             if (useRegexner) {
                 props.put("annotators", "tokenize,ssplit,pos,lemma,ner,regexner");
-                props.put("regexner.mapping", "locations.txt");
+                props.put("regexner.mapping", "utah_mappings.txt");
             } else {
                 props.put("annotators", "tokenize,ssplit,pos,lemma,ner");
             }

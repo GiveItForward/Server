@@ -156,8 +156,10 @@ public class ManageRequest {
         // Notification Side Effect:
         ManageUser userManager = new ManageUser();
         User donator = userManager.getUserfromUID(duid);
-        ManageNotification noteManager = new ManageNotification();
-        noteManager.createNotification("Your request was FULFILLED by " + donator.getUsername(), r.getRequestor().getUid(), 1, rid);
+        if (donator != null) {
+            ManageNotification noteManager = new ManageNotification();
+            noteManager.createNotification("Your request was FULFILLED by " + donator.getUsername(), r.getRequestor().getUid(), 1, rid);
+        }
 
         return true;
     }
@@ -345,23 +347,19 @@ public class ManageRequest {
             List<UserTagPair> uids = mu.getUsersByTags(userTags);
 
             // Check if we got any uids to attach to the query
-            if (uids == null || uids.isEmpty()) {
-                return makeQuery(query);
+            if (uids != null && !uids.isEmpty()) {
+                // If we didn't add request tags, we need to set up this query
+                if (requestTags == null || requestTags.isEmpty()) {
+                    query += " where (r.rUser = " + uids.get(0).getUid();
+                } else {
+                    query += " and (r.rUser = " + uids.get(0).getUid();
+                }
+                // Iteratively add all user tags
+                for (int i = 1; i < uids.size(); i++) {
+                    query += " or r.rUser = " + uids.get(i).getUid();
+                }
+                query += ")";
             }
-
-            // If we didn't add request tags, we need to set up this query
-            int uidIndex = 0;
-            if (requestTags == null || requestTags.isEmpty()) {
-                query += " where (r.rUser = " + uids.get(uidIndex++).getUid();
-            }
-            else {
-                query += " and (r.rUser = " + uids.get(uidIndex++).getUid();
-            }
-            // Iteratively add all user tags
-            for (int i = uidIndex; i < uids.size(); i++) {
-                query += " or r.rUser = " + uids.get(i).getUid();
-            }
-            query += ")";
         }
 
         if ((requestTags == null || requestTags.isEmpty()) && (userTags == null || userTags.isEmpty())) {

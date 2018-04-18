@@ -6,10 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import giveitforward.gateway.GIFOptional;
-import giveitforward.models.EmailCode;
-import giveitforward.models.User;
-import giveitforward.models.UserTag;
-import giveitforward.models.UserTagPair;
+import giveitforward.models.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -121,10 +118,13 @@ public class ManageUser {
         }
 
         // Notification side effect
-        ManageNotification noteManager = new ManageNotification();
         ManageOrganization orgManager = new ManageOrganization();
-        String orgname = orgManager.getOrgByOrgId(oid).getName();
-        noteManager.createNotification(noteMessage + orgname, uid, note_type, null);
+        Organization o = orgManager.getOrgByOrgId(oid);
+        if (o != null) {
+            String orgname = o.getName();
+            ManageNotification noteManager = new ManageNotification();
+            noteManager.createNotification(noteMessage + orgname, uid, note_type, null);
+        }
 
         return getUserfromUID(uid);
     }
@@ -371,13 +371,11 @@ public class ManageUser {
 
         System.out.println("successfully added user");
         return u;
-//        return updateUser(user);
-
     }
 
 
     /**
-     * Queries the DB for
+     * Queries the DB for the user object associated with the given username
      *
      * @param username
      * @return
@@ -607,7 +605,6 @@ public class ManageUser {
      * @return - the user with that uid
      */
     public User getUserfromUID(int uid) {
-
         return makeQuery("from User where uid = " + uid).get(0);
     }
 
@@ -678,6 +675,12 @@ public class ManageUser {
                 " or firstname like " + match + " or lastname like " + match + " and inactivedate is null");
     }
 
+    /**
+     * Updates a user's profile picture
+     * @param uid - uid of the given user
+     * @param filename - filename of the new image for that user
+     * @return - the updated user object
+     */
     public User updatePic(String uid, String filename) {
         String query = "update users set photo = '" + filename + "' where uid = " + uid;
         if (!makeSQLQuery(query)) {

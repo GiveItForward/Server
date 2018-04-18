@@ -2,38 +2,59 @@ package giveitforward.models;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class StanfordNLP extends  Model {
-    private boolean city;
-    private boolean person;
+    private ArrayList<String> cities;
+    private ArrayList<String> people;
 
-    public StanfordNLP(boolean c, boolean p) {
-        city = c;
-        person = p;
+    public StanfordNLP(ArrayList<String> c, ArrayList<String> p) {
+        cities = c;
+        people = p;
     }
 
-    public boolean getCity() {
-        return city;
+    public ArrayList<String> getCities() {
+        return cities;
     }
 
-    public boolean getPerson() {
-        return person;
+    public ArrayList<String> getPeople() {
+        return people;
     }
 
-    public void setCity(boolean city) {
-        this.city = city;
+    public void setCities(ArrayList<String> cities) {
+        this.cities = cities;
     }
 
-    public void setPerson(boolean person) {
-        this.person = person;
+    public void setPeople(ArrayList<String> people) {
+        this.people = people;
     }
 
     public String asString() { return null; }
 
     public JSONObject asJSON() {
         JSONObject object = new JSONObject();
-        object.put("city", this.city);
-        object.put("person", this.person);
+        if (this.cities == null || this.cities.isEmpty()) {
+            object.put("city", "");
+        } else {
+            object.put("city", list(this.cities));
+        }
+        if (this.people == null || this.people.isEmpty()) {
+            object.put("person", "");
+        } else {
+            object.put("person", list(this.people));
+        }
         return object;
+    }
+
+    private String list(ArrayList<String> tokens) {
+        String ret = "";
+        for (int i = 0; i < tokens.size(); i++) {
+            ret += tokens.get(i);
+            if (i < tokens.size() - 1) {
+                ret += ", ";
+            }
+        }
+        return ret;
     }
 
     public String populateFromJSON(JSONObject obj) { return null; }
