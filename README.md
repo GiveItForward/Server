@@ -86,7 +86,7 @@ Each API call is defined by a path which may or may not consist of multiple head
 ###### NLP
 | Path          | HTTP<br>Method | Headers   | Properties |
 | ------------- |------|-----------|-----------|
-| /nlp | GET | stringToCheck | - Returns a JSON Object with "city" and "person" tags which are either true or false |
+| /nlp | GET | stringToCheck | - Returns a JSON Object with "city" and "person" tags which are either empty or a list of strings. Example format below. |
 
 ###### Notifications
 | Path          | HTTP<br>Method | Headers   | Properties |
@@ -116,6 +116,7 @@ Notification Types:
 |Thank You | {"date":"year-mo-day hr:min:sec.ms", <br>"note":"note", <br>"image":"image", <br>"rid":0 <br>}|
 |Organization |{"image":"img", <br>"website":"www.web.co", <br>"address":"addr", <br>"phone":"addr", <br>"name":"name", <br>"description":"words", <br>"oid":0  <br>"email":"wrc@email.co",<br>} |
 | Notification | {"nid":2, <br>"message":"New Thank You Received!", <br>"uid":1, <br>"date":"year-mo-day hr:min:sec.ms", <br>"opened":false<br>} |
+| NLP | {"city":"Sandy, Salt Lake City", <br>"person":"Boo Chalhoub, Makenzie"<br>}  (or empty strings)|
 
 ###### JSON Parameters Format
 | Model |Uses| JSON |
