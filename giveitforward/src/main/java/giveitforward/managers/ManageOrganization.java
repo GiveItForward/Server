@@ -64,14 +64,6 @@ public class ManageOrganization
             session.save(org);
             session.flush();
             t.commit();
-            t = session.beginTransaction();
-            ManageUser mu = new ManageUser();
-            mu.addOrgToUser(uid, org.getOid());
-
-            ManageNotification mn = new ManageNotification();
-            mn.createNotification("Your organization application is currently pending approval!", uid, 6, null);
-            mn.createAdminNotification("You have an organization awaiting approval.", mu.getAllAdminUsers(), 5, null);
-            t.commit();
         } catch (Exception e)
         {
             if (t != null)
@@ -84,6 +76,14 @@ public class ManageOrganization
         } finally
         {
             session.close();
+        }
+
+        ManageUser mu = new ManageUser();
+        User u = mu.addOrgToUser(uid, org.getOid());
+        if (u != null) {
+            ManageNotification mn = new ManageNotification();
+            mn.createNotification("Your organization application is currently pending approval!", uid, 6, null);
+            mn.createAdminNotification("You have an organization awaiting approval.", mu.getAllAdminUsers(), 5, null);
         }
 
         System.out.println("successfully added organization");
@@ -143,9 +143,12 @@ public class ManageOrganization
 
         // Notification side effect:
         ManageUser uManager = new ManageUser();
-        User u = uManager.makeQuery("from User where oid = " + org.getOid()).get(0);
-        ManageNotification noteManager = new ManageNotification();
-        noteManager.createNotification("Your organization, " + org.getName() + ", has been approved!", u.getUid(), 7, null);
+        List<User> users = uManager.makeQuery("from User where oid = " + org.getOid());
+        if (users != null && !users.isEmpty()) {
+            User u = users.get(0);
+            ManageNotification noteManager = new ManageNotification();
+            noteManager.createNotification("Your organization, " + org.getName() + ", has been approved!", u.getUid(), 7, null);
+        }
 
         return org;
     }
@@ -183,16 +186,19 @@ public class ManageOrganization
 
 		// Notification side effect:
 		ManageUser uManager = new ManageUser();
-		User u = uManager.makeQuery("from User where oid = " + org.getOid()).get(0);
+		List<User> users = uManager.makeQuery("from User where oid = " + org.getOid());
+        if (users != null && !users.isEmpty()) {
+            User u = users.get(0);
+            //Remove the org from this user
+            u.setOrgId(null);
+            User newUser = uManager.updateUser(u);
+            if(newUser == null){
+                return null;
+            }
+            ManageNotification noteManager = new ManageNotification();
+            noteManager.createNotification("Your organization, " + org.getName() + ", has been denied.", u.getUid(), 8, null);
+        }
 
-		//Remove the org from this user
-		u.setOrgId(null);
-		User newUser = uManager.updateUser(u);
-		if(newUser == null){
-			return null;
-		}
-		ManageNotification noteManager = new ManageNotification();
-		noteManager.createNotification("Your organization, " + org.getName() + ", has been denied.", u.getUid(), 8, null);
         return org;
     }
 

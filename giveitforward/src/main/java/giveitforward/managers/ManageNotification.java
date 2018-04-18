@@ -33,8 +33,7 @@ public class ManageNotification {
             session.save(n);
             t.commit();
         } catch (Exception e) {
-            session.close();
-            return null;
+            System.out.println(e.getMessage());
         } finally {
             session.close();
             return n;
@@ -58,8 +57,7 @@ public class ManageNotification {
             session.update(n);
             t.commit();
         } catch (Exception e) {
-            session.close();
-            return null;
+            System.out.println(e.getMessage());
         } finally {
             session.close();
             return n;
@@ -94,8 +92,7 @@ public class ManageNotification {
             n = (List<Notification>) session.createQuery(query).list();
             t.commit();
         } catch (Exception e) {
-            session.close();
-            return null;
+            System.out.println(e.getMessage());
         }  finally {
             session.close();
             return n;
@@ -115,8 +112,7 @@ public class ManageNotification {
             s.update(n);
             t.commit();
         } catch (Exception e) {
-            s.close();
-            return null;
+            System.out.println(e.getMessage());
         }  finally {
             s.close();
             return n;
@@ -135,13 +131,13 @@ public class ManageNotification {
             t = s.beginTransaction();
             s.delete(n);
             t.commit();
+            return true;
         } catch (Exception e) {
-            s.close();
+            System.out.println(e.getMessage());
             return false;
         }
         finally {
             s.close();
-            return true;
         }
     }
 
@@ -158,6 +154,30 @@ public class ManageNotification {
         try {
             t = session.beginTransaction();
             String query = "from Notification where opened = false and uid = " + uid + " order by date desc";
+            n = (List<Notification>) session.createQuery(query).list();
+            t.commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            session.close();
+            return n;
+        }
+    }
+
+
+    /**
+     * Get all unread notifications for a specific user
+     * @param uid -- uid of the user
+     * @return -- list of unread notifications (empty if all read) and null for failure
+     */
+    public List<Notification> getAllReadNotifications(int uid) {
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t;
+        List<Notification> n = null;
+
+        try {
+            t = session.beginTransaction();
+            String query = "from Notification where opened = true and uid = " + uid + " order by date desc";
             n = (List<Notification>) session.createQuery(query).list();
         } catch (Exception e) {
             session.close();

@@ -1092,15 +1092,32 @@ public class Gateway {
 		return manageCollectionResponse(err, notifications);
 	}
 
-	@PUT
-	@Path("/notifications/seen")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response seenOneNotification(@Context HttpHeaders headers) {
-        String nid = headers.getRequestHeader("nid").get(0);
-		ManageNotification manager = new ManageNotification();
-		Notification note = manager.seenNotification(Integer.parseInt(nid));
+    @GET
+    @Path("/notifications/read")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSeenNotifications(@Context HttpHeaders headers) {
+        String uid = headers.getRequestHeader("uid").get(0);
 
-		String err = "could not set nid: " + nid + " to seen.";
+        ManageNotification manager = new ManageNotification();
+        List<Notification> notifications = manager.getAllReadNotifications(Integer.parseInt(uid));
+
+        String err = "unable to fetch notifications for the user: " + uid;
+
+        return manageCollectionResponse(err, notifications);
+    }
+
+	@PUT
+	@Path("/notifications/see")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response seenOneNotification(String noteJson, @Context HttpHeaders headers) {
+        Notification notification = new Notification();
+        JSONObject userJSON = new JSONObject(noteJson);
+        String errorResult = notification.populateFromJSON(userJSON);
+
+		ManageNotification manager = new ManageNotification();
+		Notification note = manager.seenNotification(notification.getNid());
+
+		String err = "could not set nid: " + notification.getNid() + " to seen.";
 
 		return manageObjectResponse(err, note);
 	}
@@ -1119,6 +1136,8 @@ public class Gateway {
 		return manageCollectionResponse(err, notes);
 	}
 
+    /*********************************** Avatar PATHS **************************************/
+
 	@POST
 	@Path("/svgavatars")
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -1132,6 +1151,20 @@ public class Gateway {
 
 		return manageObjectResponse(err, u);
 	}
+
+    /*********************************** NLP PATHS **************************************/
+    @GET
+    @Path("/nlp")
+    public Response checkTextNLP(@Context HttpHeaders headers) {
+        String text = headers.getRequestHeader("stringToCheck").get(0);
+
+        ManageNLP manager = new ManageNLP();
+        StanfordNLP nlp = manager.parseText(text, true);
+
+        String err = "could not parse text with NLP library.";
+
+        return manageObjectResponse(err, nlp);
+    }
 
 	/*********************************************** Helpers *************************************/
 	private int getYear(Timestamp t) {//your object here.

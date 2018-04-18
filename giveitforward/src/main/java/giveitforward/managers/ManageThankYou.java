@@ -19,7 +19,7 @@ public class ManageThankYou {
     public static void main(String[] args) {
 
         ManageThankYou mty = new ManageThankYou();
-        mty.createThankYou(new ThankYou(54, "Thanks for helping out!", null));
+        mty.createThankYou(new ThankYou(6, "Thanks for helping out!", null));
     }
 
     public ManageThankYou(){
@@ -56,10 +56,15 @@ public class ManageThankYou {
 
         ManageRequest reqManager = new ManageRequest();
 		ManageUser userManager = new ManageUser();
-        Request r = reqManager.getRequestByRid("" + thankyou.getRid()).get(0);
-		User requestor = userManager.getUserfromUID(r.getRequestor().getUid());
-		ManageNotification noteManager = new ManageNotification();
-		noteManager.createNotification("You received a THANK YOU from " + requestor.getUsername(), r.getDuid(), 2, r.getRid());
+        List<Request> reqs = reqManager.getRequestByRid("" + thankyou.getRid());
+        if (reqs != null && !reqs.isEmpty()) {
+        	Request r = reqs.get(0);
+			User requestor = userManager.getUserfromUID(r.getRequestor().getUid());
+			if (requestor != null) {
+				ManageNotification noteManager = new ManageNotification();
+				noteManager.createNotification("You received a THANK YOU from " + requestor.getUsername(), r.getDuid(), 2, r.getRid());
+			}
+		}
 
         return thankyou;
     }
@@ -184,7 +189,6 @@ public class ManageThankYou {
 			e.printStackTrace();
 		} finally {
 			session.close();
-			//            factory.close();
 			return thankYous;
 		}
 	}

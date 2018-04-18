@@ -16,7 +16,7 @@ public class ManageRequest {
     public static void main(String[] args) {
 
         ManageRequest mr = new ManageRequest();
-//        mr.fulfillRequest(3, 4);
+        mr.fulfillRequest(6, 1);
 //        Request r = mr.createRequest("NEW REQUEST", 20.00, "image", 1);
 //        System.out.println("Donations COUNT: " + mr.getCountDonationsByUID(1));
 //        System.out.println("Requests COUNT: " + mr.getCountRequestsByUID(1));
@@ -57,10 +57,10 @@ public class ManageRequest {
 //		request.setRid(73);
 //		mr.deleteRequest(request);
 
-        List<RequestTag> requestTags = new ArrayList<RequestTag>();
-        RequestTag r1 = new RequestTag();
-        r1.setRequestTid(1);
-        requestTags.add(r1);
+//        List<RequestTag> requestTags = new ArrayList<RequestTag>();
+//        RequestTag r1 = new RequestTag();
+//        r1.setRequestTid(1);
+//        requestTags.add(r1);
 //        RequestTag r2 = new RequestTag();
 //        r2.setRequestTid(6);
 //        requestTags.add(r2);
@@ -68,20 +68,20 @@ public class ManageRequest {
 //        r3.setRequestTid(3);
 //        requestTags.add(r3);
 
-        List<UserTag> userTags = new ArrayList<UserTag>();
-        UserTag t1 = new UserTag();
-        t1.setUserTid(11);
-        userTags.add(t1);
+//        List<UserTag> userTags = new ArrayList<UserTag>();
+//        UserTag t1 = new UserTag();
+//        t1.setUserTid(11);
+//        userTags.add(t1);
 //        UserTag t2 = new UserTag();
 //        t2.setUserTid(10);
 //        userTags.add(t2);
 //        UserTag t3 = new UserTag();
 //        t3.setUserTid(3);
 //        userTags.add(t3);
-        List<Request> list = mr.getRequestsFilterByTags(requestTags, userTags, "", "");
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i).getRid());
-        }
+//        List<Request> list = mr.getRequestsFilterByTags(requestTags, userTags, "", "");
+//        for (int i = 0; i < list.size(); i++) {
+//            System.out.println(list.get(i).getRid());
+//        }
 
 //        mr.fulfillRequest(54, 1);
     }
@@ -156,8 +156,10 @@ public class ManageRequest {
         // Notification Side Effect:
         ManageUser userManager = new ManageUser();
         User donator = userManager.getUserfromUID(duid);
-        ManageNotification noteManager = new ManageNotification();
-        noteManager.createNotification("Your request was FULFILLED by " + donator.getUsername(), r.getRequestor().getUid(), 1, rid);
+        if (donator != null) {
+            ManageNotification noteManager = new ManageNotification();
+            noteManager.createNotification("Your request was FULFILLED by " + donator.getUsername(), r.getRequestor().getUid(), 1, rid);
+        }
 
         return true;
     }
@@ -345,23 +347,19 @@ public class ManageRequest {
             List<UserTagPair> uids = mu.getUsersByTags(userTags);
 
             // Check if we got any uids to attach to the query
-            if (uids == null || uids.isEmpty()) {
-                return makeQuery(query);
+            if (uids != null && !uids.isEmpty()) {
+                // If we didn't add request tags, we need to set up this query
+                if (requestTags == null || requestTags.isEmpty()) {
+                    query += " where (r.rUser = " + uids.get(0).getUid();
+                } else {
+                    query += " and (r.rUser = " + uids.get(0).getUid();
+                }
+                // Iteratively add all user tags
+                for (int i = 1; i < uids.size(); i++) {
+                    query += " or r.rUser = " + uids.get(i).getUid();
+                }
+                query += ")";
             }
-
-            // If we didn't add request tags, we need to set up this query
-            int uidIndex = 0;
-            if (requestTags == null || requestTags.isEmpty()) {
-                query += " where (r.rUser = " + uids.get(uidIndex++).getUid();
-            }
-            else {
-                query += " and (r.rUser = " + uids.get(uidIndex++).getUid();
-            }
-            // Iteratively add all user tags
-            for (int i = uidIndex; i < uids.size(); i++) {
-                query += " or r.rUser = " + uids.get(i).getUid();
-            }
-            query += ")";
         }
 
         if ((requestTags == null || requestTags.isEmpty()) && (userTags == null || userTags.isEmpty())) {
