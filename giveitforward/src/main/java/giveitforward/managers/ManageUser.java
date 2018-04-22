@@ -244,7 +244,11 @@ public class ManageUser {
         GIFOptional result = new GIFOptional();
         String errMsg;
 
-        String clientID = "516734440147-59sb0ckq0i826f0s3bquv96v858v86m3.apps.googleusercontent.com";
+        // This lives inside of /usr/share/tomcat8/conf/tomcat8.conf on the EC2
+        // Add the following line to the bottom of that file,
+        // export GOOGLE_CLIENT_ID="...ID..."
+        String clientID = System.getenv("GOOGLE_CLIENT_ID");
+        System.err.println("************************************" + clientID + "***********************************");
 
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(clientID)).build();
