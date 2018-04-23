@@ -10,7 +10,7 @@ import giveitforward.models.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.SessionFactory;
 
 import java.sql.Timestamp;
@@ -56,7 +56,7 @@ public class ManageUser {
 //		mu.demoteUserOrg(ur);
 //        mu.deactivateUser(ur);
 
-        //List<User> u = mu.searchForUser("sara");
+        List<User> u = mu.searchForUser("sara");
         //mu.verifyTag(3959, 3, 2);
         //mu.promoteUserAdmin(mu.getUserfromUID(4350));
 
@@ -237,6 +237,7 @@ public class ManageUser {
 
     /**
      * Authenticates user through google given their unique token
+     *
      * @param token - user's token used to authenticate
      * @return either error result or User obj on success
      */
@@ -269,8 +270,7 @@ public class ManageUser {
                     errMsg = "User doesn't exist";
                     System.out.println(errMsg);
                     result.setErrorMessage(errMsg);
-                }
-                else {
+                } else {
                     System.out.println("Logged in!");
                     result.setObject(u);
                 }
@@ -279,8 +279,7 @@ public class ManageUser {
                 System.out.println(errMsg);
                 result.setErrorMessage(errMsg);
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             errMsg = "Failed to authenticate with google.";
             System.out.println(errMsg);
             result.setErrorMessage(errMsg);
@@ -674,14 +673,49 @@ public class ManageUser {
      * @return - list of users that match.
      */
     public List<User> searchForUser(String match) {
-        match = "'%" + match + "%'";
-        return makeQuery("from User where username like " + match + " or email like " + match +
-                " or firstname like " + match + " or lastname like " + match + " and inactivedate is null");
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        List<User> users = null;
+
+        match = "%" + match + "%";
+
+        try {
+            t = session.beginTransaction();
+
+            // Set up criteria to match on various columns (case insensitive)
+            Criteria cr = session.createCriteria(User.class);
+            Criterion username = Restrictions.ilike("username", match);
+            Criterion email = Restrictions.ilike("email", match);
+            Criterion firstname = Restrictions.ilike("firstname", match);
+            Criterion lastname = Restrictions.ilike("lastname", match);
+            Criterion active = Restrictions.isNull("inactivedate");
+            cr.add(Restrictions.and(active,
+                    Restrictions.or(username, Restrictions.or(email, Restrictions.or(firstname, lastname)))));
+
+            // Get unique entries
+            cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+            users = cr.list();
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+
+            return null;
+
+        } finally {
+            session.close();
+        }
+        return users;
     }
 
     /**
      * Updates a user's profile picture
-     * @param uid - uid of the given user
+     *
+     * @param uid      - uid of the given user
      * @param filename - filename of the new image for that user
      * @return - the updated user object
      */
