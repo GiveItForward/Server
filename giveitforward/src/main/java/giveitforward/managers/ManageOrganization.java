@@ -3,8 +3,11 @@ package giveitforward.managers;
 
 import giveitforward.models.Organization;
 import giveitforward.models.User;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -40,7 +43,7 @@ public class ManageOrganization
 
 //        Organization o = manager.getOrgByOrgId(6);
 //        manager.approveOrganization(o);
-//        List<Organization> l = manager.searchForOrg("utah");
+        List<Organization> l = manager.searchForOrg("utah");
     }
 
     public ManageOrganization()
@@ -266,9 +269,55 @@ public class ManageOrganization
      * @param match - string to match on
      * @return - list of orgs that match - based on email or name
      */
+//    public List<Organization> searchForOrg(String match) {
+//        match = "'%" + match + "%'";
+//        return makeQuery("from Organization where name like " + match + " or email like " + match +
+//                         " or website like " + match + " or address like " + match + " and approveddate is not null and inactivedate is null");
+//    }
+
+    /**
+     * Fuzzy search for an org based on passed in search string
+     * @param match - string to match on
+     * @return - list of orgs that match - based on email or name
+     */
     public List<Organization> searchForOrg(String match) {
-        match = "'%" + match + "%'";
-        return makeQuery("from Organization where name like " + match + " or email like " + match +
-                         " or website like " + match + " or address like " + match + " and approveddate is not null and inactivedate is null");
+        Session session = SessionFactorySingleton.getFactory().openSession();
+        Transaction t = null;
+        List<Organization> orgs = null;
+
+        match = "%" + match + "%";
+
+        try {
+            t = session.beginTransaction();
+
+            // Set up criteria to match on various columns (case insensitive)
+            Criteria cr = session.createCriteria(Organization.class);
+            Criterion name = Restrictions.ilike("name", match);
+            Criterion email = Restrictions.ilike("email", match);
+            Criterion website = Restrictions.ilike("website", match);
+            Criterion address = Restrictions.ilike("address", match);
+            Criterion approved = Restrictions.isNotNull("approveddate");
+            Criterion active = Restrictions.isNull("inactivedate");
+            cr.add(Restrictions.and(active, Restrictions.and(approved,
+                    Restrictions.or(name, Restrictions.or(email, Restrictions.or(website, address))))));
+
+            // Get unique entries
+            cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+            orgs = cr.list();
+            t.commit();
+        } catch (Exception e) {
+            if (t != null) {
+                t.rollback();
+            }
+            System.out.println("ROLLBACK");
+            e.printStackTrace();
+
+            return null;
+
+        } finally {
+            session.close();
+        }
+        return orgs;
     }
 }
