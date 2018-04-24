@@ -176,8 +176,7 @@ public class Gateway {
 	public Response resetPassword(@Context HttpHeaders headers){
 		String hash = headers.getRequestHeader("hash").get(0);
 		String newPassword = headers.getRequestHeader("password").get(0);
-		String password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(newPassword + "supercalifragilisticexpialidocious");
-		User userResult = ManageEmail.resetPassword(hash, password);
+		User userResult = ManageEmail.resetPassword(hash, newPassword);
 
 		String err = "Unable to reset password. Please contact an admin for assistance.";
 
