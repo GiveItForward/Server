@@ -1152,13 +1152,17 @@ public class Gateway {
 	}
 
     /*********************************** NLP PATHS **************************************/
-    @GET
+    @POST
     @Path("/nlp")
-    public Response checkTextNLP(@Context HttpHeaders headers) {
-        String text = headers.getRequestHeader("stringToCheck").get(0);
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+    public Response checkTextNLP(String nlpObj) {
+
+		JSONObject nlpJson = new JSONObject(nlpObj);
 
         ManageNLP manager = new ManageNLP();
-        StanfordNLP nlp = manager.parseText(text, true);
+
+        StanfordNLP nlp = manager.parseText(nlpJson.getString("string"), true);
 
         String err = "could not parse text with NLP library.";
 
