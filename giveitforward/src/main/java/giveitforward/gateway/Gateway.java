@@ -1151,23 +1151,23 @@ public class Gateway {
 		return manageObjectResponse(err, u);
 	}
 
-    /*********************************** NLP PATHS **************************************/
-    @POST
-    @Path("/nlp")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-    public Response checkTextNLP(String nlpObj) {
-
-		JSONObject nlpJson = new JSONObject(nlpObj);
-
-        ManageNLP manager = new ManageNLP();
-
-        StanfordNLP nlp = manager.parseText(nlpJson.getString("string"), true);
-
-        String err = "could not parse text with NLP library.";
-
-        return manageObjectResponse(err, nlp);
-    }
+//    /*********************************** NLP PATHS **************************************/
+//    @POST
+//    @Path("/nlp")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.APPLICATION_JSON)
+//    public Response checkTextNLP(String nlpObj) {
+//
+//		JSONObject nlpJson = new JSONObject(nlpObj);
+//
+//        ManageNLP manager = new ManageNLP();
+//
+//        StanfordNLP nlp = manager.parseText(nlpJson.getString("string"), true);
+//
+//        String err = "could not parse text with NLP library.";
+//
+//        return manageObjectResponse(err, nlp);
+//    }
 
 	/*********************************************** Helpers *************************************/
 	private int getYear(Timestamp t) {//your object here.
